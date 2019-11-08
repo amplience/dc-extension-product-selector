@@ -1,26 +1,34 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { connect } from 'react-redux'
+import { setParams, setSelectedItems } from './actions';
 
-function App() {
+import './App.scss';
+
+import ProductsGrid from './products-grid/ProductsGrid';
+import SelectedProducts from './selected-products/SelectedProducts';
+
+// selector functions for complex mapping of data
+// const mapStateToProps = (state /*, ownProps*/) => {
+//   //get store, returns stuff needed by component
+//   return {
+//     counter: state.counter
+//   }
+// }
+
+const mapDispatchToProps = { setParams, setSelectedItems }
+
+const AppComponent = params => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="product-selector">
+      <SelectedProducts />
+      <ProductsGrid />
     </div>
   );
 }
+
+const App = connect(
+  // mapStateToProps,
+  null,
+  mapDispatchToProps)(AppComponent);
 
 export default App;

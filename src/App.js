@@ -1,34 +1,23 @@
 import React from 'react';
-import { connect } from 'react-redux'
-import { setParams, setSelectedItems } from './actions';
-
-import './App.scss';
+import { makeStyles } from '@material-ui/core';
 
 import ProductsGrid from './products-grid/ProductsGrid';
 import SelectedProducts from './selected-products/SelectedProducts';
 
-// selector functions for complex mapping of data
-// const mapStateToProps = (state /*, ownProps*/) => {
-//   //get store, returns stuff needed by component
-//   return {
-//     counter: state.counter
-//   }
-// }
+const styles = makeStyles(theme => ({
+  root: {
+    padding: theme.spacing(2)
+  }
+}));
 
-const mapDispatchToProps = { setParams, setSelectedItems }
-
-const AppComponent = params => {
+const App = params => {
+  const classes = styles();
   return (
-    <div className="product-selector">
+    <div className={classes.root}>
       <SelectedProducts />
       <ProductsGrid />
     </div>
   );
 }
-
-const App = connect(
-  // mapStateToProps,
-  null,
-  mapDispatchToProps)(AppComponent);
 
 export default App;

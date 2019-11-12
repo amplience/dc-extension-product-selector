@@ -1,9 +1,11 @@
 export class ProductService {
   constructor(settings) {
-    this.settings = {
-      store: 'RefArchGlobal',
-      clientId: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
-    };
+    this.settings = settings;
+    this.token = '';
+  }
+
+  get basicAuthToken() {
+    return btoa(this.settings.authClientId + ':' + this.settings.authSecret + 'abc');
   }
 
   get defaultParams() {
@@ -11,20 +13,56 @@ export class ProductService {
       method: 'POST',
       body: '',
       headers: {
-        'Content-Type': 'application/json'
-      }      
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + this.token
+      }
     };
   }
 
-  getEndpoint(endpoint) {
-    const {store, clientId} = this.settings;
-    return `https://amplience01-tech-prtnr-eu03-dw.demandware.net/s/${store}/dw/shop/v18_8/${endpoint}?q=25686544M&client_id=${clientId}`;
+  async getToken() {
+    const response = await fetch(
+      this.settings.authUrl,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + this.basicAuthToken
+        },
+        credentials: 'include'
+      }
+    );
+    console.log('auth', this.basicAuthToken)
+    console.log(response);
   }
 
-  search(searchText) {
-    //search as you type
-    const uri = this.getEndpoint('product_search') + '?expand=images';
-    const params = this.defaultParams;
-    return fetch(uri, params);
+  async search(searchText, retry = false) {
+    try {
+      const uri = this.settings.url + `product_search?site_id=${this.settings.siteId}&expand=images`;
+      const params = {...this.defaultParams, 
+        body: JSON.stringify(
+          {
+            query : {
+                text_query: {
+                    fields: ['id','name'],
+                    search_phrase: searchText
+                }
+            },
+            select : '(**)'
+        })};
+      if (this.token === '') {
+        await this.getToken();
+      }
+      const response = await fetch(uri, params);
+      if (response.status === 401) {
+        if (retry) {
+          throw new Error('Authorisation failed');
+        }
+        await this.getToken();
+        this.search(searchText, true);
+      }
+      return response;
+    } catch(e) {
+      console.log(e);
+    }
   }
 }

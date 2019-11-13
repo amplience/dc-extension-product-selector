@@ -16,7 +16,7 @@ const styles = makeStyles(theme => ({
 const SelectedProductsComponent = params => {
   const classes = styles();
   const items = params.selectedItems.map(item => (
-    <Product item={item} key={item.id} selected />
+    <Product item={item} key={item.id} variant="removable" />
   ));
   return (
     <div className={classes.root}>

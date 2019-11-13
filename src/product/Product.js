@@ -20,7 +20,7 @@ const styles = makeStyles(theme => ({
 const ProductComponent = params => {
   const classes = styles();
   const addProduct = () => {
-    if(!params.selected) {
+    if(params.variant !== 'removable') {
       params.setSelectedItems([...params.selectedItems, params.item]);
     }
   }

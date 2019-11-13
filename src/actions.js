@@ -71,21 +71,22 @@ export const getSelectedItems = () => async (dispatch, state) => {
 };
 
 export const SET_SELECTED_ITEMS = 'SET_SELECTED_ITEMS';
-export const setSelectedItems = (value, status) => ({
+export const setSelectedItems = value => ({
   type: SET_SELECTED_ITEMS,
   key: 'selectedItems',
-  value,
-  status
+  value
 });
 
 export const GET_ITEMS = 'GET_ITEMS';
 export const getItems = searchText => async (dispatch, state) => {
+  if (!searchText.length) {
+    return Promise.resolve([]);
+  }
   dispatch(setFetching(true));
   let items = [];
   let status = SUCCESS;
   let {params: {url, clientId}} = state();
   try {
-    // searchText = '25686544M';
     const response = await fetch(url + `product_search/images?q=${searchText}&client_id=${clientId}`);
     const {hits} = await response.json();
 

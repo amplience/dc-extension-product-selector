@@ -2,13 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import SearchBox from './search-box/SearchBox';
 import Product from '../product/Product';
 
 const styles = makeStyles(theme => ({
   root: {
+    width: '100%',
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center'
   },
   items: {
@@ -26,13 +25,10 @@ const ProductsGridComponent = params => {
   const items = params.items.map(item => (
     <Product key={item.id} item={item} />
   ));
-  const loader = params.loading ? 
-    (<CircularProgress className={classes.loader} />) :
-    '';
+  const loader = params.loading ? (<CircularProgress className={classes.loader} />) : '';
 
   return (
-    <div className={classes.root}>
-      <SearchBox />
+    <div className={classes.root}> 
       {loader}
       <div className={classes.items}>
         {items}

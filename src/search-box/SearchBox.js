@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {debounce} from 'lodash';
 import { connect } from 'react-redux';
-import { setSelectedItems, getItems } from '../../actions';
+import { setSelectedItems, getItems } from '../actions';
 import { Paper, InputBase, IconButton, Divider, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Search } from '@material-ui/icons';

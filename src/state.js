@@ -3,7 +3,6 @@ import { createStore, applyMiddleware } from 'redux';
 // import { SET_FETCHING, SET_PARAMS, SET_SDK, SET_SELECTED_ITEMS } from './actions';
 
 import creds from './creds';
-import { CastForEducationSharp } from '@material-ui/icons';
 
 const initialState = {
   isFetching: false,

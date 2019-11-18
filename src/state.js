@@ -20,7 +20,7 @@ const initialState = {
   SDK: null
 }; 
 
-function appState(state = initialState, action) {
+const appState = (state = initialState, action) => {
   if (action.key) {
     return {...state, [action.key]: action.value};
   }

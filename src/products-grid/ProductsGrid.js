@@ -8,7 +8,8 @@ const styles = makeStyles(theme => ({
   root: {
     width: '100%',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'column'
   },
   items: {
     display: 'grid',

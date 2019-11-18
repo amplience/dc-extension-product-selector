@@ -1,55 +1,53 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { reject, find } from 'lodash';
-import { Card, CardContent, CardActionArea, CardMedia, CardHeader, Typography, makeStyles, IconButton } from '@material-ui/core';
-import { Clear } from '@material-ui/icons';
+import { Card, CardActionArea, CardMedia, CardHeader, IconButton, Avatar } from '@material-ui/core';
+import {CSSTransition} from 'react-transition-group';
+import { Clear, Style } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { setSelectedItems } from '../actions';
-
-const styles = makeStyles(theme => ({
-  root: {
-    margin: theme.spacing(1),
-    '&.is-selected': {
-      border: '2px solid ' + theme.palette.primary.light
-    }
-  },
-  thumbnail: {
-    paddingBottom: '100%'
-  }
-}));
+import './product.scss';
 
 const ProductComponent = params => {
-  const classes = styles();
+  const isRemovable = params.variant === 'removable';
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => setVisible(true), []);
+
   const addProduct = () => {
-    if(params.variant !== 'removable') {
-      params.setSelectedItems([...params.selectedItems, params.item]);
-    }
+    params.setSelectedItems([...params.selectedItems, params.item]);
   }
-  const removeProduct = e => {
-    e.preventDefault();
-    params.setSelectedItems(reject(params.selectedItems, {id: params.item.id}));
-  };
-  const isSelected = () => !params.selected && find(params.selectedItems, {id: params.item.id});
-  const header = params.selected ? (
-    <CardHeader action={
-      <IconButton aria-label="Remove" onClick={removeProduct}><Clear /></IconButton>
-    }>
-    </CardHeader>
-  ) : '';
+  const hideProduct = () => setVisible(false);
+  const removeProduct = () => setTimeout(() => params.setSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
+  const isSelected = () => !isRemovable && find(params.selectedItems, {id: params.item.id});
+
   return (
-    <Card className={classes.root + (isSelected() ? ' is-selected' : '')} onClick={addProduct}>
-      {header}
-      <CardActionArea>
-        <CardMedia
-          className={classes.thumbnail}
-          image={params.item.image}
-          title={params.item.name}></CardMedia>
-        <CardContent>
-          <Typography variant="body2" component="h2">
-            {params.item.name}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <CSSTransition 
+      in={visible} 
+      timeout={300} 
+      unmountOnExit 
+      classNames="product"
+      onExited={removeProduct}
+      >
+      <Card className={'product' + (isSelected() ? ' is-selected' : '')} onClick={!isRemovable ? addProduct : null}>
+        <CardHeader 
+          action={
+            isRemovable ? (<IconButton aria-label="Remove" onClick={hideProduct}><Clear /></IconButton>) : ''
+          }
+          avatar={
+            <Avatar aria-label="Product"><Style /></Avatar>
+          }
+          title={params.item.name}
+          subheader={'Product ID: ' + params.item.id}
+        >
+      </CardHeader>
+        {/* <CardActionArea> */}
+          <CardMedia
+            className={'product__thumbnail'}
+            image={params.item.image}
+            title={params.item.name}></CardMedia>
+        {/* </CardActionArea> */}
+      </Card>
+    </CSSTransition>
   );
 }
 

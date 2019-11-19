@@ -1,17 +1,16 @@
 import thunkMiddleware from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
-
-import creds from './creds';
+import { SET_PARAMS } from './actions';
 
 const initialState = {
   isFetching: false,
   params: {
-    url: creds.url,
-    clientId: creds.clientId,
-    authSecret: creds.authSecret,
-    authUrl: creds.authUrl,
-    authClientId: creds.authClientId,
-    siteId: creds.siteId,
+    url: '',
+    clientId: '',
+    authSecret: '',
+    authUrl: '',
+    authClientId: '',
+    siteId: '',
     categories: []
   },
   authToken: '',
@@ -29,11 +28,15 @@ const initialState = {
   backEnd : {}
 }; 
 
+const setParams = ({installation, instance}, state) => ({...state, params: {...state.params, ...installation, ...instance}});
+
 const appState = (state = initialState, action) => {
   if (action.key) {
     return {...state, [action.key]: action.value};
   }
   switch (action.type) {
+    case SET_PARAMS:
+      return setParams(action.params, state);
     default:
       return state;
   }

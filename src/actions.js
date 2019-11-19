@@ -18,10 +18,9 @@ export const setFetching = value => ({
 
 
 export const  SET_PARAMS = 'SET_PARAMS';
-export const setParams = value => ({
+export const setParams = params => ({
   type: SET_PARAMS,
-  key: 'params',
-  value
+  params
 });
 
 
@@ -45,10 +44,12 @@ export const fetchSDK = () => async (dispatch, getState) => {
   try {
     SDK = await init();
     dispatch(setSDK(SDK, SUCCESS));
-    dispatch(setFetching(false));
-    dispatch(getSelectedItems());
+    // dispatch(getSelectedItems());
     dispatch(setParams(SDK.params));
+    dispatch(setFetching(false));
   } catch (e) {
+        console.log('could not get SDK', e);
+
     dispatch(setSDK(null, ERROR));
   }
   dispatch(setFetching(false));
@@ -56,12 +57,12 @@ export const fetchSDK = () => async (dispatch, getState) => {
 };
 
 export const GET_SELECTED_ITEMS = 'GET_SELECTED_ITEMS';
-export const getSelectedItems = () => async (dispatch, state) => {
+export const getSelectedItems = () => async (dispatch, getState) => {
   dispatch(setFetching(true));
   let selectedItems = [];
   let status = SUCCESS;
   try {
-    selectedItems = await state().SDK.getValue();
+    selectedItems = await getState().SDK.getValue();
   } catch (e) {
     status = ERROR;
   }
@@ -78,8 +79,8 @@ export const setSelectedItems = value => ({
 });
 
 export const GET_ITEMS = 'GET_ITEMS';
-export const getItems = () => async (dispatch, state) => {
-  const {params: {url, clientId}, searchText, PAGE_SIZE, page, selectedCategory} = state();
+export const getItems = () => async (dispatch, getState) => {
+  const {params: {url, clientId}, searchText, PAGE_SIZE, page, selectedCategory} = getState();
   if (!searchText.length) {
     return Promise.resolve([]);
   }
@@ -125,8 +126,8 @@ export const setPage = value => ({
 });
 
 export const CHANGE_PAGE = 'CHANGE_PAGE';
-export const changePage = curPage => async (dispatch, state) => {
-  const {page} = state();
+export const changePage = curPage => async (dispatch, getState) => {
+  const {page} = getState();
   dispatch(setPage({...page, curPage}));
   dispatch(getItems());
   return Promise.resolve(page);

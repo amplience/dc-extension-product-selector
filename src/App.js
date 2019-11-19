@@ -6,12 +6,12 @@ import ProductsGrid from './products-grid/ProductsGrid';
 import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
-// @TODO: catalogues?
 // @TODO: SDK integration
 // @TODO: min/max items
 // @TODO: data API
 // @TODO: Styling
 // @TODO: integrate other APIs
+// @TODO: catalogues?
 // @TODO: bug fixing
 
 const styles = makeStyles(theme => ({

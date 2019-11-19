@@ -11,7 +11,8 @@ const initialState = {
     authUrl: '',
     authClientId: '',
     siteId: '',
-    categories: []
+    categories: [],
+    backend: 'SFCC'
   },
   authToken: '',
   selectedItems: [],
@@ -25,7 +26,8 @@ const initialState = {
   },
   PAGE_SIZE: 20,
   selectedCategory: 'all',
-  backEnd : {}
+  backend : {},
+  hasGlobalError: false
 }; 
 
 const setParams = ({installation, instance}, state) => ({...state, params: {...state.params, ...installation, ...instance}});

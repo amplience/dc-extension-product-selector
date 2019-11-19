@@ -10,13 +10,13 @@ import SearchBox from './search-box/SearchBox';
 // @TODO: min/max items
 // @TODO: data API
 // @TODO: Styling
+// @TODO: Refactor/error handling/params sanitisation
 // @TODO: integrate other APIs
 // @TODO: catalogues?
 // @TODO: bug fixing
 
 const styles = makeStyles(theme => ({
   root: {
-    padding: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center'

@@ -75,12 +75,12 @@ const SelectedProductsComponent = params => {
   ));
 
   const empty = (
-    <Typography component="div">
+    <Typography component="div" variant="body2">
       <Box fontWeight="fontWeightLight">No items selected.</Box>
     </Typography>);
   return (
     <Paper className={classes.root}>
-    <Typography variant="h5" component="h2">Selected products</Typography>
+    <Typography variant="h6" component="h2">Selected products</Typography>
     <DragDropContext onDragEnd={reorder}>
       <Droppable droppableId="droppable" direction="horizontal">
       {(provided, snapshot) => (

@@ -1,7 +1,6 @@
-import { init } from 'dc-extensions-sdk';
-
-export const SUCCESS = 'SUCCESS';
-export const ERROR = 'ERROR'; 
+import { init } from 'dc-extensions-sdk'; 
+import { isArray } from 'lodash';
+import { ProductSelectorError } from './ProductSelectorError';
 
 export const SET_FETCHING = 'SET_FETCHING';
 export const setFetching = value => ({
@@ -25,13 +24,13 @@ export const setParams = params => ({
 
 
 export const SET_SDK = 'SET_SDK';
-export const setSDK = (value, status) => ({
+export const setSDK = value => ({
   type: SET_SDK,
   key: 'SDK',
-  value,
-  status
+  value
 });
 
+export const FETCH_SDK = 'FETCH_SDK';
 export const fetchSDK = () => async (dispatch, getState) => {
   const state = getState();
   if (state.SDK) {
@@ -43,14 +42,15 @@ export const fetchSDK = () => async (dispatch, getState) => {
   let SDK = null;
   try {
     SDK = await init();
-    dispatch(setSDK(SDK, SUCCESS));
-    // dispatch(getSelectedItems());
+    dispatch(setSDK(SDK));
     dispatch(setParams(SDK.params));
+    dispatch(getSelectedItems());
     dispatch(setFetching(false));
+    SDK.frame.startAutoResizer();
   } catch (e) {
-        console.log('could not get SDK', e);
+    // @TODO dispatch an error instead
+    // dispatch(setSDK(null, ERROR));
 
-    dispatch(setSDK(null, ERROR));
   }
   dispatch(setFetching(false));
   return Promise.resolve(SDK);
@@ -58,25 +58,35 @@ export const fetchSDK = () => async (dispatch, getState) => {
 
 export const GET_SELECTED_ITEMS = 'GET_SELECTED_ITEMS';
 export const getSelectedItems = () => async (dispatch, getState) => {
+  const {SDK} = getState();
   dispatch(setFetching(true));
   let selectedItems = [];
-  let status = SUCCESS;
   try {
-    selectedItems = await getState().SDK.getValue();
+    if (SDK.field.type !== 'array' || SDK.field.items.type !== 'string') {
+      throw new ProductSelectorError('This UI extension only works with "list of text" properties', ProductSelectorError.codes.INVALID_FIELD);
+    }
+    selectedItems = await SDK.field.getValue();
+    if(!isArray(selectedItems)) {
+      throw new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE);
+    }
   } catch (e) {
-    status = ERROR;
+    // @TODO snackbar or something... dispatch(error);
   }
-  dispatch(selectedItems(selectedItems, status));
+  dispatch(setSelectedItems(selectedItems));
   dispatch(setFetching(false));
   return Promise.resolve(selectedItems);
 };
 
 export const SET_SELECTED_ITEMS = 'SET_SELECTED_ITEMS';
-export const setSelectedItems = value => ({
-  type: SET_SELECTED_ITEMS,
-  key: 'selectedItems',
-  value
-});
+export const setSelectedItems = value => async (dispatch, getState) => {
+  const {SDK} = getState();
+  await SDK.field.setValue(value);
+  Promise.resolve({
+    type: SET_SELECTED_ITEMS,
+    key: 'selectedItems',
+    value
+  });
+};
 
 export const GET_ITEMS = 'GET_ITEMS';
 export const getItems = () => async (dispatch, getState) => {
@@ -86,7 +96,6 @@ export const getItems = () => async (dispatch, getState) => {
   }
   dispatch(setFetching(true));
   let items = [];
-  let status = SUCCESS;
   try {
     const start = PAGE_SIZE * page.curPage;
     const categoryId = selectedCategory === 'all' ? '' : `&refine_1=cgid=${selectedCategory}`;
@@ -103,19 +112,18 @@ export const getItems = () => async (dispatch, getState) => {
       }));
     }
   } catch (e) {
-    status = ERROR;
+    // @TODO - dispatch an error...
   }
-  dispatch(setItems(items, status));
+  dispatch(setItems(items));
   dispatch(setFetching(false));
   return Promise.resolve(items);
 };
 
 export const SET_ITEMS = 'SET_ITEMS';
-export const setItems = (value, status) => ({
+export const setItems = value => ({
   type: SET_ITEMS,
   key: 'items',
-  value,
-  status
+  value
 });
 
 export const SET_PAGE = 'SET_PAGE';

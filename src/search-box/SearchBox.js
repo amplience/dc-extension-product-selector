@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {debounce} from 'lodash';
 import { connect } from 'react-redux';
-import { setSelectedItems, getItems } from '../actions';
+import { getItems, setSearchText } from '../actions';
 import { Paper, InputBase, IconButton, Divider, Snackbar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Search } from '@material-ui/icons';
@@ -29,40 +29,35 @@ const styles = makeStyles(theme => ({
   },
 }));
 
-const debouncedSearch = debounce(async (searchText, state, setState, getItems) => {
+const debouncedSearch = debounce(async (setSnackbarVisibility, getItems) => {
   try {
-    await getItems(searchText);
-    setState({...state, showSnackbar: false});
-  } catch(e) {
-    setState({...state, showSnackbar: true});
+    setSnackbarVisibility(false);
+    await getItems();
+  } catch (e) {
+    setSnackbarVisibility(true);
   }
 }, 1000);
 
 const SearchBoxComponent = params => {
   const classes = styles();
-  const [state, setState] = useState({
-    searchText: '', 
-    showSnackbar: false
-  });
+  const [showSnackbar, setSnackbarVisibility] = useState(false);
 
   const search = event => {
-    const searchText = event.target.value;
-    const updatedState = {...state, searchText};
-    setState(updatedState);
-    debouncedSearch(searchText, updatedState, setState, params.getItems);
+    params.setSearchText(event.target.value);
+    debouncedSearch(setSnackbarVisibility, params.getItems);
   };
-
   return (
     <div className={classes.root}>
       <Snackbar
-        // anchorOrigin={{'top', 'center'}}
-        open={state.showSnackbar}
+        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
         autoHideDuration={3000}
+        onClose={() => setSnackbarVisibility(false)}
+        open={showSnackbar}
         message="Error fetching products"
       />
       <Paper className={classes.search}>
         <InputBase
-          value={state.searchText}
+          value={params.searchText}
           className={classes.input}
           placeholder="Search"
           inputProps={{ 'aria-label': 'search' }}
@@ -82,9 +77,10 @@ const SearchBoxComponent = params => {
 
 const SearchBox = connect(
   state => ({
-    params: state.params
+    params: state.params,
+    searchText: state.searchText
   }),
-  {setSelectedItems, getItems}
+  {getItems, setSearchText}
 )(SearchBoxComponent);
 
 export default SearchBox;

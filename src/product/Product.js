@@ -20,6 +20,13 @@ const ProductComponent = params => {
   const removeProduct = () => setTimeout(() => params.setSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
   const isSelected = () => !isRemovable && find(params.selectedItems, {id: params.item.id});
 
+  const cardMedia = (<CardMedia
+    className={'product__thumbnail'}
+    image={params.item.image}
+    title={params.item.name}></CardMedia>);
+
+const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardActionArea>);
+
   return (
     <CSSTransition 
       in={visible} 
@@ -33,19 +40,11 @@ const ProductComponent = params => {
           action={
             isRemovable ? (<IconButton aria-label="Remove" onClick={hideProduct}><Clear /></IconButton>) : ''
           }
-          avatar={
-            <Avatar aria-label="Product"><Style /></Avatar>
-          }
           title={params.item.name}
           subheader={'Product ID: ' + params.item.id}
         >
       </CardHeader>
-        {/* <CardActionArea> */}
-          <CardMedia
-            className={'product__thumbnail'}
-            image={params.item.image}
-            title={params.item.name}></CardMedia>
-        {/* </CardActionArea> */}
+        {cardBody}
       </Card>
     </CSSTransition>
   );

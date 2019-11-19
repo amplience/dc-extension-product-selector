@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { reject, slice } from 'lodash';
 import { setSelectedItems } from '../actions';
@@ -6,16 +6,25 @@ import { makeStyles } from '@material-ui/core/styles';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import Product from '../product/Product';
+import { Paper, Typography, Box } from '@material-ui/core';
 
 const styles = makeStyles(theme => ({
   root: {
     width: '100%',
-    display: 'flex'
+    margin: theme.spacing(2),
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.grey[100],
+    boxSizing: 'border-box'
+  },
+  itemWrapper: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    padding: theme.spacing(1)
   },
   dragItem: {
-    flex: '1 1 auto',
+    flex: '1 1 25%',
     transition: 'all 0.15s',
-    maxWidth: '33%',
+    maxWidth: '25%',
     '&:empty': {
       flex: 0
     }
@@ -30,16 +39,6 @@ const itemStyle = (isDragging, draggableStyle) => ({
 
 const SelectedProductsComponent = params => {
   const classes = styles();
-
-  useEffect(() => {
-    params.setSelectedItems(
-      [
-        {id: '1', image: 'http://placekitten.com/400/400', name: 'test 1'},
-        {id: '2', image: 'http://placekitten.com/400/400', name: 'test 2'},
-        {id: '3', image: 'http://placekitten.com/400/400', name: 'test 3'}
-      ]
-    );
-  }, []);
 
   const reorder = ({source, destination}) => {
     if (!destination) {
@@ -74,21 +73,29 @@ const SelectedProductsComponent = params => {
         )}
     </Draggable>
   ));
+
+  const empty = (
+    <Typography component="div">
+      <Box fontWeight="fontWeightLight">No items selected.</Box>
+    </Typography>);
   return (
+    <Paper className={classes.root}>
+    <Typography variant="h5" component="h2">Selected products</Typography>
     <DragDropContext onDragEnd={reorder}>
       <Droppable droppableId="droppable" direction="horizontal">
       {(provided, snapshot) => (
         <div
-          className={classes.root}
+          className={classes.itemWrapper}
           ref={provided.innerRef}
           {...provided.droppableProps}
         >       
-          {items}
+          {params.selectedItems.length ? items : empty}
           {provided.placeholder}
         </div>
       )}
       </Droppable>
     </DragDropContext>
+    </Paper>
   );
 }
 

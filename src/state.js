@@ -1,6 +1,6 @@
 import thunkMiddleware from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
-// import { SET_FETCHING, SET_PARAMS, SET_SDK, SET_SELECTED_ITEMS } from './actions';
+import { SET_PAGE } from './actions';
 
 import creds from './creds';
 
@@ -16,8 +16,15 @@ const initialState = {
   },
   authToken: '',
   selectedItems: [],
+  searchText: '',
   items: [],
-  SDK: null
+  SDK: null,
+  page: {
+    numPages: 0,
+    curPage: 0
+  },
+  PAGE_SIZE: 20,
+  backEnd : {}
 }; 
 
 const appState = (state = initialState, action) => {

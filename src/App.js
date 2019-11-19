@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles, MuiThemeProvider } from '@material-ui/core';
+import { makeStyles, MuiThemeProvider, Container } from '@material-ui/core';
 
 import {theme} from './theme'
 import ProductsGrid from './products-grid/ProductsGrid';
@@ -15,15 +15,17 @@ const styles = makeStyles(theme => ({
   }
 }));
 
+// @TODO: 'setBackend' and set in state so that itema are fetched from the correct source
+
 const App = params => {
   const classes = styles();
   return (
     <MuiThemeProvider theme={theme}>
-      <div className={classes.root}>
-        <SearchBox />
+      <Container className={classes.root}>
         <SelectedProducts />
+        <SearchBox />
         <ProductsGrid />
-      </div>
+      </Container>
     </MuiThemeProvider>
   );
 }

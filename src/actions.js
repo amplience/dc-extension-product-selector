@@ -78,18 +78,20 @@ export const setSelectedItems = value => ({
 });
 
 export const GET_ITEMS = 'GET_ITEMS';
-export const getItems = searchText => async (dispatch, state) => {
+export const getItems = () => async (dispatch, state) => {
+  const {params: {url, clientId}, searchText, PAGE_SIZE, page} = state();
   if (!searchText.length) {
     return Promise.resolve([]);
   }
   dispatch(setFetching(true));
   let items = [];
   let status = SUCCESS;
-  let {params: {url, clientId}} = state();
   try {
-    const response = await fetch(url + `product_search/images?q=${searchText}&client_id=${clientId}`);
-    const {hits} = await response.json();
-
+    const start = PAGE_SIZE * page.curPage;
+    const response = await fetch(url + `product_search/images?q=${searchText}&client_id=${clientId}&count=${PAGE_SIZE}&start=${start}`);
+    const {hits, total} = await response.json(); 
+    const numPages = Math.ceil(total / PAGE_SIZE);
+    dispatch(setPage({numPages, curPage: page.curPage}));
     if (hits) {
       items = hits.map(hit => ({
         id: hit.product_id, 
@@ -111,4 +113,26 @@ export const setItems = (value, status) => ({
   key: 'items',
   value,
   status
+});
+
+export const SET_PAGE = 'SET_PAGE';
+export const setPage = value => ({
+  type: SET_PAGE,
+  key: 'page',
+  value
+});
+
+export const CHANGE_PAGE = 'CHANGE_PAGE';
+export const changePage = curPage => async (dispatch, state) => {
+  const {page} = state();
+  dispatch(setPage({...page, curPage}));
+  dispatch(getItems());
+  return Promise.resolve(page);
+};
+
+export const SET_SEARCH_TEXT = 'SET_SEARCH_TEXT';
+export const setSearchText = value => ({
+  type: SET_SEARCH_TEXT,
+  key: 'searchText',
+  value
 });

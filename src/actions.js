@@ -93,7 +93,7 @@ export const getItems = () => async (dispatch, state) => {
     const {hits, total} = await response.json(); 
     const numPages = Math.ceil(total / PAGE_SIZE);
     dispatch(setPage({numPages, curPage: page.curPage, total}));
-    console.log(hits);
+
     if (hits) {
       items = hits.map(hit => ({
         id: hit.product_id, 

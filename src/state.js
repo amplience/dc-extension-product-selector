@@ -1,6 +1,5 @@
 import thunkMiddleware from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
-import { SET_PAGE } from './actions';
 
 import creds from './creds';
 
@@ -12,7 +11,8 @@ const initialState = {
     authSecret: creds.authSecret,
     authUrl: creds.authUrl,
     authClientId: creds.authClientId,
-    siteId: creds.siteId
+    siteId: creds.siteId,
+    categories: []
   },
   authToken: '',
   selectedItems: [],
@@ -21,9 +21,11 @@ const initialState = {
   SDK: null,
   page: {
     numPages: 0,
-    curPage: 0
+    curPage: 0,
+    total: 0
   },
   PAGE_SIZE: 20,
+  selectedCategory: 'all',
   backEnd : {}
 }; 
 

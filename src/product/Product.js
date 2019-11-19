@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import { reject, find } from 'lodash';
-import { Card, CardActionArea, CardMedia, CardHeader, IconButton, Avatar } from '@material-ui/core';
+import { Card, CardActionArea, CardMedia, CardHeader, IconButton } from '@material-ui/core';
 import {CSSTransition} from 'react-transition-group';
-import { Clear, Style } from '@material-ui/icons';
+import { Clear } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { setSelectedItems } from '../actions';
 import './product.scss';

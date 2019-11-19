@@ -1,9 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Product from '../product/Product';
 import Pager from '../pager/Pager';
+import PaginationSummary from '../pagination-summary/PaginationSummary';
+import CategorySelector from '../category-selector/CategorySelector';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -32,6 +34,14 @@ const ProductsGridComponent = params => {
   return (
     <div className={classes.root}> 
       {loader}
+      <Grid container alignItems="center">
+        <Grid item xs={6}>
+          {params.items.length ? (<PaginationSummary />) : ''}
+        </Grid>
+        <Grid item container xs={6}>
+          {params.categories.length ? (<CategorySelector />) : ''}
+        </Grid>
+      </Grid>
       <div className={classes.items}>
         {items}
       </div>
@@ -43,7 +53,8 @@ const ProductsGridComponent = params => {
 const ProductsGrid = connect(
   state => ({
     items: state.items,
-    loading: state.isFetching
+    loading: state.isFetching,
+    categories: state.params.categories
   }),
   null
 )(ProductsGridComponent)

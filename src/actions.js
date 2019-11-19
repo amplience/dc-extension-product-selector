@@ -79,7 +79,7 @@ export const setSelectedItems = value => ({
 
 export const GET_ITEMS = 'GET_ITEMS';
 export const getItems = () => async (dispatch, state) => {
-  const {params: {url, clientId}, searchText, PAGE_SIZE, page} = state();
+  const {params: {url, clientId}, searchText, PAGE_SIZE, page, selectedCategory} = state();
   if (!searchText.length) {
     return Promise.resolve([]);
   }
@@ -88,10 +88,12 @@ export const getItems = () => async (dispatch, state) => {
   let status = SUCCESS;
   try {
     const start = PAGE_SIZE * page.curPage;
-    const response = await fetch(url + `product_search/images?q=${searchText}&client_id=${clientId}&count=${PAGE_SIZE}&start=${start}`);
+    const categoryId = selectedCategory === 'all' ? '' : `&refine_1=cgid=${selectedCategory}`;
+    const response = await fetch(url + `product_search/images?q=${searchText}&client_id=${clientId}&count=${PAGE_SIZE}&start=${start}${categoryId}`);
     const {hits, total} = await response.json(); 
     const numPages = Math.ceil(total / PAGE_SIZE);
-    dispatch(setPage({numPages, curPage: page.curPage}));
+    dispatch(setPage({numPages, curPage: page.curPage, total}));
+    console.log(hits);
     if (hits) {
       items = hits.map(hit => ({
         id: hit.product_id, 
@@ -134,5 +136,12 @@ export const SET_SEARCH_TEXT = 'SET_SEARCH_TEXT';
 export const setSearchText = value => ({
   type: SET_SEARCH_TEXT,
   key: 'searchText',
+  value
+});
+
+export const SET_CATEGORY = 'SET_CATEGORY';
+export const setCategory = value => ({
+  type: SET_CATEGORY,
+  key: 'selectedCategory',
   value
 });

@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Product from '../product/Product';
 import Pager from '../pager/Pager';
 import PaginationSummary from '../pagination-summary/PaginationSummary';
-import CategorySelector from '../category-selector/CategorySelector';
+import CatalogSelector from '../catalog-selector/CatalogSelector';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -16,9 +16,18 @@ const styles = makeStyles(theme => ({
   },
   items: {
     display: 'grid',
-    gridTemplateColumns: '25% 25% 25% 25%',
+    gridTemplateColumns: '100%',
     justifyContent: 'space-between',
-    width: '100%'
+    width: '100%',
+    '@media(min-width: 450px)': {
+      gridTemplateColumns: '50% 50%'
+    },
+    '@media(min-width: 800px)': {
+      gridTemplateColumns: '33% 33% 33%'
+    },
+    '@media(min-width: 1024px)': {
+      gridTemplateColumns: '25% 25% 25% 25%'
+    }
   },
   loader: {
     margin: theme.spacing(2)
@@ -39,7 +48,7 @@ const ProductsGridComponent = params => {
           {params.items.length ? (<PaginationSummary />) : ''}
         </Grid>
         <Grid item container xs={6}>
-          {params.categories.length ? (<CategorySelector />) : ''}
+          {params.catalogs.length ? (<CatalogSelector />) : ''}
         </Grid>
       </Grid>
       <div className={classes.items}>
@@ -54,7 +63,7 @@ const ProductsGrid = connect(
   state => ({
     items: state.items,
     loading: state.isFetching,
-    categories: state.params.categories
+    catalogs: state.params.catalogs
   }),
   null
 )(ProductsGridComponent)

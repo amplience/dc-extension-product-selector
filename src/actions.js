@@ -1,6 +1,7 @@
 import { init } from 'dc-extensions-sdk'; 
 import { isArray } from 'lodash';
 import { ProductSelectorError } from './ProductSelectorError';
+import { getBackend } from './backends/backends';
 
 export const SET_FETCHING = 'SET_FETCHING';
 export const setFetching = value => ({
@@ -44,6 +45,7 @@ export const fetchSDK = () => async (dispatch, getState) => {
     SDK = await init();
     dispatch(setSDK(SDK));
     dispatch(setParams(SDK.params));
+    dispatch(initBackend());
     dispatch(getSelectedItems());
     dispatch(setFetching(false));
     SDK.frame.startAutoResizer();
@@ -90,31 +92,20 @@ export const setSelectedItems = value => async (dispatch, getState) => {
 
 export const GET_ITEMS = 'GET_ITEMS';
 export const getItems = () => async (dispatch, getState) => {
-  const {params: {url, clientId}, searchText, PAGE_SIZE, page, selectedCategory} = getState();
-  if (!searchText.length) {
+  const state = getState();
+  if (!state.searchText.length) {
     return Promise.resolve([]);
   }
   dispatch(setFetching(true));
   let items = [];
   try {
-    const start = PAGE_SIZE * page.curPage;
-    const categoryId = selectedCategory === 'all' ? '' : `&refine_1=cgid=${selectedCategory}`;
-    const response = await fetch(url + `product_search/images?q=${searchText}&client_id=${clientId}&count=${PAGE_SIZE}&start=${start}${categoryId}`);
-    const {hits, total} = await response.json(); 
-    const numPages = Math.ceil(total / PAGE_SIZE);
-    dispatch(setPage({numPages, curPage: page.curPage, total}));
-
-    if (hits) {
-      items = hits.map(hit => ({
-        id: hit.product_id, 
-        name: hit.product_name,
-        image: hit.image.link
-      }));
-    }
+    const {items: fetchedItems, page} = await state.backend.search(state);
+    items = fetchedItems;
+    dispatch(setPage(page));
+    dispatch(setItems(items));
   } catch (e) {
     // @TODO - dispatch an error...
   }
-  dispatch(setItems(items));
   dispatch(setFetching(false));
   return Promise.resolve(items);
 };
@@ -148,9 +139,22 @@ export const setSearchText = value => ({
   value
 });
 
-export const SET_CATEGORY = 'SET_CATEGORY';
-export const setCategory = value => ({
-  type: SET_CATEGORY,
-  key: 'selectedCategory',
+export const SET_CATALOG = 'SET_CATALOG';
+export const setCatalog = value => ({
+  type: SET_CATALOG,
+  key: 'selectedCatalog',
+  value
+});
+
+export const initBackend = () => async (dispatch, getState) => {
+  const {params} = getState();
+  dispatch(setBackend(getBackend(params)));
+  return Promise.resolve(true);
+} 
+
+export const SET_BACKEND = 'SET_BACKEND';
+export const setBackend = value => ({
+  type: SET_BACKEND,
+  key: 'backend',
   value
 });

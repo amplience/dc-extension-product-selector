@@ -5,13 +5,13 @@ import { SET_PARAMS } from './actions';
 const initialState = {
   isFetching: false,
   params: {
-    url: '',
+    proxyUrl: '',
+    sfccUrl: '',
     clientId: '',
     authSecret: '',
-    authUrl: '',
     authClientId: '',
     siteId: '',
-    categories: [],
+    catalogs: [],
     backend: 'SFCC'
   },
   authToken: '',
@@ -25,7 +25,7 @@ const initialState = {
     total: 0
   },
   PAGE_SIZE: 20,
-  selectedCategory: 'all',
+  selectedCatalog: 'all',
   backend : {},
   hasGlobalError: false
 }; 

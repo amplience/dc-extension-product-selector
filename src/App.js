@@ -6,13 +6,11 @@ import ProductsGrid from './products-grid/ProductsGrid';
 import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
-// @TODO: node proxy
-// @TODO: catalogues?
+// @TODO: Styling
 // @TODO: SDK integration
 // @TODO: min/max items
-// @TODO: data API
-// @TODO: Styling
 // @TODO: Refactor/error handling/params sanitisation
+// @TODO: catalogues?
 // @TODO: integrate other APIs
 // @TODO: bug fixing
 

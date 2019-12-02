@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 import {debounce} from 'lodash';
 import { connect } from 'react-redux';
-import { getItems, setSearchText } from '../actions';
-import { Paper, InputBase, IconButton, Divider, Snackbar } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { changePage, setSearchText } from '../actions';
+import { Paper, InputBase, IconButton, Divider, Snackbar, makeStyles } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 
 const styles = makeStyles(theme => ({
@@ -29,10 +28,10 @@ const styles = makeStyles(theme => ({
   },
 }));
 
-const debouncedSearch = debounce(async (setSnackbarVisibility, getItems) => {
+const debouncedSearch = debounce(async (setSnackbarVisibility, changePage) => {
   try {
     setSnackbarVisibility(false);
-    await getItems();
+    changePage(0);
   } catch (e) {
     setSnackbarVisibility(true);
   }
@@ -44,7 +43,7 @@ const SearchBoxComponent = params => {
 
   const search = event => {
     params.setSearchText(event.target.value);
-    debouncedSearch(setSnackbarVisibility, params.getItems);
+    debouncedSearch(setSnackbarVisibility, params.changePage);
   };
   return (
     <div className={classes.root}>
@@ -80,7 +79,7 @@ const SearchBox = connect(
     params: state.params,
     searchText: state.searchText
   }),
-  {getItems, setSearchText}
+  {changePage, setSearchText}
 )(SearchBoxComponent);
 
 export default SearchBox;

@@ -1,5 +1,7 @@
 .product {
   margin: 8px;
+  display: flex;
+  flex-direction: column;
   &.product-enter {
     opacity: 0 !important;
   }
@@ -16,5 +18,14 @@
   }
   &__thumbnail {
     padding-bottom: 100%;
+    &--no-image {
+      background-color: #e5e5e5;
+      &.MuiCardMedia-root {
+        background-size: 50%;
+      }
+    }
+  }
+  .MuiCardActionArea-root {
+    margin-top: auto;
   }
 }

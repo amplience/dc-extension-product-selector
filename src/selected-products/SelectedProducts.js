@@ -29,6 +29,9 @@ const styles = makeStyles(theme => ({
       flex: 0
     }
   },
+  title: {
+    fontWeight: 700
+  }
 }));
 
 const itemStyle = (isDragging, draggableStyle) => ({
@@ -80,7 +83,7 @@ const SelectedProductsComponent = params => {
     </Typography>);
   return (
     <Paper className={classes.root}>
-    <Typography variant="h6" component="h2">Selected products</Typography>
+    <Typography variant="subtitle1" component="h2" className={classes.title}>Selected products</Typography>
     <DragDropContext onDragEnd={reorder}>
       <Droppable droppableId="droppable" direction="horizontal">
       {(provided, snapshot) => (

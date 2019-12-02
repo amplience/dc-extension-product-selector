@@ -7,7 +7,6 @@ const initialState = {
   params: {
     proxyUrl: '',
     sfccUrl: '',
-    clientId: '',
     authSecret: '',
     authClientId: '',
     siteId: '',

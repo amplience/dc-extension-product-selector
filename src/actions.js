@@ -1,5 +1,5 @@
 import { init } from 'dc-extensions-sdk'; 
-import { isArray } from 'lodash';
+import { isArray, map } from 'lodash';
 import { ProductSelectorError } from './ProductSelectorError';
 import { getBackend } from './backends/backends';
 
@@ -80,13 +80,13 @@ export const getSelectedItems = () => async (dispatch, getState) => {
 };
 
 export const SET_SELECTED_ITEMS = 'SET_SELECTED_ITEMS';
-export const setSelectedItems = value => async (dispatch, getState) => {
+export const setSelectedItems = selectedItems => async (dispatch, getState) => {
   const {SDK} = getState();
-  await SDK.field.setValue(value);
-  Promise.resolve({
+  await SDK.field.setValue(map(selectedItems, 'id'));
+  return Promise.resolve({
     type: SET_SELECTED_ITEMS,
     key: 'selectedItems',
-    value
+    value: selectedItems
   });
 };
 
@@ -101,6 +101,7 @@ export const getItems = () => async (dispatch, getState) => {
   try {
     const {items: fetchedItems, page} = await state.backend.search(state);
     items = fetchedItems;
+    console.log(page);
     dispatch(setPage(page));
     dispatch(setItems(items));
   } catch (e) {

@@ -21,9 +21,11 @@ const ProductComponent = params => {
   const isSelected = !isRemovable && find(params.selectedItems, {id: params.item.id});
 
   const cardMedia = (<CardMedia
-    className={'product__thumbnail'}
-    image={params.item.image}
+    className={'product__thumbnail' + (params.item.image ? '' : ' product__thumbnail--no-image')}
+    image={params.item.image || '/images/image-icon.svg'}
     title={params.item.name}></CardMedia>);
+  
+  
 
 const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardActionArea>);
 
@@ -42,6 +44,8 @@ const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardAct
           }
           title={params.item.name}
           subheader={'Product ID: ' + params.item.id}
+          titleTypographyProps={{variant: 'subtitle1'}}
+          subheaderTypographyProps={{variant: 'body2'}}
         >
       </CardHeader>
         {cardBody}

@@ -23,10 +23,10 @@ const styles = makeStyles(theme => ({
       gridTemplateColumns: '50% 50%'
     },
     '@media(min-width: 800px)': {
-      gridTemplateColumns: '33% 33% 33%'
+      gridTemplateColumns: '25% 25% 25% 25%'
     },
     '@media(min-width: 1024px)': {
-      gridTemplateColumns: '25% 25% 25% 25%'
+      gridTemplateColumns: '20% 20% 20% 20% 20%'
     }
   },
   loader: {
@@ -35,7 +35,7 @@ const styles = makeStyles(theme => ({
 }));
 const ProductsGridComponent = params => {
   const classes = styles();
-  const items = params.items.map(item => (
+  const items = params.loading ? '' : params.items.map(item => (
     <Product key={item.id} item={item} />
   ));
   const loader = params.loading ? (<CircularProgress className={classes.loader} />) : '';
@@ -45,7 +45,7 @@ const ProductsGridComponent = params => {
       {loader}
       <Grid container alignItems="center">
         <Grid item xs={6}>
-          {params.items.length ? (<PaginationSummary />) : ''}
+          {params.items.length && !params.loading ? (<PaginationSummary />) : ''}
         </Grid>
         <Grid item container xs={6}>
           {params.catalogs.length ? (<CatalogSelector />) : ''}

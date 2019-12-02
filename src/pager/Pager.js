@@ -1,12 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { ButtonGroup, Button } from '@material-ui/core';
+import { ButtonGroup, Button, makeStyles } from '@material-ui/core';
 import { SkipNext, SkipPrevious, ArrowRight, ArrowLeft } from '@material-ui/icons';
 import { range, take, takeRight } from 'lodash';
 
 import {changePage} from '../actions';
 
+const styles = makeStyles(theme => ({
+  root: {
+    marginTop: theme.spacing(1)
+  }
+}));
+
 const PagerComponent = ({changePage, page: {numPages, curPage}}) => {
+  const classes = styles();
   const NUM_START_PAGES = 3;
   const NUM_END_PAGES = 3;
   const NUM_VISIBLE_PAGES = 6;
@@ -24,7 +31,7 @@ const PagerComponent = ({changePage, page: {numPages, curPage}}) => {
   }
 
   return (
-    <ButtonGroup color="primary">
+    <ButtonGroup color="primary" className={classes.root}>
       <Button aria-label="first" onClick={() => changePage(0)} disabled={curPage === 0}><SkipPrevious fontSize="small" /></Button>
       <Button aria-label="previous" onClick={() => changePage(curPage - 1)} disabled={curPage === 0}><ArrowLeft fontSize="small" /></Button>
       {pages.map(page => (

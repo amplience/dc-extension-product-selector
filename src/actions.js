@@ -10,19 +10,11 @@ export const setFetching = value => ({
   value
 });
 
-// export const GET_PARAMS = 'GET_PARAMS';
-// export const getParams = value => ({
-//   type: GET_PARAMS,
-
-// });
-
-
 export const  SET_PARAMS = 'SET_PARAMS';
 export const setParams = params => ({
   type: SET_PARAMS,
   params
 });
-
 
 export const SET_SDK = 'SET_SDK';
 export const setSDK = value => ({
@@ -166,3 +158,10 @@ export const setBackend = value => ({
   key: 'backend',
   value
 });
+
+export const SET_TOUCHED = 'SET_TOUCHED';
+export const setTouched = value => ({
+  type: SET_TOUCHED,
+  key: 'touched',
+  value
+})

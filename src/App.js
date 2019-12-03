@@ -7,10 +7,9 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Styling
-// @TODO: SDK integration
-// @TODO: min/max items
 // @TODO: Refactor/error handling/params sanitisation
-// @TODO: catalogues?
+// @TODO: Handle product removed from DB; if length not same set touched set value...
+//@TODO: Other functions should go outside components for testing
 // @TODO: integrate other APIs
 // @TODO: bug fixing
 

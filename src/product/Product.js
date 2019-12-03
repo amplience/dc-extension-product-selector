@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import { reject, find } from 'lodash';
+import { reject, find, get } from 'lodash';
 import { Card, CardActionArea, CardMedia, CardHeader, IconButton } from '@material-ui/core';
 import {CSSTransition} from 'react-transition-group';
 import { Clear } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { setSelectedItems, setValue } from '../actions';
+import { setSelectedItems, setValue, setTouched } from '../actions';
 import './product.scss';
 
 const ProductComponent = params => {
@@ -13,13 +13,15 @@ const ProductComponent = params => {
 
   useEffect(() => setVisible(true), []);
 
-  const addProduct = () => {
-    const selectedItems = [...params.selectedItems, params.item];
+  const updateSelectedItems = (selectedItems) => {
     params.setSelectedItems(selectedItems);
+    params.setTouched(true);
     params.setValue(selectedItems);
-  }
+  };
+
+  const addProduct = () => updateSelectedItems([...params.selectedItems, params.item]);
   const hideProduct = () => setVisible(false);
-  const removeProduct = () => setTimeout(() => params.setSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
+  const removeProduct = () => setTimeout(() => updateSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
   const isSelected = !isRemovable && find(params.selectedItems, {id: params.item.id});
 
   const cardMedia = (<CardMedia
@@ -58,7 +60,7 @@ const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardAct
 
 const Product = connect(
   state => ({selectedItems: state.selectedItems}),
-  {setSelectedItems, setValue}
+  {setSelectedItems, setValue, setTouched}
 )(ProductComponent);
 
 export default Product;

@@ -26,7 +26,7 @@ const initialState = {
   PAGE_SIZE: 20,
   selectedCatalog: 'all',
   backend : {},
-  hasGlobalError: false
+  touched: false
 }; 
 
 const setParams = ({installation, instance}, state) => ({...state, params: {...state.params, ...installation, ...instance}});

@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { reject, slice } from 'lodash';
+import { reject, slice, get } from 'lodash';
 import { setSelectedItems } from '../actions';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, FormHelperText } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 import Product from '../product/Product';
@@ -14,7 +14,8 @@ const styles = makeStyles(theme => ({
     margin: theme.spacing(2),
     padding: theme.spacing(2),
     backgroundColor: theme.palette.grey[100],
-    boxSizing: 'border-box'
+    boxSizing: 'border-box',
+    overflow: 'hidden'
   },
   itemWrapper: {
     display: 'flex',
@@ -42,6 +43,9 @@ const itemStyle = (isDragging, draggableStyle) => ({
 
 const SelectedProductsComponent = params => {
   const classes = styles();
+  const {minItems, maxItems} = get(params.SDK, 'field.schema', {});
+
+  console.log('numItems etc.', minItems, maxItems, params.touched);
 
   const reorder = ({source, destination}) => {
     if (!destination) {
@@ -83,27 +87,33 @@ const SelectedProductsComponent = params => {
     </Typography>);
   return (
     <Paper className={classes.root}>
-    <Typography variant="subtitle1" component="h2" className={classes.title}>Selected products</Typography>
-    <DragDropContext onDragEnd={reorder}>
-      <Droppable droppableId="droppable" direction="horizontal">
-      {(provided, snapshot) => (
-        <div
-          className={classes.itemWrapper}
-          ref={provided.innerRef}
-          {...provided.droppableProps}
-        >       
-          {params.selectedItems.length ? items : empty}
-          {provided.placeholder}
-        </div>
-      )}
-      </Droppable>
-    </DragDropContext>
+      <Typography variant="subtitle1" component="h2" className={classes.title}>Selected products</Typography>
+      <DragDropContext onDragEnd={reorder}>
+        <Droppable droppableId="droppable" direction="horizontal">
+        {(provided, snapshot) => (
+          <div
+            className={classes.itemWrapper}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >       
+            {params.selectedItems.length ? items : empty}
+            {provided.placeholder}
+          </div>
+        )}
+        </Droppable>
+      </DragDropContext>
+      {params.touched && minItems && params.selectedItems.length < minItems ? (<FormHelperText error={true}>You must select a minimum of {minItems} items</FormHelperText>) : ''}
+      {params.touched && maxItems && params.selectedItems.length > maxItems ? (<FormHelperText error={true}>You must select a maximum of {maxItems} items</FormHelperText>) : ''}
     </Paper>
   );
 }
 
 const SelectedProducts = connect(
-  state => ({selectedItems: state.selectedItems}),
+  state => ({
+    selectedItems: state.selectedItems,
+    SDK: state.SDK,
+    touched: state.touched
+  }),
   {setSelectedItems}
 )(SelectedProductsComponent)
 

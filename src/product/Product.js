@@ -1,11 +1,39 @@
 import React, {useState, useEffect} from 'react';
 import { reject, find } from 'lodash';
-import { Card, CardActionArea, CardMedia, CardHeader, IconButton } from '@material-ui/core';
+import { Card, CardActionArea, CardMedia, CardHeader, IconButton , makeStyles } from '@material-ui/core';
 import {CSSTransition} from 'react-transition-group';
 import { Clear } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { setSelectedItems, setValue, setTouched } from '../actions';
-import './product.scss';
+
+const styles = makeStyles(theme => ({
+  root: {
+    margin: '8px',
+    display: 'flex',
+    flexDirection: 'column',
+    border: ({isSelected}) => isSelected ? '2px solid #039be5' : 'none',
+    height: 'calc(100% - 16px)',
+    '&.product-enter': {
+      opacity: '0 !important'
+    },
+    '&.product-enter-active': {
+      opacity: '1 !important',
+      transition: 'opacity 0.3s'
+    },
+    '&.product-exit-active': {
+      opacity: '0 !important',
+      transition: 'opacity 0.15s'
+    }
+  },
+  thumbnail: {
+    paddingBottom: '100%',
+    marginTop: 'auto',
+    backgroundColor: ({hasImage}) => hasImage ? theme.palette.grey[100] : 'transparent'
+  },
+  '.MuiCardActionArea-root': {
+    marginTop: 'auto'
+  }  
+}));
 
 const ProductComponent = params => {
   const isRemovable = params.variant === 'removable';
@@ -23,9 +51,10 @@ const ProductComponent = params => {
   const hideProduct = () => setVisible(false);
   const removeProduct = () => setTimeout(() => updateSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
   const isSelected = !isRemovable && find(params.selectedItems, {id: params.item.id});
+  const classes = styles({isSelected, hasImage: Boolean(params.item.image)});
 
   const cardMedia = (<CardMedia
-    className={'product__thumbnail' + (params.item.image ? '' : ' product__thumbnail--no-image')}
+    className={classes.thumbnail}
     image={params.item.image || '/images/image-icon.svg'}
     title={params.item.name}></CardMedia>);
   
@@ -41,7 +70,7 @@ const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardAct
       classNames="product"
       onExited={removeProduct}
       >
-      <Card className={'product' + (isSelected ? ' is-selected' : '')} onClick={!isSelected ? addProduct : null}>
+      <Card className={classes.root} onClick={!isSelected ? addProduct : null}>
         <CardHeader 
           action={
             isRemovable ? (<IconButton aria-label="Remove" onClick={hideProduct}><Clear /></IconButton>) : ''

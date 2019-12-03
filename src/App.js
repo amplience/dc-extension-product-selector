@@ -7,6 +7,14 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Styling
+// - weird animation + duplicate keys in selected items
+// - error msg animation + colour to match app
+// - drag overflow
+// - responsive widths for selected prods
+// - selected state of prods in grid
+// - hover states when selected or hovering over the title
+// - fade out when removed when search again / change page
+
 // @TODO: Refactor/error handling/params sanitisation
 // @TODO: Handle product removed from DB; if length not same set touched set value...
 //@TODO: Other functions should go outside components for testing

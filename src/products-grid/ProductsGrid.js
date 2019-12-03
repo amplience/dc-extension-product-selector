@@ -42,7 +42,6 @@ const ProductsGridComponent = params => {
 
   return (
     <div className={classes.root}> 
-      {loader}
       <Grid container alignItems="center">
         <Grid item xs={6}>
           {params.items.length && !params.loading ? (<PaginationSummary />) : ''}
@@ -51,6 +50,7 @@ const ProductsGridComponent = params => {
           {params.catalogs.length ? (<CatalogSelector />) : ''}
         </Grid>
       </Grid>
+      {loader}
       <div className={classes.items}>
         {items}
       </div>

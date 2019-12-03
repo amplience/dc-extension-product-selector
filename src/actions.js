@@ -1,5 +1,5 @@
 import { init } from 'dc-extensions-sdk'; 
-import { isArray, map, get } from 'lodash';
+import { isArray, map, get, filter } from 'lodash';
 import { ProductSelectorError } from './ProductSelectorError';
 import { getBackend } from './backends/backends';
 
@@ -62,7 +62,10 @@ export const getSelectedItems = () => async (dispatch, getState) => {
       throw new ProductSelectorError('This UI extension only works with "list of text" properties', ProductSelectorError.codes.INVALID_FIELD);
     }
     const ids = await SDK.field.getValue();
-    selectedItems = await backend.getItems(state, ids);
+    const filteredIds = filter(ids);
+    if (filteredIds.length) {
+      selectedItems = await backend.getItems(state, filteredIds);
+    }
     if(!isArray(selectedItems)) {
       throw new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE);
     }
@@ -141,17 +144,11 @@ export const setSearchText = value => ({
 
 export const SET_CATALOG = 'SET_CATALOG';
 export const SET_CATALOG_RESET = 'SET_CATALOG_RESET';
-export const setCatalogValue = value => ({
+export const setCatalog = value => ({
   type: SET_CATALOG,
   key: 'selectedCatalog',
   value
 })
-export const setCatalog = value => {
-  return async dispatch => {
-    dispatch(setCatalogValue(value));
-    dispatch(setPage(0));
-  }
-}
 
 export const initBackend = () => async (dispatch, getState) => {
   const {params} = getState();

@@ -9,10 +9,10 @@ import './product.scss';
 
 const styles = makeStyles(theme => ({
   root: {
-    margin: '8px',
     display: 'flex',
     flexDirection: 'column',
     border: ({isSelected}) => isSelected ? `1px solid ${theme.palette.grey[500]}` : 'none',
+    margin: ({isSelected}) => isSelected ? '6px' : theme.spacing(1),
     transition: 'border-width 0.3s',
     height: 'calc(100% - 16px)',
     '&.product-enter': {
@@ -73,7 +73,7 @@ const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardAct
       classNames="product"
       onExited={removeProduct}
       >
-      <Card className={classes.root} raised={isSelected} onClick={isRemovable ? null : toggleProduct}>
+      <Card className={'product ' + classes.root} raised={isSelected} onClick={isRemovable ? null : toggleProduct}>
         <CardHeader 
           action={
             isRemovable ? (<IconButton aria-label="Remove" onClick={hideProduct} className={classes.removeBtn}><Clear /></IconButton>) : ''

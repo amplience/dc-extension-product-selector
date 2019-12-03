@@ -142,7 +142,7 @@ const SelectedProductsComponent = params => {
           unmountOnExit 
           classNames="errors"
         >
-          <FormHelperText error={true} className={classes.error}>You must select a minimum of {minItems} items</FormHelperText>
+          <FormHelperText error={true} className={classes.error}>You can select a minimum of {minItems} items</FormHelperText>
         </CSSTransition>
         <CSSTransition 
           in={params.touched && maxItems && params.selectedItems.length > maxItems} 
@@ -150,7 +150,7 @@ const SelectedProductsComponent = params => {
           unmountOnExit
           classNames="errors"
         >
-          <FormHelperText error={true} className={classes.error}>You must select a maximum of {maxItems} items</FormHelperText>
+          <FormHelperText error={true} className={classes.error}>You can select a maximum of {maxItems} items</FormHelperText>
         </CSSTransition>
       </div>
     </Paper>

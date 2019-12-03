@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { reject, find, get } from 'lodash';
+import { reject, find } from 'lodash';
 import { Card, CardActionArea, CardMedia, CardHeader, IconButton } from '@material-ui/core';
 import {CSSTransition} from 'react-transition-group';
 import { Clear } from '@material-ui/icons';

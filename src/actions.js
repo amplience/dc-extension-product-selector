@@ -140,11 +140,18 @@ export const setSearchText = value => ({
 });
 
 export const SET_CATALOG = 'SET_CATALOG';
-export const setCatalog = value => ({
+export const SET_CATALOG_RESET = 'SET_CATALOG_RESET';
+export const setCatalogValue = value => ({
   type: SET_CATALOG,
   key: 'selectedCatalog',
   value
-});
+})
+export const setCatalog = value => {
+  return async dispatch => {
+    dispatch(setCatalogValue(value));
+    dispatch(setPage(0));
+  }
+}
 
 export const initBackend = () => async (dispatch, getState) => {
   const {params} = getState();

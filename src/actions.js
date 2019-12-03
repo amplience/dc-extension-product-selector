@@ -103,7 +103,6 @@ export const getItems = () => async (dispatch, getState) => {
   try {
     const {items: fetchedItems, page} = await state.backend.search(state);
     items = fetchedItems;
-    console.log(page);
     dispatch(setPage(page));
     dispatch(setItems(items));
   } catch (e) {

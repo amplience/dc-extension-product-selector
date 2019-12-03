@@ -5,6 +5,7 @@ import {CSSTransition} from 'react-transition-group';
 import { Clear } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import { setSelectedItems, setValue, setTouched } from '../actions';
+import './product.scss';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -30,9 +31,9 @@ const styles = makeStyles(theme => ({
     marginTop: 'auto',
     backgroundColor: ({hasImage}) => hasImage ? 'transparent' : theme.palette.grey[100]
   },
-  '.MuiCardActionArea-root': {
-    marginTop: 'auto'
-  }  
+  removeBtn: {
+    marginLeft: theme.spacing(1)
+  }
 }));
 
 const ProductComponent = params => {
@@ -74,7 +75,7 @@ const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardAct
       <Card className={classes.root} onClick={isRemovable ? null : toggleProduct}>
         <CardHeader 
           action={
-            isRemovable ? (<IconButton aria-label="Remove" onClick={hideProduct}><Clear /></IconButton>) : ''
+            isRemovable ? (<IconButton aria-label="Remove" onClick={hideProduct} className={classes.removeBtn}><Clear /></IconButton>) : ''
           }
           title={params.item.name}
           subheader={'Product ID: ' + params.item.id}

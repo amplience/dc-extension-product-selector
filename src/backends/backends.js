@@ -7,8 +7,8 @@ export const backends = {
 export const getBackend = (params) => {
   switch (params.backend) {
     case 'SFCC':
-      return new SFCC(params);
     default:
+      return new SFCC(params);
 
   }
 }

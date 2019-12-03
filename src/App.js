@@ -7,7 +7,6 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Styling
-// - error msg animation + colour to match app
 // - responsive widths for selected prods
 // - selected state of prods in grid
 // - hover states when selected or hovering over the title
@@ -17,7 +16,6 @@ import SearchBox from './search-box/SearchBox';
 // @TODO: Handle product removed from DB; if length not same set touched set value...
 //@TODO: Other functions should go outside components for testing
 // @TODO: integrate other APIs
-// @TODO: bug fixing
 
 const styles = makeStyles(theme => ({
   root: {

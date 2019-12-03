@@ -4,6 +4,7 @@ import { reject, slice, get } from 'lodash';
 import { setSelectedItems } from '../actions';
 import { makeStyles, FormHelperText } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import {CSSTransition} from 'react-transition-group';
 
 import Product from '../product/Product';
 import { Paper, Typography, Box } from '@material-ui/core';
@@ -32,6 +33,30 @@ const styles = makeStyles(theme => ({
   },
   title: {
     fontWeight: 700
+  },
+  items: {
+    position: 'relative',
+    zIndex: 2
+  },
+  errorWrapper: {
+    height: '20px'
+  },
+  error: {
+    marginTop: 0,
+    '&.errors-enter': {
+      opacity: 0,
+      transform: 'translate(0, -20px)'
+    },
+    '&.errors-enter-active': {
+      opacity: 1,
+      transform: 'translate(0, 0)',
+      transition: 'opacity 0.3s, transform 0.3s'
+    },
+    '&.errors-exit-active': {
+      opacity: 0,
+      transform: 'translate(0, -20px)',
+      transition: 'opacity 0.3s, transform 0.3s'
+    }
   }
 }));
 
@@ -84,24 +109,42 @@ const SelectedProductsComponent = params => {
       <Box fontWeight="fontWeightLight">No items selected.</Box>
     </Typography>);
   return (
-    <Paper className={classes.root}>
+    <Paper className={'selected-products ' + classes.root}>
       <Typography variant="subtitle1" component="h2" className={classes.title}>Selected products</Typography>
-      <DragDropContext onDragEnd={reorder}>
-        <Droppable droppableId="droppable" direction="horizontal">
-        {(provided, snapshot) => (
-          <div
-            className={classes.itemWrapper}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >       
-            {params.selectedItems.length ? items : empty}
-            {provided.placeholder}
-          </div>
-        )}
-        </Droppable>
-      </DragDropContext>
-      {params.touched && minItems && params.selectedItems.length < minItems ? (<FormHelperText error={true}>You must select a minimum of {minItems} items</FormHelperText>) : ''}
-      {params.touched && maxItems && params.selectedItems.length > maxItems ? (<FormHelperText error={true}>You must select a maximum of {maxItems} items</FormHelperText>) : ''}
+      <div className={classes.items}>
+        <DragDropContext onDragEnd={reorder}>
+          <Droppable droppableId="droppable" direction="horizontal">
+          {(provided, snapshot) => (
+            <div
+              className={classes.itemWrapper}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >       
+              {params.selectedItems.length ? items : empty}
+              {provided.placeholder}
+            </div>
+          )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+      <div className={classes.errorWrapper}>
+        <CSSTransition 
+          in={params.touched && minItems && params.selectedItems.length < minItems} 
+          timeout={300}
+          unmountOnExit 
+          classNames="errors"
+        >
+          <FormHelperText error={true} className={classes.error}>You must select a minimum of {minItems} items</FormHelperText>
+        </CSSTransition>
+        <CSSTransition 
+          in={params.touched && maxItems && params.selectedItems.length > maxItems} 
+          timeout={300}
+          unmountOnExit
+          classNames="errors"
+        >
+          <FormHelperText error={true} className={classes.error}>You must select a maximum of {maxItems} items</FormHelperText>
+        </CSSTransition>
+      </div>
     </Paper>
   );
 }

@@ -1,7 +1,7 @@
-import { init } from 'dc-extensions-sdk'; 
-import { isArray, map, get, filter } from 'lodash';
-import { ProductSelectorError } from './ProductSelectorError';
-import { getBackend } from './backends/backends';
+import {init} from 'dc-extensions-sdk';
+import {isArray, map, get, filter} from 'lodash';
+import {ProductSelectorError} from './ProductSelectorError';
+import {getBackend} from './backends/backends';
 
 export const SET_FETCHING = 'SET_FETCHING';
 export const setFetching = value => ({
@@ -10,7 +10,7 @@ export const setFetching = value => ({
   value
 });
 
-export const  SET_PARAMS = 'SET_PARAMS';
+export const SET_PARAMS = 'SET_PARAMS';
 export const setParams = params => ({
   type: SET_PARAMS,
   params
@@ -44,7 +44,6 @@ export const fetchSDK = () => async (dispatch, getState) => {
   } catch (e) {
     // @TODO dispatch an error instead
     // dispatch(setSDK(null, ERROR));
-
   }
   dispatch(setFetching(false));
   return Promise.resolve(SDK);
@@ -59,14 +58,17 @@ export const getSelectedItems = () => async (dispatch, getState) => {
 
   try {
     if (get(SDK, 'field.schema.type') !== 'array' || get(SDK, 'field.schema.items.type') !== 'string') {
-      throw new ProductSelectorError('This UI extension only works with "list of text" properties', ProductSelectorError.codes.INVALID_FIELD);
+      throw new ProductSelectorError(
+        'This UI extension only works with "list of text" properties',
+        ProductSelectorError.codes.INVALID_FIELD
+      );
     }
     const ids = await SDK.field.getValue();
     const filteredIds = filter(ids);
     if (filteredIds.length) {
       selectedItems = await backend.getItems(state, filteredIds);
     }
-    if(!isArray(selectedItems)) {
+    if (!isArray(selectedItems)) {
       throw new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE);
     }
   } catch (e) {
@@ -143,18 +145,17 @@ export const setSearchText = value => ({
 });
 
 export const SET_CATALOG = 'SET_CATALOG';
-export const SET_CATALOG_RESET = 'SET_CATALOG_RESET';
 export const setCatalog = value => ({
   type: SET_CATALOG,
   key: 'selectedCatalog',
   value
-})
+});
 
 export const initBackend = () => async (dispatch, getState) => {
   const {params} = getState();
   dispatch(setBackend(getBackend(params)));
   return Promise.resolve(true);
-} 
+};
 
 export const SET_BACKEND = 'SET_BACKEND';
 export const setBackend = value => ({
@@ -168,4 +169,4 @@ export const setTouched = value => ({
   type: SET_TOUCHED,
   key: 'touched',
   value
-})
+});

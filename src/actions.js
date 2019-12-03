@@ -1,5 +1,5 @@
 import { init } from 'dc-extensions-sdk'; 
-import { isArray, map } from 'lodash';
+import { isArray, map, get } from 'lodash';
 import { ProductSelectorError } from './ProductSelectorError';
 import { getBackend } from './backends/backends';
 
@@ -60,19 +60,23 @@ export const fetchSDK = () => async (dispatch, getState) => {
 
 export const GET_SELECTED_ITEMS = 'GET_SELECTED_ITEMS';
 export const getSelectedItems = () => async (dispatch, getState) => {
-  const {SDK} = getState();
+  const state = getState();
+  const {SDK, backend} = state;
   dispatch(setFetching(true));
   let selectedItems = [];
+
   try {
-    if (SDK.field.type !== 'array' || SDK.field.items.type !== 'string') {
+    if (get(SDK, 'field.schema.type') !== 'array' || get(SDK, 'field.schema.items.type') !== 'string') {
       throw new ProductSelectorError('This UI extension only works with "list of text" properties', ProductSelectorError.codes.INVALID_FIELD);
     }
-    selectedItems = await SDK.field.getValue();
+    const ids = await SDK.field.getValue();
+    selectedItems = await backend.getItems(state, ids);
     if(!isArray(selectedItems)) {
       throw new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE);
     }
   } catch (e) {
     // @TODO snackbar or something... dispatch(error);
+    console.log('could not load', e);
   }
   dispatch(setSelectedItems(selectedItems));
   dispatch(setFetching(false));
@@ -80,14 +84,17 @@ export const getSelectedItems = () => async (dispatch, getState) => {
 };
 
 export const SET_SELECTED_ITEMS = 'SET_SELECTED_ITEMS';
-export const setSelectedItems = selectedItems => async (dispatch, getState) => {
+export const setSelectedItems = value => ({
+  type: SET_SELECTED_ITEMS,
+  key: 'selectedItems',
+  value
+});
+
+export const SET_VALUE = 'SET_VALUE';
+export const setValue = selectedItems => async (dispatch, getState) => {
   const {SDK} = getState();
   await SDK.field.setValue(map(selectedItems, 'id'));
-  return Promise.resolve({
-    type: SET_SELECTED_ITEMS,
-    key: 'selectedItems',
-    value: selectedItems
-  });
+  return Promise.resolve(selectedItems);
 };
 
 export const GET_ITEMS = 'GET_ITEMS';

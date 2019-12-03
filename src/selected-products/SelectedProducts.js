@@ -22,9 +22,9 @@ const styles = makeStyles(theme => ({
     padding: theme.spacing(1)
   },
   dragItem: {
-    flex: '1 1 25%',
+    flex: '1 1 20%',
     transition: 'all 0.15s',
-    maxWidth: '25%',
+    maxWidth: '20%',
     '&:empty': {
       flex: 0
     }

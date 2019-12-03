@@ -4,7 +4,7 @@ import { Card, CardActionArea, CardMedia, CardHeader, IconButton } from '@materi
 import {CSSTransition} from 'react-transition-group';
 import { Clear } from '@material-ui/icons';
 import { connect } from 'react-redux';
-import { setSelectedItems } from '../actions';
+import { setSelectedItems, setValue } from '../actions';
 import './product.scss';
 
 const ProductComponent = params => {
@@ -14,7 +14,9 @@ const ProductComponent = params => {
   useEffect(() => setVisible(true), []);
 
   const addProduct = () => {
-    params.setSelectedItems([...params.selectedItems, params.item]);
+    const selectedItems = [...params.selectedItems, params.item];
+    params.setSelectedItems(selectedItems);
+    params.setValue(selectedItems);
   }
   const hideProduct = () => setVisible(false);
   const removeProduct = () => setTimeout(() => params.setSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
@@ -56,7 +58,7 @@ const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardAct
 
 const Product = connect(
   state => ({selectedItems: state.selectedItems}),
-  {setSelectedItems}
+  {setSelectedItems, setValue}
 )(ProductComponent);
 
 export default Product;

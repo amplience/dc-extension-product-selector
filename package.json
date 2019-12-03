@@ -10,6 +10,7 @@
     "dc-management-sdk-js": "^1.4.1",
     "lodash": "^4.17.15",
     "node-sass": "^4.13.0",
+    "qs": "^6.9.1",
     "react": "^16.11.0",
     "react-beautiful-dnd": "^12.0.0",
     "react-dom": "^16.11.0",

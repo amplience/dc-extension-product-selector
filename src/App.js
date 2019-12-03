@@ -14,7 +14,7 @@ import SearchBox from './search-box/SearchBox';
 // - selected state of prods in grid
 // - hover states when selected or hovering over the title
 // - fade out when removed when search again / change page
-
+// - preserve order of items instead of using the order of items returned from the server
 // @TODO: Refactor/error handling/params sanitisation
 // @TODO: Handle product removed from DB; if length not same set touched set value...
 //@TODO: Other functions should go outside components for testing

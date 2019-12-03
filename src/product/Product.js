@@ -49,6 +49,7 @@ const ProductComponent = params => {
 
   const addProduct = () => updateSelectedItems([...params.selectedItems, params.item]);
   const hideProduct = () => setVisible(false);
+  const toggleProduct = () => isSelected ? removeProduct() : addProduct();
   const removeProduct = () => setTimeout(() => updateSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
   const isSelected = !isRemovable && find(params.selectedItems, {id: params.item.id});
   const classes = styles({isSelected, hasImage: Boolean(params.item.image)});
@@ -70,7 +71,7 @@ const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardAct
       classNames="product"
       onExited={removeProduct}
       >
-      <Card className={classes.root} onClick={!isSelected ? addProduct : null}>
+      <Card className={classes.root} onClick={isRemovable ? null : toggleProduct}>
         <CardHeader 
           action={
             isRemovable ? (<IconButton aria-label="Remove" onClick={hideProduct}><Clear /></IconButton>) : ''

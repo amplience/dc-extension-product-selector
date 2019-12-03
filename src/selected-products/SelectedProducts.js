@@ -45,8 +45,6 @@ const SelectedProductsComponent = params => {
   const classes = styles();
   const {minItems, maxItems} = get(params.SDK, 'field.schema', {});
 
-  console.log('numItems etc.', minItems, maxItems, params.touched);
-
   const reorder = ({source, destination}) => {
     if (!destination) {
       return;

@@ -8,7 +8,7 @@ import SearchBox from './search-box/SearchBox';
 
 // @TODO: Styling
 // - responsive widths for selected prods
-// - selected state of prods in grid
+// - transition for 'no items' and prods grid
 // - hover states when selected or hovering over the title
 // - fade out when removed when search again / change page
 // - preserve order of items instead of using the order of items returned from the server

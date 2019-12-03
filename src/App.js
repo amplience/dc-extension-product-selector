@@ -7,7 +7,6 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Styling
-// - responsive widths for selected prods
 // - transition for 'no items' and prods grid
 // - hover states when selected or hovering over the title
 // - fade out when removed when search again / change page

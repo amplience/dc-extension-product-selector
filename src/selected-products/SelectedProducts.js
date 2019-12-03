@@ -26,9 +26,17 @@ const styles = makeStyles(theme => ({
   dragItem: {
     flex: '1 1 20%',
     transition: 'flex 0.15s, opacity 0.15s',
-    maxWidth: '20%',
     '&:empty': {
       flex: 0
+    },
+    '@media(min-width: 450px)': {
+      maxWidth: '50%',
+    },
+    '@media(min-width: 800px)': {
+      maxWidth: '25%',
+    },
+    '@media(min-width: 1024px)': {
+      maxWidth: '20%',
     }
   },
   title: {

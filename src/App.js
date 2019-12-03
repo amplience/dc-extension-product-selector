@@ -7,9 +7,7 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Styling
-// - weird animation + duplicate keys in selected items
 // - error msg animation + colour to match app
-// - drag overflow
 // - responsive widths for selected prods
 // - selected state of prods in grid
 // - hover states when selected or hovering over the title

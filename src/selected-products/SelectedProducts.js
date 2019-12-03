@@ -24,7 +24,7 @@ const styles = makeStyles(theme => ({
   },
   dragItem: {
     flex: '1 1 20%',
-    transition: 'all 0.15s',
+    transition: 'flex 0.15s, opacity 0.15s',
     maxWidth: '20%',
     '&:empty': {
       flex: 0

@@ -28,7 +28,7 @@ const styles = makeStyles(theme => ({
   thumbnail: {
     paddingBottom: '100%',
     marginTop: 'auto',
-    backgroundColor: ({hasImage}) => hasImage ? theme.palette.grey[100] : 'transparent'
+    backgroundColor: ({hasImage}) => hasImage ? 'transparent' : theme.palette.grey[100]
   },
   '.MuiCardActionArea-root': {
     marginTop: 'auto'

@@ -23,25 +23,24 @@ const styles = makeStyles(theme => ({
     position: 'relative'
   },
   itemWrapper: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    padding: theme.spacing(1)
+    display: 'grid',
+    gridTemplateColumns: '100%',
+    width: '100%',
+    '@media(min-width: 450px)': {
+      gridTemplateColumns: '50% 50%'
+    },
+    '@media(min-width: 800px)': {
+      gridTemplateColumns: '25% 25% 25% 25%'
+    },
+    '@media(min-width: 1024px)': {
+      gridTemplateColumns: '20% 20% 20% 20% 20%'
+    }
   },
   dragItem: {
-    flex: '1 1 20%',
     transition: 'flex 0.15s, opacity 0.15s',
     '&:empty': {
       flex: 0
     },
-    '@media(min-width: 450px)': {
-      maxWidth: '50%',
-    },
-    '@media(min-width: 800px)': {
-      maxWidth: '25%',
-    },
-    '@media(min-width: 1024px)': {
-      maxWidth: '20%',
-    }
   },
   title: {
     fontWeight: 700

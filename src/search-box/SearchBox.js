@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {debounce} from 'lodash';
+import {debounce, isUndefined} from 'lodash';
 import { connect } from 'react-redux';
 import { changePage, setSearchText } from '../actions';
 import { Paper, InputBase, IconButton, Divider, Snackbar, makeStyles } from '@material-ui/core';
@@ -42,7 +42,7 @@ const SearchBoxComponent = params => {
   const [showSnackbar, setSnackbarVisibility] = useState(false);
 
   const search = event => {
-    const searchText = event.target.value || params.searchText;
+    const searchText = !isUndefined(event.target.value) ? event.target.value : params.searchText;
     params.setSearchText(searchText);
     debouncedSearch(setSnackbarVisibility, params.changePage);
   };

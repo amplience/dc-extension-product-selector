@@ -7,7 +7,6 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Styling
-// - transition for 'no items' and prods grid
 // - fade out when removed when search again / change page
 // @TODO: preserve order of items instead of using the order of items returned from the server
 // @TODO: Refactor/error handling/params sanitisation

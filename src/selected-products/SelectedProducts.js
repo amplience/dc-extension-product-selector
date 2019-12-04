@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { reject, slice, get } from 'lodash';
 import { setSelectedItems, setValue } from '../actions';
-import { makeStyles, FormHelperText } from '@material-ui/core';
+import { makeStyles, FormHelperText, CircularProgress } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {CSSTransition} from 'react-transition-group';
 
@@ -12,11 +12,15 @@ import { Paper, Typography, Box } from '@material-ui/core';
 const styles = makeStyles(theme => ({
   root: {
     width: '100%',
+    minHeight: '200px',
     margin: theme.spacing(2),
     padding: theme.spacing(2),
     backgroundColor: theme.palette.grey[100],
     boxSizing: 'border-box',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative'
   },
   itemWrapper: {
     display: 'flex',
@@ -44,10 +48,13 @@ const styles = makeStyles(theme => ({
   },
   items: {
     position: 'relative',
+    margin: 'auto',
+    width: '100%',
     zIndex: 2
   },
   errorWrapper: {
-    height: '20px'
+    height: '20px',
+    marginTop: 'auto'
   },
   error: {
     marginTop: 0,
@@ -65,6 +72,28 @@ const styles = makeStyles(theme => ({
       transform: 'translate(0, -20px)',
       transition: 'opacity 0.3s, transform 0.3s'
     }
+  },
+  loader: {
+    margin: 'auto',
+    alignSelf: 'center',
+    '&.loader-enter': {
+      opacity: 0
+    },
+    '&.loader-enter-active': {
+      opacity: 1,
+      transition: 'opacity 0.3s'
+    },
+    '&.loader-exit-active': {
+      position: 'absolute',
+      zIndex: 3,
+      top: '50%',
+      marginTop: '-20px',
+      opacity: 0,
+      transition: 'opacity 0.3s'
+    }
+  },
+  placeholder: {
+    margin: 'auto'
   }
 }));
 
@@ -115,28 +144,44 @@ const SelectedProductsComponent = params => {
   ));
 
   const empty = (
-    <Typography component="div" variant="body2">
+    <Typography component="div" variant="body1" className={classes.placeholder}>
       <Box fontWeight="fontWeightLight">No items selected.</Box>
     </Typography>);
   return (
     <Paper className={'selected-products ' + classes.root}>
       <Typography variant="subtitle1" component="h2" className={classes.title}>Selected products</Typography>
-      <div className={classes.items}>
-        <DragDropContext onDragEnd={reorder}>
-          <Droppable droppableId="droppable" direction="horizontal">
-          {(provided, snapshot) => (
-            <div
-              className={classes.itemWrapper}
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >       
-              {params.selectedItems.length ? items : empty}
-              {provided.placeholder}
+      <CSSTransition 
+            in={!params.initialised} 
+            timeout={300}
+            unmountOnExit 
+            classNames="loader"
+          >
+            <div className={classes.loader}>
+              <CircularProgress  />
             </div>
-          )}
-          </Droppable>
-        </DragDropContext>
-      </div>
+      </CSSTransition> 
+      <CSSTransition 
+            in={params.initialised} 
+            timeout={300}
+            unmountOnExit
+          >   
+        <div className={classes.items}>
+          <DragDropContext onDragEnd={reorder}>
+            <Droppable droppableId="droppable" direction="horizontal">
+            {provided => (
+              <div
+                className={classes.itemWrapper}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >       
+                {params.selectedItems.length ? items : empty}
+                {provided.placeholder}
+              </div>
+            )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+      </CSSTransition>
       <div className={classes.errorWrapper}>
         <CSSTransition 
           in={params.touched && minItems && params.selectedItems.length < minItems} 
@@ -144,7 +189,7 @@ const SelectedProductsComponent = params => {
           unmountOnExit 
           classNames="errors"
         >
-          <FormHelperText error={true} className={classes.error}>You can select a minimum of {minItems} items</FormHelperText>
+          <FormHelperText error={true} className={classes.error}>You must select a minimum of {minItems} items</FormHelperText>
         </CSSTransition>
         <CSSTransition 
           in={params.touched && maxItems && params.selectedItems.length > maxItems} 
@@ -152,7 +197,7 @@ const SelectedProductsComponent = params => {
           unmountOnExit
           classNames="errors"
         >
-          <FormHelperText error={true} className={classes.error}>You can select a maximum of {maxItems} items</FormHelperText>
+          <FormHelperText error={true} className={classes.error}>You must select a maximum of {maxItems} items</FormHelperText>
         </CSSTransition>
       </div>
     </Paper>
@@ -163,7 +208,8 @@ const SelectedProducts = connect(
   state => ({
     selectedItems: state.selectedItems,
     SDK: state.SDK,
-    touched: state.touched
+    touched: state.touched,
+    initialised: state.initialised
   }),
   {setSelectedItems, setValue}
 )(SelectedProductsComponent)

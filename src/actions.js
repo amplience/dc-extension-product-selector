@@ -77,6 +77,7 @@ export const getSelectedItems = () => async (dispatch, getState) => {
   }
   dispatch(setSelectedItems(selectedItems));
   dispatch(setFetching(false));
+  dispatch(setInitialised(true));
   return Promise.resolve(selectedItems);
 };
 
@@ -167,5 +168,12 @@ export const SET_TOUCHED = 'SET_TOUCHED';
 export const setTouched = value => ({
   type: SET_TOUCHED,
   key: 'touched',
+  value
+})
+
+export const SET_INITIALISED = 'SET_INITIALISED';
+export const setInitialised = value => ({
+  type: SET_INITIALISED,
+  key: 'initialised',
   value
 })

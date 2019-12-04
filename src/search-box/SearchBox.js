@@ -42,7 +42,8 @@ const SearchBoxComponent = params => {
   const [showSnackbar, setSnackbarVisibility] = useState(false);
 
   const search = event => {
-    params.setSearchText(event.target.value);
+    const searchText = event.target.value || params.searchText;
+    params.setSearchText(searchText);
     debouncedSearch(setSnackbarVisibility, params.changePage);
   };
   return (

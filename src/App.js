@@ -9,7 +9,7 @@ import SearchBox from './search-box/SearchBox';
 // @TODO: Styling
 // - transition for 'no items' and prods grid
 // - fade out when removed when search again / change page
-// - preserve order of items instead of using the order of items returned from the server
+// @TODO: preserve order of items instead of using the order of items returned from the server
 // @TODO: Refactor/error handling/params sanitisation
 // @TODO: Handle product removed from DB; if length not same set touched set value...
 //@TODO: Other functions should go outside components for testing

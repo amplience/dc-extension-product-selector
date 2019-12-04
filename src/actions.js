@@ -1,5 +1,5 @@
 import { init } from 'dc-extensions-sdk'; 
-import { isArray, map, get, filter } from 'lodash';
+import { isArray, map, get, filter, sortBy, indexOf } from 'lodash';
 import { ProductSelectorError } from './ProductSelectorError';
 import { getBackend } from './backends/backends';
 
@@ -69,6 +69,8 @@ export const getSelectedItems = () => async (dispatch, getState) => {
     if(!isArray(selectedItems)) {
       throw new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE);
     }
+
+    selectedItems = sortBy(selectedItems, ({id}) => indexOf(ids, id));
   } catch (e) {
     // @TODO snackbar or something... dispatch(error);
     console.log('could not load', e);

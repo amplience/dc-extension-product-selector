@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { reject, slice, get } from 'lodash';
-import { setSelectedItems } from '../actions';
+import { setSelectedItems, setValue } from '../actions';
 import { makeStyles, FormHelperText } from '@material-ui/core';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import {CSSTransition} from 'react-transition-group';
@@ -84,11 +84,13 @@ const SelectedProductsComponent = params => {
     }
     const itemToMove = params.selectedItems[source.index];
     const remainingItems = reject(params.selectedItems, {id:  itemToMove.id});
-    params.setSelectedItems([
+    const reorderedItems = [
       ...slice(remainingItems, 0, destination.index),
       itemToMove,
       ...slice(remainingItems, destination.index)
-    ]);
+    ];
+    params.setSelectedItems(reorderedItems);
+    params.setValue(reorderedItems);
   };
 
   const items = params.selectedItems.map((item, index) => (
@@ -163,7 +165,7 @@ const SelectedProducts = connect(
     SDK: state.SDK,
     touched: state.touched
   }),
-  {setSelectedItems}
+  {setSelectedItems, setValue}
 )(SelectedProductsComponent)
 
 export default SelectedProducts;

@@ -14,3 +14,6 @@
 .MuiCardActionArea-root {
   margin-top: auto !important;
 }
+.MuiCardHeader-title, .MuiCardHeader-subheader {
+  word-break: break-all;
+}

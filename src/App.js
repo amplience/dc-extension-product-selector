@@ -7,7 +7,7 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Refactor/error handling/params sanitisation
-//@TODO: Other functions should go outside components for testing
+// @TODO: Other functions should go outside components for testing
 // @TODO: integrate other APIs
 
 const styles = makeStyles(theme => ({
@@ -18,9 +18,7 @@ const styles = makeStyles(theme => ({
   }
 }));
 
-// @TODO: 'setBackend' and set in state so that itema are fetched from the correct source
-
-const App = params => {
+const App = () => {
   const classes = styles();
   return (
     <MuiThemeProvider theme={theme}>

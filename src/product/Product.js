@@ -53,7 +53,7 @@ const ProductComponent = params => {
   const hideProduct = () => setVisible(false);
   const toggleProduct = () => isSelected ? removeProduct() : addProduct();
   const removeProduct = () => setTimeout(() => updateSelectedItems(reject(params.selectedItems, {id: params.item.id})), 500);
-  const isSelected = !isRemovable && find(params.selectedItems, {id: params.item.id});
+  const isSelected = Boolean(!isRemovable && find(params.selectedItems, {id: params.item.id}));
   const classes = styles({isSelected, hasImage: Boolean(params.item.image)});
 
   const cardMedia = (<CardMedia

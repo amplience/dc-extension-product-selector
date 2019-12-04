@@ -83,7 +83,7 @@ const SelectedProductsComponent = params => {
       return;
     }
     const itemToMove = params.selectedItems[source.index];
-    const remainingItems = reject(params.selectedItems, {id:  itemToMove.id});
+    const remainingItems = reject(params.selectedItems, {id: params.backend.getId(itemToMove)});
     const reorderedItems = [
       ...slice(remainingItems, 0, destination.index),
       itemToMove,
@@ -95,8 +95,8 @@ const SelectedProductsComponent = params => {
 
   const items = params.selectedItems.map((item, index) => (
     <Draggable 
-      key={item.id} 
-      draggableId={item.id} 
+      key={params.backend.getId(item)} 
+      draggableId={params.backend.getId(item)} 
       index={index}>
       {(provided, snapshot) => (
         <div
@@ -163,7 +163,8 @@ const SelectedProducts = connect(
   state => ({
     selectedItems: state.selectedItems,
     SDK: state.SDK,
-    touched: state.touched
+    touched: state.touched,
+    backend: state.backend
   }),
   {setSelectedItems, setValue}
 )(SelectedProductsComponent)

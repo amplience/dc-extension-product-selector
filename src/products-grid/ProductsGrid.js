@@ -36,7 +36,7 @@ const styles = makeStyles(theme => ({
 const ProductsGridComponent = params => {
   const classes = styles();
   const items = params.loading ? '' : params.items.map(item => (
-    <Product key={item.id} item={item} />
+    <Product key={params.backend.getId(item)} item={item} />
   ));
   const loader = params.loading ? (<CircularProgress className={classes.loader} />) : '';
 
@@ -63,7 +63,8 @@ const ProductsGrid = connect(
   state => ({
     items: state.items,
     loading: state.isFetching,
-    catalogs: state.params.catalogs
+    catalogs: state.params.catalogs,
+    backend: state.backend
   }),
   null
 )(ProductsGridComponent)

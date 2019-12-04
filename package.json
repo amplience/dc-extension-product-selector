@@ -18,7 +18,8 @@
     "react-scripts": "3.2.0",
     "react-transition-group": "^4.3.0",
     "redux": "^4.0.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "sap-product-browser": "git+ssh://git@bitbucket.org/amplience/sap-product-browser.git"
   },
   "scripts": {
     "start": "react-scripts start",

@@ -27,7 +27,7 @@ export const FETCH_SDK = 'FETCH_SDK';
 export const fetchSDK = () => async (dispatch, getState) => {
   const state = getState();
   if (state.SDK) {
-    Promise.resolve(state.SDK);
+    return state.SDK;
   }
 
   dispatch(setFetching(true));
@@ -90,9 +90,10 @@ export const setSelectedItems = value => ({
 });
 
 export const SET_VALUE = 'SET_VALUE';
-export const setValue = selectedItems => async (dispatch, getState) => {
-  const {SDK} = getState();
-  await SDK.field.setValue(map(selectedItems, 'id'));
+export const setValue = selectedItems => async (_, getState) => {
+  const {SDK, backend} = getState();
+  console.log(map(selectedItems, item => backend.getId(item)))
+  await SDK.field.setValue(map(selectedItems, backend.getId));
   return Promise.resolve(selectedItems);
 };
 
@@ -155,6 +156,11 @@ export const setCatalog = value => ({
 export const initBackend = () => async (dispatch, getState) => {
   const {params} = getState();
   dispatch(setBackend(getBackend(params)));
+
+  if (params.backend === 'Hybris') {
+    dispatch(setCatalog((params.catalogs || [{id: 'Catalog required'}])[0].id))
+  }
+
   return Promise.resolve(true);
 };
 

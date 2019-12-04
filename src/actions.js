@@ -71,6 +71,11 @@ export const getSelectedItems = () => async (dispatch, getState) => {
     }
 
     selectedItems = sortBy(selectedItems, ({id}) => indexOf(ids, id));
+
+    // If an item has been deleted, trigger change
+    if (selectedItems.length !== ids.length) {
+      dispatch(setValue(selectedItems));
+    }
   } catch (e) {
     // @TODO snackbar or something... dispatch(error);
     console.log('could not load', e);

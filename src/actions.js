@@ -1,7 +1,7 @@
-import {init} from 'dc-extensions-sdk';
-import {isArray, map, get, filter} from 'lodash';
-import {ProductSelectorError} from './ProductSelectorError';
-import {getBackend} from './backends/backends';
+import { init } from 'dc-extensions-sdk'; 
+import { isArray, map, get, filter, sortBy, indexOf } from 'lodash';
+import { ProductSelectorError } from './ProductSelectorError';
+import { getBackend } from './backends/backends';
 
 export const SET_FETCHING = 'SET_FETCHING';
 export const setFetching = value => ({
@@ -71,12 +71,20 @@ export const getSelectedItems = () => async (dispatch, getState) => {
     if (!isArray(selectedItems)) {
       throw new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE);
     }
+
+    selectedItems = sortBy(selectedItems, ({id}) => indexOf(ids, id));
+
+    // If an item has been deleted, trigger change
+    if (selectedItems.length !== ids.length) {
+      dispatch(setValue(selectedItems));
+    }
   } catch (e) {
     // @TODO snackbar or something... dispatch(error);
     console.log('could not load', e);
   }
   dispatch(setSelectedItems(selectedItems));
   dispatch(setFetching(false));
+  dispatch(setInitialised(true));
   return Promise.resolve(selectedItems);
 };
 
@@ -105,7 +113,6 @@ export const getItems = () => async (dispatch, getState) => {
   try {
     const {items: fetchedItems, page} = await state.backend.search(state);
     items = fetchedItems;
-    console.log(page);
     dispatch(setPage(page));
     dispatch(setItems(items));
   } catch (e) {
@@ -168,5 +175,12 @@ export const SET_TOUCHED = 'SET_TOUCHED';
 export const setTouched = value => ({
   type: SET_TOUCHED,
   key: 'touched',
+  value
+});
+
+export const SET_INITIALISED = 'SET_INITIALISED';
+export const setInitialised = value => ({
+  type: SET_INITIALISED,
+  key: 'initialised',
   value
 });

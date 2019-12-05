@@ -1,0 +1,12 @@
+.product-grid-enter, .product-grid__items-enter {
+  opacity: 0;
+}
+.product-grid-enter-active {
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+.product-grid-exit-active {
+  opacity: 0;
+  transition: opacity 0.3s;
+  position: absolute;
+}

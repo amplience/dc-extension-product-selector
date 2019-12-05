@@ -1,0 +1,22 @@
+.product {
+  &:hover {
+    cursor: pointer;
+    .selected-products & {
+      cursor: grab;
+    }
+    .MuiCardActionArea-focusHighlight {
+      opacity: 0.08;
+    }
+  }  
+}
+.selected-products {
+  .MuiCardHeader-subheader {
+    width: calc(100% + 48px);
+  }
+}
+.MuiCardActionArea-root {
+  margin-top: auto !important;
+}
+.MuiCardHeader-title, .MuiCardHeader-subheader {
+  word-break: break-all;
+}

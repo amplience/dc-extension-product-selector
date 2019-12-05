@@ -21,24 +21,26 @@ The extension works with 'list of text' properties and supports the following pa
 ## Example Snippet
 
 ```json
-"product selector": {
-  "title": "Product Selector",
-  "description": "description",
-  "type": "array",
-  "minItems": 3,
-  "maxItems": 10,
-  "items": {
-    "type": "string"
-  },
-  "ui:extension": {
-    "url": "https://product-selecotr.amplience.com",
-    "height": 208,
-    "params": {
-      "proxyUrl": "https://sfcc-proxy.ampleince.com",
-      "sfccUrl": "https://sandbox.demandware.net",
-      "authSecret": "aa1111AAAAAA1",
-      "authClientId": "11111111-1111-1111-1111-111111111111",
-      "siteId": "TestSite"
+{
+  "product selector": {
+    "title": "Product Selector",
+    "description": "description",
+    "type": "array",
+    "minItems": 3,
+    "maxItems": 10,
+    "items": {
+      "type": "string"
+    },
+    "ui:extension": {
+      "url": "https://product-selecotr.amplience.com",
+      "height": 208,
+      "params": {
+        "proxyUrl": "https://sfcc-proxy.ampleince.com",
+        "sfccUrl": "https://sandbox.demandware.net",
+        "authSecret": "aa1111AAAAAA1",
+        "authClientId": "11111111-1111-1111-1111-111111111111",
+        "siteId": "TestSite"
+      }
     }
   }
 }

@@ -23,7 +23,7 @@ export class SFCC {
         site_id,
         endpoint, 
         ids
-      });
+      }, {arrayFormat: 'brackets'});
       const params = {
         method: 'GET',
         ...this.getHeaders(state)

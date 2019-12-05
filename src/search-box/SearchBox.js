@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {debounce, isUndefined} from 'lodash';
 import { connect } from 'react-redux';
 import { changePage, setSearchText } from '../actions';
-import { Paper, InputBase, IconButton, Divider, Snackbar, makeStyles } from '@material-ui/core';
+import { Paper, InputBase, Divider, Snackbar, makeStyles } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 
 const styles = makeStyles(theme => ({
@@ -19,8 +19,9 @@ const styles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     flex: 1,
   },
-  iconButton: {
+  icon: {
     padding: 10,
+    fill: 'rgba(0, 0, 0, 0.54)'
   },
   divider: {
     height: 28,
@@ -64,12 +65,7 @@ const SearchBoxComponent = params => {
           onChange={search}
         />
         <Divider className={classes.divider} orientation="vertical" />
-        <IconButton 
-          className={classes.iconButton}
-          onClick={search}
-          aria-label="search">
-          <Search />
-        </IconButton>
+        <Search className={classes.icon} />
       </Paper>  
     </div>
   );

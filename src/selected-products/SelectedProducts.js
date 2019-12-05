@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { get, reject, slice } from 'lodash';
+import { get, reject, slice, filter } from 'lodash';
 import { setSelectedItems, setValue } from '../actions';
 import { makeStyles, FormHelperText, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
 import {CSSTransition} from 'react-transition-group';
@@ -99,7 +99,7 @@ const SelectedProductsComponent = params => {
   const {minItems, maxItems} = get(params.SDK, 'field.schema', {});
   const reorder = (order, sortable, {oldIndex, newIndex}) => {
     const itemToMove = params.selectedItems[oldIndex];
-    const remainingItems = reject(params.selectedItems, {id: params.backend.getId(itemToMove)});
+    const remainingItems = filter(reject(params.selectedItems, item => params.backend.getId(item) === params.backend.getId(itemToMove)));
     const reorderedItems = [
       ...slice(remainingItems, 0, newIndex),
       itemToMove,

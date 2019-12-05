@@ -90,7 +90,9 @@ const styles = makeStyles(theme => ({
     }
   },
   placeholder: {
-    margin: 'auto'
+    margin: 'auto',
+    paddingTop: '12px',
+    gridColumn: 'span 5'
   },
 }));
 

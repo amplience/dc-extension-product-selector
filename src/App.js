@@ -7,8 +7,6 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
 // @TODO: Refactor/error handling/params sanitisation
-// @TODO: Other functions should go outside components for testing
-// @TODO: integrate other APIs
 
 const styles = makeStyles(theme => ({
   root: {

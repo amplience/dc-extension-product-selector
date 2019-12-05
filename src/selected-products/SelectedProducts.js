@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { reject, slice, get } from 'lodash';
+import { get, reject, slice } from 'lodash';
 import { setSelectedItems, setValue } from '../actions';
-import { makeStyles, FormHelperText, CircularProgress } from '@material-ui/core';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { makeStyles, FormHelperText, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
 import {CSSTransition} from 'react-transition-group';
+import Sortable from 'react-sortablejs';
 
 import Product from '../product/Product';
-import { Paper, Typography, Box } from '@material-ui/core';
+import './selected-products.scss';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -22,20 +22,6 @@ const styles = makeStyles(theme => ({
     flexDirection: 'column',
     position: 'relative'
   },
-  itemWrapper: {
-    display: 'grid',
-    gridTemplateColumns: '100%',
-    width: '100%',
-    '@media(min-width: 450px)': {
-      gridTemplateColumns: '50% 50%'
-    },
-    '@media(min-width: 800px)': {
-      gridTemplateColumns: '25% 25% 25% 25%'
-    },
-    '@media(min-width: 1024px)': {
-      gridTemplateColumns: '20% 20% 20% 20% 20%'
-    }
-  },
   dragItem: {
     transition: 'flex 0.15s, opacity 0.15s',
     '&:empty': {
@@ -46,10 +32,22 @@ const styles = makeStyles(theme => ({
     fontWeight: 700
   },
   items: {
-    position: 'relative',
     margin: 'auto',
     width: '100%',
-    zIndex: 2
+    zIndex: 2,
+    display: 'grid',
+    gridTemplateColumns: '100%',
+    '@media(min-width: 450px)': {
+      gridTemplateColumns: '50% 50%'
+    },
+    '@media(min-width: 800px)': {
+      gridTemplateColumns: '25% 25% 25% 25%'
+    },
+    '@media(min-width: 1024px)': {
+      gridTemplateColumns: '20% 20% 20% 20% 20%'
+    }
+  },
+  item: {
   },
   errorWrapper: {
     height: '20px',
@@ -93,59 +91,24 @@ const styles = makeStyles(theme => ({
   },
   placeholder: {
     margin: 'auto'
-  }
+  },
 }));
-
-const itemStyle = (isDragging, draggableStyle) => ({
-  ...draggableStyle,
-  userSelect: 'none',
-  opacity: isDragging ? 0.8 : 1
-});
 
 const SelectedProductsComponent = params => {
   const classes = styles();
   const {minItems, maxItems} = get(params.SDK, 'field.schema', {});
-
-  const reorder = ({source, destination}) => {
-    if (!destination) {
-      return;
-    }
-    const itemToMove = params.selectedItems[source.index];
+  const reorder = (order, sortable, {oldIndex, newIndex}) => {
+    const itemToMove = params.selectedItems[oldIndex];
     const remainingItems = reject(params.selectedItems, {id:  itemToMove.id});
     const reorderedItems = [
-      ...slice(remainingItems, 0, destination.index),
+      ...slice(remainingItems, 0, newIndex),
       itemToMove,
-      ...slice(remainingItems, destination.index)
+      ...slice(remainingItems, newIndex)
     ];
     params.setSelectedItems(reorderedItems);
     params.setValue(reorderedItems);
   };
 
-  const items = params.selectedItems.map((item, index) => (
-    <Draggable 
-      key={item.id} 
-      draggableId={item.id} 
-      index={index}>
-      {(provided, snapshot) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className={classes.dragItem}>
-              <Product 
-                style={itemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                className={classes.dragItem}
-                item={item}
-                variant="removable" />
-            </div>
-        )}
-    </Draggable>
-  ));
-
-  const empty = (
-    <Typography component="div" variant="body1" className={classes.placeholder}>
-      <Box fontWeight="fontWeightLight">No items selected.</Box>
-    </Typography>);
   return (
     <Paper className={'selected-products ' + classes.root}>
       <Typography variant="subtitle1" component="h2" className={classes.title}>Selected products</Typography>
@@ -163,23 +126,26 @@ const SelectedProductsComponent = params => {
             in={params.initialised} 
             timeout={300}
             unmountOnExit
-          >   
-        <div className={classes.items}>
-          <DragDropContext onDragEnd={reorder}>
-            <Droppable droppableId="droppable" direction="horizontal">
-            {provided => (
-              <div
-                className={classes.itemWrapper}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >       
-                {params.selectedItems.length ? items : empty}
-                {provided.placeholder}
-              </div>
-            )}
-            </Droppable>
-          </DragDropContext>
-        </div>
+          >
+          <Sortable 
+            onChange={reorder} 
+            options={{animation: 150, ghostClass: 'product-placeholder'}} 
+            className={classes.items}>
+            {params.selectedItems.length ? 
+                params.selectedItems.map(item => (
+                  <div className={classes.item} key={item.id}>
+                    <Product 
+                      className={classes.dragItem}
+                      item={item}
+                      variant="removable" />
+                  </div>
+                )) : 
+                (
+                  <Typography component="div" variant="body1" className={classes.placeholder}>
+                    <Box fontWeight="fontWeightLight">No items selected.</Box>
+                  </Typography>
+                )}
+          </Sortable>
       </CSSTransition>
       <div className={classes.errorWrapper}>
         <CSSTransition 

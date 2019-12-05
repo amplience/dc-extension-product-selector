@@ -10,7 +10,7 @@ export const setFetching = value => ({
   value
 });
 
-export const  SET_PARAMS = 'SET_PARAMS';
+export const SET_PARAMS = 'SET_PARAMS';
 export const setParams = params => ({
   type: SET_PARAMS,
   params
@@ -44,7 +44,6 @@ export const fetchSDK = () => async (dispatch, getState) => {
   } catch (e) {
     // @TODO dispatch an error instead
     // dispatch(setSDK(null, ERROR));
-
   }
   dispatch(setFetching(false));
   return Promise.resolve(SDK);
@@ -59,14 +58,17 @@ export const getSelectedItems = () => async (dispatch, getState) => {
 
   try {
     if (get(SDK, 'field.schema.type') !== 'array' || get(SDK, 'field.schema.items.type') !== 'string') {
-      throw new ProductSelectorError('This UI extension only works with "list of text" properties', ProductSelectorError.codes.INVALID_FIELD);
+      throw new ProductSelectorError(
+        'This UI extension only works with "list of text" properties',
+        ProductSelectorError.codes.INVALID_FIELD
+      );
     }
     const ids = await SDK.field.getValue();
     const filteredIds = filter(ids);
     if (filteredIds.length) {
       selectedItems = await backend.getItems(state, filteredIds);
     }
-    if(!isArray(selectedItems)) {
+    if (!isArray(selectedItems)) {
       throw new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE);
     }
 
@@ -160,7 +162,7 @@ export const initBackend = () => async (dispatch, getState) => {
   const {params} = getState();
   dispatch(setBackend(getBackend(params)));
   return Promise.resolve(true);
-} 
+};
 
 export const SET_BACKEND = 'SET_BACKEND';
 export const setBackend = value => ({
@@ -174,11 +176,11 @@ export const setTouched = value => ({
   type: SET_TOUCHED,
   key: 'touched',
   value
-})
+});
 
 export const SET_INITIALISED = 'SET_INITIALISED';
 export const setInitialised = value => ({
   type: SET_INITIALISED,
   key: 'initialised',
   value
-})
+});

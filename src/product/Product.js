@@ -51,10 +51,9 @@ const ProductComponent = params => {
 
   const addProduct = () => updateSelectedItems([...params.selectedItems, params.item]);
   const hideProduct = () => setVisible(false);
-  const toggleProduct = () => (isSelected ? removeProduct() : addProduct());
-  const removeProduct = () =>
-    setTimeout(() => updateSelectedItems(reject(params.selectedItems, {id: params.backend.getId(params.item)})), 500);
-  const isSelected = !isRemovable && find(params.selectedItems, {id: params.backend.getId(params.item)});
+  const toggleProduct = () => isSelected ? removeProduct() : addProduct();
+  const removeProduct = () => setTimeout(() => updateSelectedItems(reject(params.selectedItems, {id: params.backend.getId(params.item)})), 500);
+  const isSelected = Boolean(!isRemovable && find(params.selectedItems, {id: params.backend.getId(params.item)}));
   const classes = styles({isSelected, hasImage: Boolean(params.item.image)});
   const name = stripHtml(params.item.name);
   const image = params.backend.getImage(params.item) || '/images/image-icon.svg';

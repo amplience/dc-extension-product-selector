@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles, MuiThemeProvider, Container } from '@material-ui/core';
 
-import {theme} from './theme'
+import { theme } from './theme';
 import ProductsGrid from './products-grid/ProductsGrid';
 import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
@@ -27,6 +27,6 @@ const App = () => {
       </Container>
     </MuiThemeProvider>
   );
-}
+};
 
 export default App;

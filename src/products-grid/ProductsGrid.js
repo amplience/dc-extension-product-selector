@@ -1,7 +1,7 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {CircularProgress, Grid, makeStyles} from '@material-ui/core';
-import {CSSTransition} from 'react-transition-group';
+import { connect } from 'react-redux';
+import { CircularProgress, Grid, makeStyles } from '@material-ui/core';
+import { CSSTransition } from 'react-transition-group';
 
 import Product from '../product/Product';
 import Pager from '../pager/Pager';
@@ -38,9 +38,9 @@ const styles = makeStyles(theme => ({
 }));
 const ProductsGridComponent = params => {
   const classes = styles();
-  const items = params.loading ? '' : params.items.map(item => (
-    <Product key={params.backend.getId(item)} item={item} />
-  ));
+  const items = params.loading
+    ? ''
+    : params.items.map(item => <Product key={params.backend.getId(item)} item={item} />);
 
   return (
     <div className={classes.root}>

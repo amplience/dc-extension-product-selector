@@ -1,4 +1,4 @@
-import {trimEnd} from 'lodash';
+import { trimEnd } from 'lodash';
 import qs from 'qs';
 export class SFCC {
   constructor(settings) {
@@ -6,14 +6,16 @@ export class SFCC {
   }
 
   getHeaders(state) {
-    const {params: {authSecret, authClientId}} = state;
+    const {
+      params: { authSecret, authClientId }
+    } = state;
     return {
       headers: {
         'Content-Type': 'application/json',
         'x-auth-id': authClientId,
         'x-auth-secret': authSecret
-      }     
-    }
+      }
+    };
   }
 
   catalogRequired() {
@@ -29,20 +31,25 @@ export class SFCC {
   }
 
   async getItems(state, ids) {
-    const {params: {siteId: site_id, sfccUrl: endpoint, proxyUrl}} = state;
+    const {
+      params: { siteId: site_id, sfccUrl: endpoint, proxyUrl }
+    } = state;
     try {
-      const queryString = qs.stringify({
-        site_id,
-        endpoint, 
-        ids
-      }, {arrayFormat: 'brackets'});
+      const queryString = qs.stringify(
+        {
+          site_id,
+          endpoint,
+          ids
+        },
+        { arrayFormat: 'brackets' }
+      );
       const params = {
         method: 'GET',
         ...this.getHeaders(state)
-      }
+      };
       params.method = 'GET';
       const response = await fetch(trimEnd(proxyUrl, '/') + '/products?' + queryString, params);
-      const {items} = await response.json();
+      const { items } = await response.json();
       return items;
     } catch (e) {
       console.log(e);
@@ -50,7 +57,12 @@ export class SFCC {
   }
 
   async search(state) {
-    const {searchText, page, selectedCatalog, params: {siteId, sfccUrl: endpoint, proxyUrl}} = state;
+    const {
+      searchText,
+      page,
+      selectedCatalog,
+      params: { siteId, sfccUrl: endpoint, proxyUrl }
+    } = state;
     try {
       const body = {
         site_id: siteId,
@@ -68,7 +80,7 @@ export class SFCC {
       };
       const response = await fetch(trimEnd(proxyUrl, '/') + '/product-search', params);
       return response.json();
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }

@@ -1,7 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
-import {Select, MenuItem, InputLabel, FormControl, makeStyles} from '@material-ui/core';
-import {setCatalog, changePage} from '../actions';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+
+import { setCatalog } from '../store/catalog/catalog.actions';
+import { changePage } from '../store/pages/pages.actions';
+import { Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -35,7 +37,7 @@ const CatalogSelectorComponent = params => {
         labelWidth={labelWidth}
       >
         {!required && <MenuItem value="all">All</MenuItem>}
-        {params.catalogs.map(({id, name}) => (
+        {params.catalogs.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
             {name}
           </MenuItem>

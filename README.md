@@ -16,7 +16,9 @@ The extension works with 'list of text' properties and supports the following pa
   "sfccUrl": "{The URL of the SFCC instance}",
   "authSecret": "{The SFCC OAuth client secret}",
   "authClientId": "{The SFCC OAuth client ID}",
-  "siteId": "{The ID of the site containing products in SFCC}"
+  "siteId": "{The ID of the site containing products in SFCC}",
+  "noItemsText": "{Placeholder text to display when no items are selected. Optional. Defaults to 'No items selected.'}",
+  "searchPlaceholderText": "{Placeholder text to show in the search box. Optional. Defaults to 'Search'}"
 }
 ```
 

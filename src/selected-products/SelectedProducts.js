@@ -81,10 +81,9 @@ const SelectedProductsComponent = params => {
     params.setSelectedItems(reorderedItems);
     params.setValue(reorderedItems);
   };
-
   return (
     <Paper className={'selected-products ' + classes.root}>
-      <Typography variant="subtitle1" component="h2" className={classes.title}>Selected products</Typography>
+<Typography variant="subtitle1" component="h2" className={classes.title}>{get(params.SDK, 'field.schema.title', '')}</Typography>
       <AnimatePresence>
         {!params.initialised && (
           <motion.div className={classes.loader} exit={{opacity: 0, position: 'absolute', zIndex: 3, top: '50%', marginTop: '-20px',}}>
@@ -109,7 +108,7 @@ const SelectedProductsComponent = params => {
                   )) : 
                   (
                     <Typography component="div" variant="body1" className={classes.placeholder}>
-                      <Box fontWeight="fontWeightLight">No items selected.</Box>
+                      <Box fontWeight="fontWeightLight">{params.params.noItemsText}</Box>
                     </Typography>
                   )}
             </Sortable>
@@ -138,6 +137,7 @@ const SelectedProducts = connect(
   state => ({
     selectedItems: state.selectedItems,
     SDK: state.SDK,
+    params: state.params,
     touched: state.touched,
     initialised: state.initialised
   }),

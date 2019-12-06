@@ -11,7 +11,9 @@ const initialState = {
     authClientId: '',
     siteId: '',
     catalogs: [],
-    backend: 'SFCC'
+    backend: 'SFCC',
+    noItemsText: 'No items selected.',
+    searchPlaceholderText: 'Search'
   },
   authToken: '',
   selectedItems: [],

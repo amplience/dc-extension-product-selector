@@ -58,9 +58,14 @@ const ProductComponent = params => {
 
 const cardBody = isRemovable ? cardMedia : (<CardActionArea>{cardMedia}</CardActionArea>);
 
-  return (<AnimatePresence>
+  return (<AnimatePresence onExitComplete={removeProduct}>
             {visible && (
-                <motion.div className={classes.cardWrapper} initial={{opacity: 0}} exit={{opacity: 0}} animate={{ opacity: 1}}>
+                <motion.div 
+                  className={classes.cardWrapper} 
+                  initial={{opacity: 0}} 
+                  exit={{opacity: 0}} 
+                  animate={{ opacity: 1}}
+                  >
                   <Card className={'product ' + classes.root} raised={isSelected} onClick={isRemovable ? null : toggleProduct}>
                     <CardHeader 
                       action={

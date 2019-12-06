@@ -10,6 +10,7 @@ import './product.scss';
 const styles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    flex: '1 1 auto',
     flexDirection: 'column',
     border: ({isSelected}) => isSelected ? `1px solid ${theme.palette.grey[500]}` : 'none',
     margin: ({isSelected}) => isSelected ? '6px' : theme.spacing(1),

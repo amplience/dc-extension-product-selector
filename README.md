@@ -1,6 +1,8 @@
 # Product Selector Extension
 
-The product selector extension allows you to easily search for products in Salesforce Commerce Cloud and add them to your schema.
+The product selector extension allows content authors to easily search and select products in Salesforce Commerce Cloud and add them to your content.
+
+The IDs of each product selected are added to the content as an array of strings.
 
 The extension requires the use of the [SFCC product search proxy (UPDATE WITH GITHUB URL)](https://bitbucket.org/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint.
 

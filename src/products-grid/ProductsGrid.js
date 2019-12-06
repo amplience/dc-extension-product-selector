@@ -1,14 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {CircularProgress, Grid, makeStyles} from '@material-ui/core';
-import {CSSTransition} from 'react-transition-group';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import Product from '../product/Product';
 import Pager from '../pager/Pager';
 import PaginationSummary from '../pagination-summary/PaginationSummary';
 import CatalogSelector from '../catalog-selector/CatalogSelector';
-
-import './products-grid.scss';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -44,31 +42,30 @@ const ProductsGridComponent = params => {
     <div className={classes.root}>
       <Grid container alignItems="center">
         <Grid item xs={6}>
-          <CSSTransition
-            in={Boolean(params.items.length && !params.loading)}
-            timeout={300}
-            unmountOnExit
-            classNames="product-grid"
-          >
-            <PaginationSummary />
-          </CSSTransition>
+            <AnimatePresence>
+              {params.items.length && !params.loading && (
+              <motion.div  initial={{opacity: 0}} exit={{opacity: 0}} animate={{ opacity: 1}}>
+                <PaginationSummary />
+              </motion.div>)}
+            </AnimatePresence>
         </Grid>
         <Grid item container xs={6}>
           {params.catalogs.length ? <CatalogSelector /> : ''}
         </Grid>
       </Grid>
-      <CSSTransition in={params.loading} timeout={300} unmountOnExit classNames="product-grid">
-        <CircularProgress className={classes.loader} />
-      </CSSTransition>
+        <AnimatePresence>
+          {params.loading && (
+          <motion.div  initial={{opacity: 0}} exit={{opacity: 0, position: 'absolute'}} animate={{ opacity: 1}}>
+            <CircularProgress className={classes.loader} />
+          </motion.div>)}
+        </AnimatePresence>
       <div className={classes.items}>{items}</div>
-      <CSSTransition
-        in={Boolean(params.items.length && !params.loading)}
-        timeout={300}
-        unmountOnExit
-        classNames="product-grid"
-      >
-        <Pager />
-      </CSSTransition>
+      <AnimatePresence>
+          {params.items.length && !params.loading && (
+          <motion.div  initial={{opacity: 0}} exit={{opacity: 0, position: 'absolute'}} animate={{ opacity: 1}}>
+            <Pager />
+          </motion.div>)}
+        </AnimatePresence>
     </div>
   );
 };

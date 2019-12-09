@@ -12,6 +12,7 @@ import './product.scss';
 const styles = makeStyles(theme => ({
   root: {
     display: 'flex',
+    flex: '1 1 auto',
     flexDirection: 'column',
     width: '100%',
     border: ({ isSelected }) => (isSelected ? `1px solid ${theme.palette.grey[500]}` : 'none'),

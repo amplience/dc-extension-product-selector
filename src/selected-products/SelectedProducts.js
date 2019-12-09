@@ -90,7 +90,7 @@ const SelectedProductsComponent = params => {
           {params.selectedItems.length ? (
             <ProductList selectedItems={params.selectedItems} classes={classes} />
           ) : (
-            <NoItems classes={classes} />
+            <NoItems classes={classes} noItemsText={params.params.noItemsText} />
           )}
         </Sortable>
       </FadeIn>
@@ -130,9 +130,9 @@ const Loading = ({ show, classes }) => (
   </AnimatePresence>
 );
 
-const NoItems = ({ classes }) => (
+const NoItems = ({ classes, noItemsText }) => (
   <Typography component="div" variant="body1" className={classes.placeholder}>
-    <Box fontWeight="fontWeightLight">No items selected.</Box>
+    <Box fontWeight="fontWeightLight">{ noItemsText }</Box>
   </Typography>
 );
 
@@ -140,6 +140,7 @@ const SelectedProducts = connect(
   state => ({
     selectedItems: state.selectedItems,
     SDK: state.SDK,
+    params: state.params,
     touched: state.touched,
     backend: state.backend,
     initialised: state.initialised

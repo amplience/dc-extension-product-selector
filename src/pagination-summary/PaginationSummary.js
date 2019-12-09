@@ -7,7 +7,6 @@ const PaginationSummaryComponent = params => {
 
   const first = start + 1;
   const last = Math.min(start + params.PAGE_SIZE, params.total);
-
   return <Typography variant="body1">{`Showing ${first} to ${last} of ${params.total}`}</Typography>;
 };
 

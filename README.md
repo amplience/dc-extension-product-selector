@@ -4,6 +4,8 @@ The product selector extension allows content authors to easily search and selec
 
 The IDs of each product selected are added to the content as an array of strings.
 
+![](/screenshot.png?raw=true)
+
 The extension requires the use of the [SFCC product search proxy (UPDATE WITH GITHUB URL)](https://bitbucket.org/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint.
 
 ## Installation Parameters
@@ -16,7 +18,9 @@ The extension works with 'list of text' properties and supports the following pa
   "sfccUrl": "{The URL of the SFCC instance}",
   "authSecret": "{The SFCC OAuth client secret}",
   "authClientId": "{The SFCC OAuth client ID}",
-  "siteId": "{The ID of the site containing products in SFCC}"
+  "siteId": "{The ID of the site containing products in SFCC}",
+  "noItemsText": "{Placeholder text to display when no items are selected. Optional. Defaults to 'No items selected.'}",
+  "searchPlaceholderText": "{Placeholder text to show in the search box. Optional. Defaults to 'Search'}"
 }
 ```
 

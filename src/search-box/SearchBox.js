@@ -62,7 +62,7 @@ const SearchBoxComponent = params => {
         <InputBase
           value={params.searchText}
           className={classes.input}
-          placeholder="Search"
+          placeholder={params.params.searchPlaceholderText}
           inputProps={{ 'aria-label': 'search' }}
           onChange={search}
         />
@@ -76,7 +76,7 @@ const SearchBoxComponent = params => {
 const SearchBox = connect(
   state => ({
     params: state.params,
-    searchText: state.searchText
+    searchText: state.searchText,
   }),
   { changePage, setSearchText }
 )(SearchBoxComponent);

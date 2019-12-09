@@ -51,9 +51,9 @@ const ProductComponent = params => {
     </IconButton>
   );
 
-  const { name, image = '/images/image-icon.svg' } = params.item;
-  const classes = styles({ isSelected, hasImage: Boolean(params.item.image) });
-  const cardMedia = <CardMedia className={classes.thumbnail} image={image} title={name}></CardMedia>;
+  const { name, image } = params.item;
+  const classes = styles({ isSelected, hasImage: Boolean(image) });
+  const cardMedia = <CardMedia className={classes.thumbnail} image={image || '/images/image-icon.svg'} title={name}></CardMedia>;
   const cardBody = isRemovable ? cardMedia : <CardActionArea>{cardMedia}</CardActionArea>;
 
   return (

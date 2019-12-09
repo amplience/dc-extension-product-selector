@@ -36,7 +36,7 @@ const styles = makeStyles(theme => ({
 }));
 const ProductsGridComponent = params => {
   const classes = styles();
-  const items = params.loading ? '' : params.items.map(item => <Product key={item.id} item={item} />);
+  const items = !params.loading && params.items.map(item => <Product key={item.id} item={item} />);
 
   return (
     <div className={classes.root}>

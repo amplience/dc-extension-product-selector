@@ -10,13 +10,13 @@
   }  
 }
 .selected-products {
+  .MuiCardHeader-content {
+    overflow: hidden;
+  }
   .MuiCardHeader-subheader {
     width: calc(100% + 48px);
   }
 }
 .MuiCardActionArea-root {
   margin-top: auto !important;
-}
-.MuiCardHeader-title, .MuiCardHeader-subheader {
-  word-break: break-all;
 }

@@ -47,8 +47,6 @@ const styles = makeStyles(theme => ({
       gridTemplateColumns: '20% 20% 20% 20% 20%'
     }
   },
-  item: {
-  },
   errorWrapper: {
     height: '20px',
     marginTop: 'auto'

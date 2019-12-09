@@ -48,6 +48,7 @@ const SearchBoxComponent = params => {
     params.setSearchText(searchText);
     debouncedSearch(setSnackbarVisibility, params.changePage);
   };
+
   return (
     <div className={classes.root}>
       <Snackbar

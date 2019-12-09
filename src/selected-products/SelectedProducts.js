@@ -1,12 +1,15 @@
 import React from 'react';
+import { get } from 'lodash';
 import { connect } from 'react-redux';
-import { get, reject, slice, filter } from 'lodash';
-import { makeStyles, FormHelperText, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
 import { AnimatePresence, motion } from 'framer-motion';
+import { makeStyles, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
+
+import { reorderItem } from '../store/selectedItems/selectedItems.actions';
+
 import Sortable from 'react-sortablejs';
-import { setValue } from '../store/items/items.actions';
-import { setSelectedItems } from '../store/selectedItems/selectedItems.actions';
+import FadeIn from '../fade-in/FadeIn';
 import Product from '../product/Product';
+import FormError from '../form-error/FormError';
 
 import './selected-products.scss';
 
@@ -53,9 +56,6 @@ const styles = makeStyles(theme => ({
     height: '20px',
     marginTop: 'auto'
   },
-  error: {
-    marginTop: theme.spacing(1)
-  },
   loader: {
     margin: 'auto',
     alignSelf: 'center'
@@ -70,81 +70,71 @@ const styles = makeStyles(theme => ({
 const SelectedProductsComponent = params => {
   const classes = styles();
   const { minItems, maxItems } = get(params.SDK, 'field.schema', {});
-  const reorder = (order, sortable, { oldIndex, newIndex }) => {
-    const itemToMove = params.selectedItems[oldIndex];
-    const remainingItems = filter(
-      reject(params.selectedItems, item => params.backend.getId(item) === params.backend.getId(itemToMove))
-    );
-    const reorderedItems = [...slice(remainingItems, 0, newIndex), itemToMove, ...slice(remainingItems, newIndex)];
-    params.setSelectedItems(reorderedItems);
-    params.setValue(reorderedItems);
-  };
+  const showMinItemError = params.touched && minItems && params.selectedItems.length < minItems;
+  const showMaxItemError = params.touched && maxItems && params.selectedItems.length > maxItems;
 
   return (
     <Paper className={'selected-products ' + classes.root}>
       <Typography variant="subtitle1" component="h2" className={classes.title}>
         Selected products
       </Typography>
-      <AnimatePresence>
-        {!params.initialised && (
-          <motion.div
-            className={classes.loader}
-            exit={{ opacity: 0, position: 'absolute', zIndex: 3, top: '50%', marginTop: '-20px' }}
-          >
-            <CircularProgress />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {params.initialised && (
-          <motion.div initial={{ opacity: 0 }} exit={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <Sortable
-              onChange={reorder}
-              options={{ animation: 150, ghostClass: 'product-placeholder' }}
-              className={classes.items}
-            >
-              {params.selectedItems.length ? (
-                params.selectedItems.map(item => (
-                  <motion.div
-                    positionTransition={{ type: 'tween' }}
-                    className={classes.item}
-                    key={params.backend.getId(item)}
-                  >
-                    <Product className={classes.dragItem} item={item} variant="removable" />
-                  </motion.div>
-                ))
-              ) : (
-                <Typography component="div" variant="body1" className={classes.placeholder}>
-                  <Box fontWeight="fontWeightLight">No items selected.</Box>
-                </Typography>
-              )}
-            </Sortable>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+      <Loading show={!params.initialised} classes={classes} />
+
+      <FadeIn show={params.initialised}>
+        <Sortable
+          onChange={params.reorder}
+          className={classes.items}
+          options={{ animation: 150, ghostClass: 'product-placeholder' }}
+        >
+          {params.selectedItems.length ? (
+            <ProductList selectedItems={params.selectedItems} classes={classes} />
+          ) : (
+            <NoItems classes={classes} />
+          )}
+        </Sortable>
+      </FadeIn>
+
       <div className={classes.errorWrapper}>
-        <AnimatePresence>
-          {params.touched && minItems && params.selectedItems.length < minItems && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <FormHelperText error={true} className={classes.error}>
-                You must select a minimum of {minItems} items
-              </FormHelperText>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {params.touched && maxItems && params.selectedItems.length > maxItems && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <FormHelperText error={true} className={classes.error}>
-                You must select a maximum of {maxItems} items
-              </FormHelperText>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <FormError show={showMinItemError}>You must select a minimum of {minItems} items</FormError>
+        <FormError show={showMaxItemError}>You must select a maximum of {maxItems} items</FormError>
       </div>
     </Paper>
   );
 };
+
+const ProductList = ({ selectedItems, classes }) => {
+  const spring = {
+    type: 'spring',
+    damping: 30,
+    stiffness: 150
+  };
+
+  return selectedItems.map(item => (
+    <motion.div positionTransition={spring} className={classes.item} key={item.id}>
+      <Product className={classes.dragItem} item={item} variant="removable" />
+    </motion.div>
+  ));
+};
+
+const Loading = ({ show, classes }) => (
+  <AnimatePresence>
+    {show && (
+      <motion.div
+        className={classes.loader}
+        exit={{ opacity: 0, position: 'absolute', zIndex: 3, top: '50%', marginTop: '-20px' }}
+      >
+        <CircularProgress />
+      </motion.div>
+    )}
+  </AnimatePresence>
+);
+
+const NoItems = ({ classes }) => (
+  <Typography component="div" variant="body1" className={classes.placeholder}>
+    <Box fontWeight="fontWeightLight">No items selected.</Box>
+  </Typography>
+);
 
 const SelectedProducts = connect(
   state => ({
@@ -154,7 +144,11 @@ const SelectedProducts = connect(
     backend: state.backend,
     initialised: state.initialised
   }),
-  { setSelectedItems, setValue }
+  dispatch => ({
+    reorder: (_, sortable, indexs) => {
+      dispatch(reorderItem(indexs));
+    }
+  })
 )(SelectedProductsComponent);
 
 export default SelectedProducts;

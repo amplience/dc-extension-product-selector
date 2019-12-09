@@ -1,6 +1,14 @@
 import { ProductService } from 'sap-product-browser';
 
 export class Hybris {
+
+  static getDefaultCatalog(params) {
+    const fallback = [{ id: 'Catalog required' }];
+    const { id } = (params.catalogs || fallback).shift();
+
+    return id;
+  }
+
   constructor(params) {
     const { basePath, hybrisUrl } = params;
 
@@ -12,28 +20,15 @@ export class Hybris {
     this.productService = new ProductService(hybrisUrl, basePath, defaultImage);
   }
 
-  catalogRequired() {
-    return true;
-  }
-
-  getId(item) {
-    return item.code;
-  }
-
-  getImage(item) {
-    const getProductImage = ({ images }) => images.find(({ format }) => format === 'product');
-    return item.images && item.images.length && getProductImage(item)
-      ? this.hybrisUrl + getProductImage(item).url
-      : item.defaultImageUrl;
-  }
-
   async getItems(state, filterIds) {
     const { selectedCatalog, params } = state;
     const { currency } = params;
 
     return Promise.all(
-      filterIds.map(id => {
-        return this.productService.getByCode(selectedCatalog, id, currency);
+      filterIds.map(async id => {
+        const item = await this.productService.getByCode(selectedCatalog, id, currency);
+
+        return this.itemModel(item);
       })
     );
   }
@@ -72,6 +67,33 @@ export class Hybris {
       numPages
     };
 
-    return { items: products, page: pages };
+    const items = products.map(item => this.itemModel(item))
+
+    return { items, page: pages };
+  }
+
+  catalogRequired() {
+    return true;
+  }
+
+  getImage(item) {
+    const getProductImage = ({ images }) => images.find(({ format }) => format === 'product');
+    return item.images && item.images.length && getProductImage(item)
+      ? this.hybrisUrl + getProductImage(item).url
+      : item.defaultImageUrl;
+  }
+
+  stripHtml(html) {
+    const tmp = document.createElement('DIV');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  itemModel({ code, name, images }) {
+    return {
+      id: code,
+      name: this.stripHtml(name),
+      image: this.getImage({ images })
+    };
   }
 }

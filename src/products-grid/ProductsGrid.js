@@ -1,12 +1,12 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {CircularProgress, Grid, makeStyles} from '@material-ui/core';
-import { AnimatePresence, motion } from 'framer-motion';
+import { connect } from 'react-redux';
+import { CircularProgress, Grid, makeStyles } from '@material-ui/core';
 
-import Product from '../product/Product';
 import Pager from '../pager/Pager';
-import PaginationSummary from '../pagination-summary/PaginationSummary';
+import FadeIn from '../fade-in/FadeIn';
+import Product from '../product/Product';
 import CatalogSelector from '../catalog-selector/CatalogSelector';
+import PaginationSummary from '../pagination-summary/PaginationSummary';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -36,38 +36,38 @@ const styles = makeStyles(theme => ({
 }));
 const ProductsGridComponent = params => {
   const classes = styles();
-  const items = params.loading
-    ? ''
-    : params.items.map(item => <Product key={params.backend.getId(item)} item={item} />);
 
   return (
     <div className={classes.root}>
       <Grid container alignItems="center">
         <Grid item xs={6}>
-            <AnimatePresence>
-              {params.items.length && !params.loading && (
-              <motion.div  initial={{opacity: 0}} exit={{opacity: 0}} animate={{ opacity: 1}}>
-                <PaginationSummary />
-              </motion.div>)}
-            </AnimatePresence>
+          <FadeIn show={params.items.length && !params.loading}>
+            <PaginationSummary />
+          </FadeIn>
         </Grid>
         <Grid item container xs={6}>
           {params.catalogs.length ? <CatalogSelector /> : ''}
         </Grid>
       </Grid>
-        <AnimatePresence>
-          {params.loading && (
-          <motion.div  initial={{opacity: 0}} exit={{opacity: 0, position: 'absolute'}} animate={{ opacity: 1}}>
-            <CircularProgress className={classes.loader} />
-          </motion.div>)}
-        </AnimatePresence>
-      <div className={classes.items}>{items}</div>
-      <AnimatePresence>
-          {params.items.length && !params.loading && (
-          <motion.div  initial={{opacity: 0}} exit={{opacity: 0, position: 'absolute'}} animate={{ opacity: 1}}>
-            <Pager />
-          </motion.div>)}
-        </AnimatePresence>
+
+      <FadeIn 
+        show={params.loading}
+        exitOptions={{ position: 'absolute' }}>
+        <CircularProgress className={classes.loader} />
+      </FadeIn>
+  
+      <div className={classes.items}>
+        {
+          !params.loading &&
+          params.items.map(item => <Product key={item.id} item={item} />)
+        }
+      </div>
+  
+      <FadeIn  
+        show={params.items.length && !params.loading}
+        exitOptions={{ position: 'absolute' }}>
+        <Pager />
+      </FadeIn>
     </div>
   );
 };

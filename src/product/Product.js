@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { reject, find } from 'lodash';
-import { Card, CardActionArea, CardMedia, CardHeader, IconButton, makeStyles } from '@material-ui/core';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Clear } from '@material-ui/icons';
 import { connect } from 'react-redux';
+import { Clear } from '@material-ui/icons';
+import { find } from 'lodash';
+import { Card, CardActionArea, CardMedia, CardHeader, IconButton, makeStyles } from '@material-ui/core';
+import { toggleProduct } from '../store/selectedItems/selectedItems.actions';
 
-import { setValue } from '../store/items/items.actions';
-import { setTouched } from '../store/touched/touched.actions';
-import { setSelectedItems } from '../store/selectedItems/selectedItems.actions';
+import FadeIn from '../fade-in/FadeIn';
 
 import './product.scss';
 
@@ -35,73 +33,49 @@ const styles = makeStyles(theme => ({
 }));
 
 const ProductComponent = params => {
-  const isRemovable = params.variant === 'removable';
   const [visible, setVisible] = useState(false);
+  const isRemovable = params.variant === 'removable';
+  const isSelected = Boolean(find(params.selectedItems, { id: params.item.id }));
+  const toggle = () => params.toggleProduct(params.item, isSelected);
+  const hideProduct = () => {
+    setVisible(true);
+    toggle();
+  };
 
   useEffect(() => setVisible(true), []);
 
-  const updateSelectedItems = selectedItems => {
-    params.setSelectedItems(selectedItems);
-    params.setTouched(true);
-    params.setValue(selectedItems);
-  };
+  const CardAction = () => (
+    <IconButton aria-label="Remove" onClick={hideProduct} className={classes.removeBtn}>
+      <Clear />
+    </IconButton>
+  );
 
-  const addProduct = () => updateSelectedItems([...params.selectedItems, params.item]);
-  const hideProduct = () => setVisible(false);
-  const toggleProduct = () => (isSelected ? removeProduct() : addProduct());
-  const removeProduct = () =>
-    updateSelectedItems(reject(params.selectedItems, { id: params.backend.getId(params.item) }));
-  const isSelected = Boolean(!isRemovable && find(params.selectedItems, { id: params.backend.getId(params.item) }));
+  const { name, image = '/images/image-icon.svg' } = params.item;
   const classes = styles({ isSelected, hasImage: Boolean(params.item.image) });
-  const name = stripHtml(params.item.name);
-  const image = params.backend.getImage(params.item) || '/images/image-icon.svg';
   const cardMedia = <CardMedia className={classes.thumbnail} image={image} title={name}></CardMedia>;
-
   const cardBody = isRemovable ? cardMedia : <CardActionArea>{cardMedia}</CardActionArea>;
 
-  function stripHtml(html) {
-    const tmp = document.createElement('DIV');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
-  }
-
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          className={classes.cardWrapper}
-          initial={{ opacity: 0 }}
-          exit={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <Card className={'product ' + classes.root} raised={isSelected} onClick={isRemovable ? null : toggleProduct}>
-            <CardHeader
-              action={
-                isRemovable ? (
-                  <IconButton aria-label="Remove" onClick={hideProduct} className={classes.removeBtn}>
-                    <Clear />
-                  </IconButton>
-                ) : (
-                  ''
-                )
-              }
-              title={params.item.name}
-              subheader={'Product ID: ' + params.backend.getId(params.item)}
-              titleTypographyProps={{ variant: 'subtitle1' }}
-              subheaderTypographyProps={{ variant: 'body2' }}
-            ></CardHeader>
-            {cardBody}
-          </Card>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <FadeIn show={visible} style={classes.cardWrapper}>
+      <Card className={'product ' + classes.root} raised={isSelected} onClick={isRemovable ? null : toggle}>
+        <CardHeader
+          action={isRemovable && <CardAction />}
+          title={params.item.name}
+          subheader={'Product ID: ' + params.item.id}
+          titleTypographyProps={{ variant: 'subtitle1' }}
+          subheaderTypographyProps={{ variant: 'body2' }}
+        />
+        {cardBody}
+      </Card>
+    </FadeIn>
   );
 };
 
-const Product = connect(({ selectedItems, backend }) => ({ selectedItems, backend }), {
-  setSelectedItems,
-  setValue,
-  setTouched
-})(ProductComponent);
+const Product = connect(
+  ({ selectedItems, backend }) => ({ selectedItems, backend }),
+  dispatch => ({
+    toggleProduct: (item, isSelected) => dispatch(toggleProduct(item, isSelected))
+  })
+)(ProductComponent);
 
 export default Product;

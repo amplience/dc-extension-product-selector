@@ -1,14 +1,14 @@
 import { map } from 'lodash';
-import { setPage } from "../pages/pages.actions";
-import { setFetching } from "../fetching/fetching.actions";
+import { setPage } from '../pages/pages.actions';
+import { setFetching } from '../fetching/fetching.actions';
 
 export const SET_VALUE = 'SET_VALUE';
 
 export const setValue = selectedItems => async (_, getState) => {
-  const {SDK, backend} = getState();
+  const { SDK } = getState();
 
-  await SDK.field.setValue(map(selectedItems, backend.getId));
-}
+  await SDK.field.setValue(map(selectedItems, item => item.id));
+};
 
 export const GET_ITEMS = 'GET_ITEMS';
 
@@ -24,15 +24,14 @@ export const getItems = () => async (dispatch, getState) => {
   let items = [];
 
   try {
-    const {items: fetchedItems, page} = await state.backend.search(state);
+    const { items: fetchedItems, page } = await state.backend.search(state);
     items = fetchedItems;
     dispatch(setPage(page));
     dispatch(setItems(items));
-  }
-  catch (e) {}
+  } catch (e) {}
 
   dispatch(setFetching(false));
-}
+};
 
 export const SET_ITEMS = 'SET_ITEMS';
 

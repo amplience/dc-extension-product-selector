@@ -22,14 +22,6 @@ export class SFCC {
     return false;
   }
 
-  getId(item) {
-    return item.id;
-  }
-
-  getImage(item) {
-    return item.image;
-  }
-
   async getItems(state, ids) {
     const {
       params: { siteId: site_id, sfccUrl: endpoint, proxyUrl }

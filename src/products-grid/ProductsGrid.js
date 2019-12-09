@@ -63,9 +63,7 @@ const ProductsGridComponent = params => {
         }
       </div>
   
-      <FadeIn  
-        show={params.items.length && !params.loading}
-        exitOptions={{ position: 'absolute' }}>
+      <FadeIn show={params.items.length && !params.loading}>
         <Pager />
       </FadeIn>
     </div>

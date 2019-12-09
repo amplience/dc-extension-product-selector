@@ -31,7 +31,7 @@ const PagerComponent = ({ changePage, page: { numPages, curPage } }) => {
   }
 
   return (
-    <ButtonGroup color="primary" className={classes.root}>
+    <ButtonGroup color="primary" className={{...classes.root}}>
       <Button aria-label="first" onClick={() => changePage(0)} disabled={curPage === 0}>
         <SkipPrevious fontSize="small" />
       </Button>

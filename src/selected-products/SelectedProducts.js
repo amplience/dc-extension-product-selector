@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { get, reject, slice } from 'lodash';
 import { setSelectedItems, setValue } from '../actions';
@@ -23,10 +23,7 @@ const styles = makeStyles(theme => ({
     position: 'relative'
   },
   dragItem: {
-    transition: 'flex 0.15s, opacity 0.15s',
-    '&:empty': {
-      flex: 0
-    },
+    transition: 'flex 0.15s, opacity 0.15s'
   },
   title: {
     fontWeight: 700
@@ -68,6 +65,7 @@ const styles = makeStyles(theme => ({
 const SelectedProductsComponent = params => {
   const classes = styles();
   const {minItems, maxItems} = get(params.SDK, 'field.schema', {});
+  const [isDragging, setDragging] = useState(false);
   const reorder = (order, sortable, {oldIndex, newIndex}) => {
     const itemToMove = params.selectedItems[oldIndex];
     const remainingItems = reject(params.selectedItems, {id:  itemToMove.id});
@@ -92,12 +90,12 @@ const SelectedProductsComponent = params => {
        <AnimatePresence>
           {params.initialised && ( <motion.div initial={{opacity: 0}} exit={{opacity: 0}} animate={{ opacity: 1}}>
             <Sortable 
-              onChange={reorder} 
-              options={{animation: 150, ghostClass: 'product-placeholder'}} 
+              onChange={reorder}
+              options={{animation: 150, ghostClass: 'product-placeholder', onStart: () => setDragging(true), onEnd: () => setDragging(false)}} 
               className={classes.items}>
               {params.selectedItems.length ? 
                   params.selectedItems.map(item => (
-                    <motion.div positionTransition={{type: 'tween'}} className={classes.item} key={item.id}>
+                    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} className={classes.item} key={item.id}>
                       <Product 
                         className={classes.dragItem}
                         item={item}

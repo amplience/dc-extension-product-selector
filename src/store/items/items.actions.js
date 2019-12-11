@@ -1,4 +1,4 @@
-import { map } from 'lodash';
+import map from 'lodash/map';
 import { setPage } from '../pages/pages.actions';
 import { setFetching } from '../fetching/fetching.actions';
 
@@ -28,7 +28,9 @@ export const getItems = () => async (dispatch, getState) => {
     items = fetchedItems;
     dispatch(setPage(page));
     dispatch(setItems(items));
-  } catch (e) {}
+  } catch (e) {
+    console.error(e)
+  }
 
   dispatch(setFetching(false));
 };

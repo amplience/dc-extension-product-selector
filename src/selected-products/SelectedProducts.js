@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { get } from 'lodash';
+import get from 'lodash/get';
 import { connect } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import { makeStyles, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
@@ -151,8 +151,8 @@ const SelectedProducts = connect(
     initialised: state.initialised
   }),
   dispatch => ({
-    reorder: (_, sortable, indexs) => {
-      dispatch(reorderItem(indexs));
+    reorder: (_, sortable, indexes) => {
+      dispatch(reorderItem(indexes));
     }
   })
 )(SelectedProductsComponent);

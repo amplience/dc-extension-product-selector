@@ -1,6 +1,6 @@
 import thunkMiddleware from 'redux-thunk';
 
-import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { createStore, applyMiddleware, combineReducers, compose } from 'redux';
 
 import { sdkReducer } from './sdk/sdk.reducer';
 import { pagesReducer } from './pages/pages.reducer'
@@ -31,6 +31,11 @@ const rootReducer = combineReducers({
   PAGE_SIZE: (state = 20) => state,
 });
 
-export const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+export const store = createStore(
+  rootReducer,
+  composeEnhancer(applyMiddleware(thunkMiddleware))
+);
 
 store.dispatch(fetchSDK());

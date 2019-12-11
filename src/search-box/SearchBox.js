@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { debounce, isUndefined } from 'lodash';
+import debounce from 'lodash/debounce';
+import isUndefined from 'lodash/isUndefined';
 import { connect } from 'react-redux';
 import { Paper, InputBase, Divider, Snackbar, makeStyles } from '@material-ui/core';
 import { Search } from '@material-ui/icons';

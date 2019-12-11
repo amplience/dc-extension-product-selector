@@ -1,4 +1,4 @@
-import { trimEnd } from 'lodash';
+import trimEnd from 'lodash/trimEnd';
 import qs from 'qs';
 export class SFCC {
   constructor(settings) {
@@ -17,9 +17,9 @@ export class SFCC {
       }
     };
   }
-
-  catalogRequired() {
-    return false;
+  
+  defaultCatalog() {
+    return 'all';
   }
 
   async getItems(state, ids) {

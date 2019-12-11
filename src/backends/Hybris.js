@@ -2,22 +2,21 @@ import { ProductService } from 'sap-product-browser';
 
 export class Hybris {
 
-  static getDefaultCatalog(params) {
-    const fallback = [{ id: 'Catalog required' }];
-    const { id } = (params.catalogs || fallback).shift();
-
-    return id;
-  }
-
   constructor(params) {
     const { basePath, hybrisUrl } = params;
 
     this.basePath = basePath;
     this.hybrisUrl = hybrisUrl;
 
-    const defaultImage = '/images/image-icon.svg';
+    this.productService = new ProductService(hybrisUrl, basePath, null);
+  }
 
-    this.productService = new ProductService(hybrisUrl, basePath, defaultImage);
+  defaultCatalog(params = {}) {
+    const fallback = [{ id: 'Catalog required' }];
+    const catalogs = params.catalogs && params.catalogs.length ? params.catalogs : fallback;
+    const { id } = [...catalogs].shift();
+
+    return id;
   }
 
   async getItems(state, filterIds) {
@@ -67,13 +66,9 @@ export class Hybris {
       numPages
     };
 
-    const items = products.map(item => this.itemModel(item))
+    const items = products.map(item => this.itemModel(item));
 
     return { items, page: pages };
-  }
-
-  catalogRequired() {
-    return true;
   }
 
   getImage(item) {

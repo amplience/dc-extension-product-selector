@@ -1,4 +1,4 @@
-import { SET_PARAMS } from "./params.actions";
+import { SET_PARAMS } from './params.actions';
 
 const params = {
   proxyUrl: '',
@@ -12,11 +12,16 @@ const params = {
   searchPlaceholderText: 'Search'
 };
 
-
 export function paramReducer(state = params, action) {
   switch (action.type) {
     case SET_PARAMS:
-      return {...state, ...action.value.instance, ...action.value.installation};
+      const sdkParams = Object.assign(
+        {},
+        state, action.value.instance || {},
+        action.value.installation || {}
+      );
+
+      return sdkParams;
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-import { SET_CATALOG } from "./catalog.actions";
+import { SET_CATALOG } from './catalog.actions';
 
 export function catalogReducer(state = 'all', action) {
   switch (action.type) {

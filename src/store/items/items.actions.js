@@ -1,4 +1,4 @@
-import { map } from 'lodash';
+import map from 'lodash/map';
 import { setPage } from '../pages/pages.actions';
 import { setFetching } from '../fetching/fetching.actions';
 import { setGlobalError } from '../global-error/global-error.actions';
@@ -34,6 +34,7 @@ export const getItems = () => async (dispatch, getState) => {
     dispatch(setItems(items));
   } catch (e) {
     dispatch(setGlobalError('Could not get items'));
+    console.error(e)
   }
 
   dispatch(setFetching(false));

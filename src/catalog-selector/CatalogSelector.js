@@ -19,7 +19,7 @@ const CatalogSelectorComponent = params => {
   const classes = styles();
   const inputLabel = React.useRef(null);
   const selectCatalog = event => params.setCatalog(event.target.value);
-  const required = params.backend.catalogRequired && params.backend.catalogRequired();
+  const showAll = params.backend.defaultCatalog && params.backend.defaultCatalog() === 'all';
 
   useEffect(() => setLabelWidth(inputLabel.current.offsetWidth), []);
 
@@ -35,7 +35,7 @@ const CatalogSelectorComponent = params => {
         onChange={selectCatalog}
         labelWidth={labelWidth}
       >
-        {!required && <MenuItem value="all">All</MenuItem>}
+        {showAll && <MenuItem value="all">All</MenuItem>}
         {params.catalogs.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
             {name}
@@ -46,8 +46,8 @@ const CatalogSelectorComponent = params => {
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  setCatalog: value => dispatch(changeCatalog(value))
+const mapDispatchToProps = ({
+  setCatalog: changeCatalog
 });
 
 const mapStateToProps = state => ({

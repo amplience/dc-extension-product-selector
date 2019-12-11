@@ -12,8 +12,6 @@ export const setSDK = value => ({
   value
 });
 
-export const FETCH_SDK = 'FETCH_SDK';
-
 export const fetchSDK = () => async (dispatch, getState) => {
   let { SDK } = getState();
 

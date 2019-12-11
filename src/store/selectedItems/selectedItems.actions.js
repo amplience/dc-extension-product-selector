@@ -1,4 +1,8 @@
-import { isArray, get, filter, sortBy, indexOf } from 'lodash';
+import get from 'lodash/get';
+import sortBy from 'lodash/sortBy';
+import filter from 'lodash/filter';
+import indexOf from 'lodash/indexOf';
+import isArray from 'lodash/isArray';
 
 import { setValue } from '../items/items.actions';
 import { setFetching } from '../fetching/fetching.actions'
@@ -28,29 +32,24 @@ export const setSelectedItems = value => ({
   value
 });
 
-export const toggleProduct = (item, isSelected) => async dispatch => {
+export const toggleProduct = (item, isSelected) => async (dispatch, getState) => {
   dispatch(isSelected ? removeItem(item) : addItem(item));
   dispatch(setTouched(true));
 
-  dispatch(async (emit, getState) => {
-    const { selectedItems } = getState();
+  const { selectedItems } = getState();
 
-    emit(setValue(selectedItems))
-  });
+  dispatch(setValue(selectedItems))
 }
 
-export const reorder = indexs => ({
+export const reorder = indexes => ({
   type: REORDER_SELECTED_ITEMS,
-  value: indexs
+  value: indexes
 });
 
-export const reorderItem = (indexs) => dispatch => {
+export const reorderItem = (indexs) => (dispatch, getState) => {
   dispatch(reorder(indexs));
-  dispatch(async (emit, getState) => {
-    const { selectedItems } = getState();
-
-    emit(setValue(selectedItems))
-  });
+  const { selectedItems } = getState();
+  dispatch(setValue(selectedItems))
 };
 
 export const getSelectedItems = () => async (dispatch, getState) => {

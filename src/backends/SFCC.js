@@ -1,4 +1,4 @@
-import { trimEnd } from 'lodash';
+import trimEnd from 'lodash/trimEnd';
 import qs from 'qs';
 import { ProductSelectorError } from '../ProductSelectorError';
 export class SFCC {
@@ -18,9 +18,9 @@ export class SFCC {
       }
     };
   }
-
-  catalogRequired() {
-    return false;
+  
+  defaultCatalog() {
+    return 'all';
   }
 
   async getItems(state, ids) {

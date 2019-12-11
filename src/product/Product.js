@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Clear } from '@material-ui/icons';
-import { find } from 'lodash';
 import { Card, CardActionArea, CardMedia, CardHeader, IconButton, makeStyles } from '@material-ui/core';
 import { toggleProduct } from '../store/selectedItems/selectedItems.actions';
 
+import find from 'lodash/find';
 import FadeIn from '../fade-in/FadeIn';
 
 import './product.scss';
@@ -104,9 +104,7 @@ const ProductComponent = params => {
 
 const Product = connect(
 	({ selectedItems, backend, SDK }) => ({ selectedItems, backend, SDK }),
-	dispatch => ({
-		toggleProduct: (item, isSelected) => dispatch(toggleProduct(item, isSelected))
-	})
+	({ toggleProduct })
 )(ProductComponent);
 
 export default Product;

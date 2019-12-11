@@ -7,7 +7,7 @@ export const setCatalog = value => ({
   value
 });
 
-export const changeCalalog = value => async dispatch => {
+export const changeCatalog = value => async dispatch => {
   dispatch(setCatalog(value));
   dispatch(changePage(0));
 }

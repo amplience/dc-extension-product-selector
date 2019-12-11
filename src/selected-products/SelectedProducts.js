@@ -68,10 +68,18 @@ const styles = makeStyles(theme => ({
 }));
 
 const SelectedProductsComponent = params => {
-  const classes = styles();
+  const noop = () => {};
   const { minItems, maxItems } = get(params.SDK, 'field.schema', {});
+  const { readOnly } = get(params.SDK, 'form', {});
+  const classes = styles({ readOnly });
   const showMinItemError = params.touched && minItems && params.selectedItems.length < minItems;
   const showMaxItemError = params.touched && maxItems && params.selectedItems.length > maxItems;
+
+  const items = params.selectedItems.length ? (
+    <ProductList selectedItems={params.selectedItems} classes={classes} />
+  ) : (
+    <NoItems classes={classes} noItemsText={params.params.noItemsText} />
+  );
 
   return (
     <Paper className={'selected-products ' + classes.root}>
@@ -82,17 +90,16 @@ const SelectedProductsComponent = params => {
       <Loading show={!params.initialised} classes={classes} />
 
       <FadeIn show={params.initialised}>
-        <Sortable
-          onChange={params.reorder}
-          className={classes.items}
-          options={{ animation: 150, ghostClass: 'product-placeholder' }}
-        >
-          {params.selectedItems.length ? (
-            <ProductList selectedItems={params.selectedItems} classes={classes} />
-          ) : (
-            <NoItems classes={classes} noItemsText={params.params.noItemsText} />
-          )}
-        </Sortable>
+        {readOnly && <div className={classes.items}>{items}</div>}
+        {!readOnly && (
+          <Sortable
+            onChange={readOnly ? noop : params.reorder}
+            className={classes.items}
+            options={{ animation: 150, ghostClass: 'product-placeholder' }}
+          >
+            {items}
+          </Sortable>
+        )}
       </FadeIn>
 
       <div className={classes.errorWrapper}>
@@ -132,7 +139,7 @@ const Loading = ({ show, classes }) => (
 
 const NoItems = ({ classes, noItemsText }) => (
   <Typography component="div" variant="body1" className={classes.placeholder}>
-    <Box fontWeight="fontWeightLight">{ noItemsText }</Box>
+    <Box fontWeight="fontWeightLight">{noItemsText}</Box>
   </Typography>
 );
 

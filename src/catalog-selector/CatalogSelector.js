@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
-import { changeCalalog } from '../store/catalog/catalog.actions';
+import { changeCatalog } from '../store/catalog/catalog.actions';
 import { Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
 
 const styles = makeStyles(theme => ({
@@ -47,7 +47,7 @@ const CatalogSelectorComponent = params => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  setCatalog: value => dispatch(changeCalalog(value))
+  setCatalog: value => dispatch(changeCatalog(value))
 });
 
 const mapStateToProps = state => ({

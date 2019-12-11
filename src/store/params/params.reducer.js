@@ -1,3 +1,4 @@
+import { toLower } from 'lodash';
 import { SET_PARAMS } from "./params.actions";
 
 const params = {
@@ -12,11 +13,12 @@ const params = {
   searchPlaceholderText: 'Search'
 };
 
-
-export function paramReducer(state = params, action) {
-  switch (action.type) {
+export function paramReducer(state = params, {type, value}) {
+  switch (type) {
     case SET_PARAMS:
-      return {...state, ...action.value.instance, ...action.value.installation};
+      const {installation, instance} = (value || {});
+      const selectedParams = {...installation, ...instance};
+      return {...state, ...selectedParams, backend: toLower(selectedParams.backend)};
     default:
       return state;
   }

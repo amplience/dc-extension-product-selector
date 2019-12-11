@@ -8,8 +8,6 @@ import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 import { setGlobalError } from './store/global-error/global-error.actions';
 
-// @TODO: Refactor/error handling/params sanitisation
-
 const styles = makeStyles(theme => ({
   root: {
     display: 'flex',

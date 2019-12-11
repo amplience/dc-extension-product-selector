@@ -2,14 +2,15 @@ import { SFCC } from './SFCC';
 import { Hybris } from './Hybris';
 
 export const backends = {
-  SFCC: 'SFCC'
+  SFCC: 'sfcc',
+  HYBRIS: 'hybris'
 };
 
 export const getBackend = (params) => {
   switch (params.backend) {
-    case 'Hybris':
+    case backends.HYBRIS:
       return new Hybris(params);
-    case 'SFCC':
+    case backends.SFCC:
     default:
       return new SFCC(params);
   }

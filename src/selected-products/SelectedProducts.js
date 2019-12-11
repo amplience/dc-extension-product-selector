@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { get } from 'lodash';
 import { connect } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -27,10 +27,7 @@ const styles = makeStyles(theme => ({
     position: 'relative'
   },
   dragItem: {
-    transition: 'flex 0.15s, opacity 0.15s',
-    '&:empty': {
-      flex: 0
-    }
+    transition: 'flex 0.15s, opacity 0.15s'
   },
   title: {
     fontWeight: 700
@@ -68,6 +65,7 @@ const styles = makeStyles(theme => ({
 }));
 
 const SelectedProductsComponent = params => {
+  const [isDragging, setDragging] = useState(false);
   const noop = () => {};
   const { minItems, maxItems } = get(params.SDK, 'field.schema', {});
   const { readOnly } = get(params.SDK, 'form', {});
@@ -76,7 +74,7 @@ const SelectedProductsComponent = params => {
   const showMaxItemError = params.touched && maxItems && params.selectedItems.length > maxItems;
 
   const items = params.selectedItems.length ? (
-    <ProductList selectedItems={params.selectedItems} classes={classes} />
+    <ProductList selectedItems={params.selectedItems} classes={classes} isDragging={isDragging}/>
   ) : (
     <NoItems classes={classes} noItemsText={params.params.noItemsText} />
   );
@@ -95,11 +93,17 @@ const SelectedProductsComponent = params => {
           <Sortable
             onChange={readOnly ? noop : params.reorder}
             className={classes.items}
-            options={{ animation: 150, ghostClass: 'product-placeholder' }}
+            options={{
+              animation: 150,
+              ghostClass: 'product-placeholder',
+              onStart: () => setDragging(true),
+              onEnd: () => setDragging(false)
+            }}
           >
             {items}
           </Sortable>
         )}
+        
       </FadeIn>
 
       <div className={classes.errorWrapper}>
@@ -110,15 +114,9 @@ const SelectedProductsComponent = params => {
   );
 };
 
-const ProductList = ({ selectedItems, classes }) => {
-  const spring = {
-    type: 'spring',
-    damping: 30,
-    stiffness: 150
-  };
-
+const ProductList = ({ selectedItems, classes, isDragging }) => {
   return selectedItems.map(item => (
-    <motion.div positionTransition={spring} className={classes.item} key={item.id}>
+    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} className={classes.item} key={item.id}>
       <Product className={classes.dragItem} item={item} variant="removable" />
     </motion.div>
   ));

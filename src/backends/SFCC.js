@@ -1,5 +1,6 @@
 import { trimEnd } from 'lodash';
 import qs from 'qs';
+import { ProductSelectorError } from '../ProductSelectorError';
 export class SFCC {
   constructor(settings) {
     this.settings = settings;
@@ -44,7 +45,8 @@ export class SFCC {
       const { items } = await response.json();
       return items;
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
     }
   }
 
@@ -73,7 +75,8 @@ export class SFCC {
       const response = await fetch(trimEnd(proxyUrl, '/') + '/product-search', params);
       return response.json();
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);
     }
   }
 }

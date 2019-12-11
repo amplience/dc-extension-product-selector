@@ -1,8 +1,9 @@
 import { init } from "dc-extensions-sdk";
 import { setParams } from "../params/params.actions";
-import { initBackend } from "../backend/backend.actions";
-import { getSelectedItems } from "../selectedItems/selectedItems.actions";
-import { setFetching } from "../fetching/fetching.actions";
+import { initBackend } from '../backend/backend.actions';
+import { getSelectedItems } from '../selectedItems/selectedItems.actions';
+import { setFetching } from '../fetching/fetching.actions';
+import { setGlobalError } from '../global-error/global-error.actions';
 
 export const SET_SDK = 'SET_SDK';
 
@@ -34,10 +35,11 @@ export const fetchSDK = () => async (dispatch, getState) => {
     SDK.frame.startAutoResizer();
   }
   catch (e) {
-    console.error('Failed to load', e);
+    console.error('Failed to load', e);    
+    dispatch(setFetching(false));
+    dispatch(setGlobalError('Could not get SDK'));
   }
 
-  dispatch(setFetching(false));
 
   return SDK;
 }

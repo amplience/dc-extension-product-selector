@@ -13,6 +13,7 @@ import { fetchingReducer } from './fetching/fetching.reducer';
 import { searchTextReducer } from './searchText/searchText.reducer';
 import { initialisedReducer } from './initialised/initialised.reducer';
 import { selectedItemsReducer } from './selectedItems/selectedItems.reducer';
+import { globalErrorReducer } from './global-error/global-error.reducer';
 
 import { fetchSDK } from './sdk/sdk.actions';
 
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   initialised: initialisedReducer,
   selectedCatalog: catalogReducer,
   selectedItems: selectedItemsReducer,
+  globalError: globalErrorReducer,
   PAGE_SIZE: (state = 20) => state,
 });
 

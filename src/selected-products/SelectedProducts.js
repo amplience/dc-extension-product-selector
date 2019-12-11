@@ -48,7 +48,6 @@ const styles = makeStyles(theme => ({
       gridTemplateColumns: '20% 20% 20% 20% 20%'
     }
   },
-  item: {},
   errorWrapper: {
     height: '20px',
     marginTop: 'auto'
@@ -58,9 +57,11 @@ const styles = makeStyles(theme => ({
     alignSelf: 'center'
   },
   placeholder: {
-    margin: 'auto',
-    paddingTop: '12px',
-    gridColumn: 'span 5'
+    margin: '-12px 0 0 0',
+    position: 'absolute',
+    width: '100%',
+    textAlign: 'center',
+    top: '50%'
   }
 }));
 
@@ -82,7 +83,7 @@ const SelectedProductsComponent = params => {
   return (
     <Paper className={'selected-products ' + classes.root}>
       <Typography variant="subtitle1" component="h2" className={classes.title}>
-        Selected products
+        {get(params.SDK, 'field.schema.title', 'Selected products')}
       </Typography>
 
       <Loading show={!params.initialised} classes={classes} />
@@ -116,7 +117,7 @@ const SelectedProductsComponent = params => {
 
 const ProductList = ({ selectedItems, classes, isDragging }) => {
   return selectedItems.map(item => (
-    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} className={classes.item} key={item.id}>
+    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} key={item.id}>
       <Product className={classes.dragItem} item={item} variant="removable" />
     </motion.div>
   ));

@@ -1,5 +1,4 @@
 import reject from 'lodash/reject';
-import filter from 'lodash/filter';
 import slice from 'lodash/slice';
 
 import {

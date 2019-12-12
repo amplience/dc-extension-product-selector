@@ -48,6 +48,7 @@ export async function mockExtension({ params = initalParams, initalValue = [] } 
 
   return {
     App: Render,
+    store,
     ...extension
   };
 }

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 import { makeStyles, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
 
-import { reorderItem } from '../store/selectedItems/selectedItems.actions';
+import { reorderItems } from '../store/selectedItems/selectedItems.actions';
 
 import Sortable from 'react-sortablejs';
 import FadeIn from '../fade-in/FadeIn';
@@ -66,7 +66,6 @@ const styles = makeStyles(theme => ({
 
 const SelectedProductsComponent = params => {
   const [isDragging, setDragging] = useState(false);
-  const noop = () => {};
   const { minItems, maxItems } = get(params.SDK, 'field.schema', {});
   const { readOnly } = get(params.SDK, 'form', {});
   const classes = styles({ readOnly });
@@ -91,7 +90,7 @@ const SelectedProductsComponent = params => {
         {readOnly && <div className={classes.items}>{items}</div>}
         {!readOnly && (
           <Sortable
-            onChange={readOnly ? noop : params.reorder}
+            onChange={(_, sortable, indexes) => params.reorderItems(indexes)}
             className={classes.items}
             options={{
               animation: 150,
@@ -150,11 +149,7 @@ const SelectedProducts = connect(
     backend: state.backend,
     initialised: state.initialised
   }),
-  dispatch => ({
-    reorder: (_, sortable, indexes) => {
-      dispatch(reorderItem(indexes));
-    }
-  })
+  { reorderItems }
 )(SelectedProductsComponent);
 
 export default SelectedProducts;

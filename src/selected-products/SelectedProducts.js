@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import get from 'lodash/get';
 import { connect } from 'react-redux';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { makeStyles, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
 
-import { reorderItem } from '../store/selectedItems/selectedItems.actions';
+import { reorderItems } from '../store/selectedItems/selectedItems.actions';
 
 import Sortable from 'react-sortablejs';
 import FadeIn from '../fade-in/FadeIn';
@@ -48,7 +48,6 @@ const styles = makeStyles(theme => ({
       gridTemplateColumns: '20% 20% 20% 20% 20%'
     }
   },
-  item: {},
   errorWrapper: {
     height: '20px',
     marginTop: 'auto'
@@ -66,7 +65,6 @@ const styles = makeStyles(theme => ({
 
 const SelectedProductsComponent = params => {
   const [isDragging, setDragging] = useState(false);
-  const noop = () => {};
   const { minItems, maxItems } = get(params.SDK, 'field.schema', {});
   const { readOnly } = get(params.SDK, 'form', {});
   const classes = styles({ readOnly });
@@ -85,13 +83,13 @@ const SelectedProductsComponent = params => {
         Selected products
       </Typography>
 
-      <Loading show={!params.initialised} classes={classes} />
+      <Loading show={!params.initialised} className={classes.loader} />
 
       <FadeIn show={params.initialised}>
         {readOnly && <div className={classes.items}>{items}</div>}
         {!readOnly && (
           <Sortable
-            onChange={readOnly ? noop : params.reorder}
+            onChange={(_, sortable, indexes) => params.reorderItems(indexes)}
             className={classes.items}
             options={{
               animation: 150,
@@ -116,23 +114,20 @@ const SelectedProductsComponent = params => {
 
 const ProductList = ({ selectedItems, classes, isDragging }) => {
   return selectedItems.map(item => (
-    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} className={classes.item} key={item.id}>
+    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} key={item.id}>
       <Product className={classes.dragItem} item={item} variant="removable" />
     </motion.div>
   ));
 };
 
-const Loading = ({ show, classes }) => (
-  <AnimatePresence>
-    {show && (
-      <motion.div
-        className={classes.loader}
-        exit={{ opacity: 0, position: 'absolute', zIndex: 3, top: '50%', marginTop: '-20px' }}
-      >
-        <CircularProgress />
-      </motion.div>
-    )}
-  </AnimatePresence>
+const Loading = ({ show, className }) => (
+  <FadeIn
+    show={show}
+    className={className}
+    exitOptions={{position: 'absolute', zIndex: 3, top: '50%', marginTop: '-20px'}}
+  >
+    <CircularProgress />
+  </FadeIn>
 );
 
 const NoItems = ({ classes, noItemsText }) => (
@@ -150,11 +145,7 @@ const SelectedProducts = connect(
     backend: state.backend,
     initialised: state.initialised
   }),
-  dispatch => ({
-    reorder: (_, sortable, indexes) => {
-      dispatch(reorderItem(indexes));
-    }
-  })
+  { reorderItems }
 )(SelectedProductsComponent);
 
 export default SelectedProducts;

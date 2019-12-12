@@ -8,26 +8,26 @@ export class SFCC {
 
   getHeaders(state) {
     const {
-      params: { authSecret, authClientId }
+      params: { authSecret, authClientId, sfccUrl: endpoint }
     } = state;
     return {
       headers: {
         'Content-Type': 'application/json',
         'x-auth-id': authClientId,
-        'x-auth-secret': authSecret
+        'x-auth-secret': authSecret,
+        endpoint
       }
     };
   }
 
   async getItems(state, ids) {
     const {
-      params: { siteId: site_id, sfccUrl: endpoint, proxyUrl }
+      params: { siteId: site_id, proxyUrl }
     } = state;
     try {
       const queryString = qs.stringify(
         {
           site_id,
-          endpoint,
           ids
         },
         { arrayFormat: 'brackets' }
@@ -51,14 +51,13 @@ export class SFCC {
       searchText,
       page,
       selectedCatalog,
-      params: { siteId, sfccUrl: endpoint, proxyUrl }
+      params: { siteId, proxyUrl }
     } = state;
     try {
       const body = {
         site_id: siteId,
         search_text: searchText,
-        page: page.curPage,
-        endpoint
+        page: page.curPage
       };
 
       if (selectedCatalog !== null) {

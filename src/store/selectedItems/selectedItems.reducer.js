@@ -1,5 +1,4 @@
-import reject from 'lodash/reject';
-import slice from 'lodash/slice';
+import { reject, slice } from 'lodash';
 
 import {
   SET_SELECTED_ITEMS,

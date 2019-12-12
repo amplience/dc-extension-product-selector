@@ -45,10 +45,10 @@ export const reorder = indexes => ({
   value: indexes
 });
 
-export const reorderItem = (indexs) => (dispatch, getState) => {
-  dispatch(reorder(indexs));
+export const reorderItems = (indexes) => (dispatch, getState) => {
+  dispatch(reorder(indexes));
   const { selectedItems } = getState();
-  dispatch(setValue(selectedItems))
+  dispatch(setValue(selectedItems));
 };
 
 export const getSelectedItems = () => async (dispatch, getState) => {

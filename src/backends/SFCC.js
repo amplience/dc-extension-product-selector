@@ -1,44 +1,62 @@
-import {trimEnd} from 'lodash';
+import trimEnd from 'lodash/trimEnd';
 import qs from 'qs';
+import { ProductSelectorError } from '../ProductSelectorError';
 export class SFCC {
   constructor(settings) {
     this.settings = settings;
   }
 
   getHeaders(state) {
-    const {params: {authSecret, authClientId}} = state;
+    const {
+      params: { authSecret, authClientId }
+    } = state;
     return {
       headers: {
         'Content-Type': 'application/json',
         'x-auth-id': authClientId,
         'x-auth-secret': authSecret
-      }     
-    }
+      }
+    };
+  }
+  
+  defaultCatalog() {
+    return 'all';
   }
 
   async getItems(state, ids) {
-    const {params: {siteId: site_id, sfccUrl: endpoint, proxyUrl}} = state;
+    const {
+      params: { siteId: site_id, sfccUrl: endpoint, proxyUrl }
+    } = state;
     try {
-      const queryString = qs.stringify({
-        site_id,
-        endpoint, 
-        ids
-      }, {arrayFormat: 'brackets'});
+      const queryString = qs.stringify(
+        {
+          site_id,
+          endpoint,
+          ids
+        },
+        { arrayFormat: 'brackets' }
+      );
       const params = {
         method: 'GET',
         ...this.getHeaders(state)
-      }
+      };
       params.method = 'GET';
       const response = await fetch(trimEnd(proxyUrl, '/') + '/products?' + queryString, params);
-      const {items} = await response.json();
+      const { items } = await response.json();
       return items;
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
     }
   }
 
   async search(state) {
-    const {searchText, page, selectedCatalog, params: {siteId, sfccUrl: endpoint, proxyUrl}} = state;
+    const {
+      searchText,
+      page,
+      selectedCatalog,
+      params: { siteId, sfccUrl: endpoint, proxyUrl }
+    } = state;
     try {
       const body = {
         site_id: siteId,
@@ -56,8 +74,9 @@ export class SFCC {
       };
       const response = await fetch(trimEnd(proxyUrl, '/') + '/product-search', params);
       return response.json();
-    } catch(e) {
-      console.log(e);
+    } catch (e) {
+      console.error(e);
+      throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);
     }
   }
 }

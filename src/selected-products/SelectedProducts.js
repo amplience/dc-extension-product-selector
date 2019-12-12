@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
+import get from 'lodash/get';
 import { connect } from 'react-redux';
-import { get, reject, slice } from 'lodash';
-import { setSelectedItems, setValue } from '../actions';
-import { makeStyles, FormHelperText, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
-import { AnimatePresence, motion } from 'framer-motion';
-import Sortable from 'react-sortablejs';
+import { motion } from 'framer-motion';
+import { makeStyles, CircularProgress, Paper, Typography, Box } from '@material-ui/core';
 
+import { reorderItems } from '../store/selectedItems/selectedItems.actions';
+
+import Sortable from 'react-sortablejs';
+import FadeIn from '../fade-in/FadeIn';
 import Product from '../product/Product';
+import FormError from '../form-error/FormError';
+
 import './selected-products.scss';
 
 const styles = makeStyles(theme => ({
@@ -48,86 +52,91 @@ const styles = makeStyles(theme => ({
     height: '20px',
     marginTop: 'auto'
   },
-  error: {
-    marginTop: theme.spacing(1)
-  },
   loader: {
     margin: 'auto',
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   placeholder: {
-    margin: 'auto',
-    paddingTop: '12px',
-    gridColumn: 'span 5'
-  },
+    margin: '-12px 0 0 0',
+    position: 'absolute',
+    width: '100%',
+    textAlign: 'center',
+    top: '50%'
+  }
 }));
 
 const SelectedProductsComponent = params => {
-  const classes = styles();
-  const {minItems, maxItems} = get(params.SDK, 'field.schema', {});
   const [isDragging, setDragging] = useState(false);
-  const reorder = (order, sortable, {oldIndex, newIndex}) => {
-    const itemToMove = params.selectedItems[oldIndex];
-    const remainingItems = reject(params.selectedItems, {id:  itemToMove.id});
-    const reorderedItems = [
-      ...slice(remainingItems, 0, newIndex),
-      itemToMove,
-      ...slice(remainingItems, newIndex)
-    ];
-    params.setSelectedItems(reorderedItems);
-    params.setValue(reorderedItems);
-  };
+  const { minItems, maxItems } = get(params.SDK, 'field.schema', {});
+  const { readOnly } = get(params.SDK, 'form', {});
+  const classes = styles({ readOnly });
+  const showMinItemError = params.touched && minItems && params.selectedItems.length < minItems;
+  const showMaxItemError = params.touched && maxItems && params.selectedItems.length > maxItems;
+
+  const items = params.selectedItems.length ? (
+    <ProductList selectedItems={params.selectedItems} classes={classes} isDragging={isDragging}/>
+  ) : (
+    <NoItems classes={classes} noItemsText={params.params.noItemsText} />
+  );
+
   return (
     <Paper className={'selected-products ' + classes.root}>
-<Typography variant="subtitle1" component="h2" className={classes.title}>{get(params.SDK, 'field.schema.title', '')}</Typography>
-      <AnimatePresence>
-        {!params.initialised && (
-          <motion.div className={classes.loader} exit={{opacity: 0, position: 'absolute', zIndex: 3, top: '50%', marginTop: '-20px',}}>
-            <CircularProgress  />
-          </motion.div>
+      <Typography variant="subtitle1" component="h2" className={classes.title}>
+        {get(params.SDK, 'field.schema.title', 'Selected products')}
+      </Typography>
+
+      <Loading show={!params.initialised} className={classes.loader} />
+
+      <FadeIn show={params.initialised}>
+        {readOnly && <div className={classes.items}>{items}</div>}
+        {!readOnly && (
+          <Sortable
+            onChange={(_, sortable, indexes) => params.reorderItems(indexes)}
+            className={classes.items}
+            options={{
+              animation: 150,
+              ghostClass: 'product-placeholder',
+              onStart: () => setDragging(true),
+              onEnd: () => setDragging(false)
+            }}
+          >
+            {items}
+          </Sortable>
         )}
-      </AnimatePresence>
-       <AnimatePresence>
-          {params.initialised && ( <motion.div initial={{opacity: 0}} exit={{opacity: 0}} animate={{ opacity: 1}}>
-            <Sortable 
-              onChange={reorder}
-              options={{animation: 150, ghostClass: 'product-placeholder', onStart: () => setDragging(true), onEnd: () => setDragging(false)}} 
-              className={classes.items}>
-              {params.selectedItems.length ? 
-                  params.selectedItems.map(item => (
-                    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} className={classes.item} key={item.id}>
-                      <Product 
-                        className={classes.dragItem}
-                        item={item}
-                        variant="removable" />
-                    </motion.div>
-                  )) : 
-                  (
-                    <Typography component="div" variant="body1" className={classes.placeholder}>
-                      <Box fontWeight="fontWeightLight">{params.params.noItemsText}</Box>
-                    </Typography>
-                  )}
-            </Sortable>
-          </motion.div>)}
-      </AnimatePresence>
+        
+      </FadeIn>
+
       <div className={classes.errorWrapper}>
-          <AnimatePresence>
-            {params.touched && minItems && params.selectedItems.length < minItems && (
-              <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}>
-                <FormHelperText error={true} className={classes.error}>You must select a minimum of {minItems} items</FormHelperText>
-              </motion.div>)}
-          </AnimatePresence>
-          <AnimatePresence>
-          {params.touched && maxItems && params.selectedItems.length > maxItems && (
-            <motion.div initial={{opacity: 0}} animate={{opacity: 1}} exit={{opacity: 0}}>
-              <FormHelperText error={true} className={classes.error}>You must select a maximum of {maxItems} items</FormHelperText>
-            </motion.div>
-          )}
-          </AnimatePresence>
+        <FormError show={showMinItemError}>You must select a minimum of {minItems} items</FormError>
+        <FormError show={showMaxItemError}>You must select a maximum of {maxItems} items</FormError>
       </div>
     </Paper>
   );
-}
+};
+
+const ProductList = ({ selectedItems, classes, isDragging }) => {
+  return selectedItems.map(item => (
+    <motion.div positionTransition={isDragging ? null : {type: 'tween'}} key={item.id}>
+      <Product className={classes.dragItem} item={item} variant="removable" />
+    </motion.div>
+  ));
+};
+
+const Loading = ({ show, className }) => (
+  <FadeIn
+    show={show}
+    className={className}
+    exitOptions={{position: 'absolute', zIndex: 3, top: '50%', marginTop: '-20px'}}
+  >
+    <CircularProgress />
+  </FadeIn>
+);
+
+const NoItems = ({ classes, noItemsText }) => (
+  <Typography component="div" variant="body1" className={classes.placeholder}>
+    <Box fontWeight="fontWeightLight">{noItemsText}</Box>
+  </Typography>
+);
 
 const SelectedProducts = connect(
   state => ({
@@ -135,9 +144,10 @@ const SelectedProducts = connect(
     SDK: state.SDK,
     params: state.params,
     touched: state.touched,
+    backend: state.backend,
     initialised: state.initialised
   }),
-  {setSelectedItems, setValue}
-)(SelectedProductsComponent)
+  { reorderItems }
+)(SelectedProductsComponent);
 
 export default SelectedProducts;

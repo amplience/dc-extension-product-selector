@@ -1,7 +1,8 @@
-import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
-import {Select, MenuItem, InputLabel, FormControl, makeStyles} from '@material-ui/core';
-import {setCatalog, changePage} from '../actions';
+import React, { useState, useEffect } from 'react';
+
+import { connect } from 'react-redux';
+import { changeCatalog } from '../store/catalog/catalog.actions';
+import { Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -13,10 +14,12 @@ const styles = makeStyles(theme => ({
 }));
 
 const CatalogSelectorComponent = params => {
-  const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = useState(0);
+
   const classes = styles();
+  const inputLabel = React.useRef(null);
   const selectCatalog = event => params.setCatalog(event.target.value);
+  const showAll = params.backend.defaultCatalog && params.backend.defaultCatalog() === 'all';
 
   useEffect(() => setLabelWidth(inputLabel.current.offsetWidth), []);
 
@@ -32,8 +35,8 @@ const CatalogSelectorComponent = params => {
         onChange={selectCatalog}
         labelWidth={labelWidth}
       >
-        <MenuItem value="all">All</MenuItem>
-        {params.catalogs.map(({id, name}) => (
+        {showAll && <MenuItem value="all">All</MenuItem>}
+        {params.catalogs.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
             {name}
           </MenuItem>
@@ -43,16 +46,14 @@ const CatalogSelectorComponent = params => {
   );
 };
 
-const mapDispatchToProps = dispatch => ({
-  setCatalog: value => {
-    dispatch(setCatalog(value));
-    dispatch(changePage(0));
-  }
+const mapDispatchToProps = ({
+  setCatalog: changeCatalog
 });
 
 const mapStateToProps = state => ({
   catalogs: state.params.catalogs,
-  selectedCatalog: state.selectedCatalog
+  selectedCatalog: state.selectedCatalog,
+  backend: state.backend
 });
 
 const CatalogSelector = connect(mapStateToProps, mapDispatchToProps)(CatalogSelectorComponent);

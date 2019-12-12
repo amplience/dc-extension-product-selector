@@ -60,7 +60,8 @@ export class SFCC {
         page: page.curPage,
         endpoint
       };
-      if (selectedCatalog !== 'all') {
+
+      if (selectedCatalog !== null) {
         body.catalog_id = selectedCatalog;
       }
       const params = {

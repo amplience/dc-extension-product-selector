@@ -16,7 +16,14 @@ export const getItems = () => async (dispatch, getState) => {
   const state = getState();
 
   if (!state.searchText.length) {
-    return Promise.resolve([]);
+    const page = {
+      numPages: 0,
+      curPage: 0,
+      total: 0
+    };
+    dispatch(setPage(page));
+    dispatch(setItems([]));
+    return;
   }
 
   dispatch(setFetching(true));

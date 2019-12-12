@@ -83,7 +83,7 @@ const ProductComponent = params => {
 	return (
 		<FadeIn 
 			show={visible}
-			style={classes.cardWrapper}>
+			className={classes.cardWrapper}>
 			<Card 
 				className={'product ' + classes.root}
 				raised={isSelected}

@@ -30,14 +30,13 @@ export const fetchSDK = () => async (dispatch, getState) => {
     dispatch(setFetching(false));
 
     SDK.frame.startAutoResizer();
+    SDK.form.onReadOnlyChange(readOnly => {
+      dispatch(setSDK({ ...SDK, form: { ...SDK.form, readOnly } }))
+    })
   }
   catch (e) {
     console.error('Failed to load', e);
   }
-
-  SDK.form.onReadOnlyChange(readOnly => {
-    dispatch(setSDK({ ...SDK, form: { ...SDK.form, readOnly } }))
-  })
 
   dispatch(setFetching(false));
 

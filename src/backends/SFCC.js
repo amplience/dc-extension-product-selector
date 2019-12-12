@@ -18,10 +18,6 @@ export class SFCC {
       }
     };
   }
-  
-  defaultCatalog() {
-    return 'all';
-  }
 
   async getItems(state, ids) {
     const {

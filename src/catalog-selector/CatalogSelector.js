@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { changeCatalog } from '../store/catalog/catalog.actions';
 import { Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles(() => ({
   root: {
     marginLeft: 'auto'
   },
@@ -19,7 +19,6 @@ const CatalogSelectorComponent = params => {
   const classes = styles();
   const inputLabel = React.useRef(null);
   const selectCatalog = event => params.setCatalog(event.target.value);
-  const showAll = params.backend.defaultCatalog && params.backend.defaultCatalog() === 'all';
 
   useEffect(() => setLabelWidth(inputLabel.current.offsetWidth), []);
 
@@ -35,7 +34,6 @@ const CatalogSelectorComponent = params => {
         onChange={selectCatalog}
         labelWidth={labelWidth}
       >
-        {showAll && <MenuItem value="all">All</MenuItem>}
         {params.catalogs.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
             {name}

@@ -1,4 +1,5 @@
 import { ProductService } from 'sap-product-browser';
+import { ProductSelectorError } from '../ProductSelectorError';
 
 export class Hybris {
 
@@ -23,17 +24,21 @@ export class Hybris {
     const { selectedCatalog, params } = state;
     const { currency } = params;
 
-    return Promise.all(
-      filterIds.map(async id => {
-        const item = await this.productService.getByCode(selectedCatalog, id, currency);
-
-        return this.itemModel(item);
-      })
-    );
+    try {
+      return Promise.all(
+        filterIds.map(async id => {
+          const item = await this.productService.getByCode(selectedCatalog, id, currency);
+  
+          return this.itemModel(item);
+        })
+      );
+    } catch (e) {
+      console.error(e);
+      throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
+    }
   }
 
   async search(state) {
-    const { page } = state;
     try {
       const { items, page } = await this._get(state);
 
@@ -43,7 +48,7 @@ export class Hybris {
       };
     } catch (e) {
       console.error(e);
-      return { items: [], page };
+      throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_ITEMS);
     }
   }
 

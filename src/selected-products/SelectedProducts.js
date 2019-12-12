@@ -57,9 +57,11 @@ const styles = makeStyles(theme => ({
     alignSelf: 'center'
   },
   placeholder: {
-    margin: 'auto',
-    paddingTop: '12px',
-    gridColumn: 'span 5'
+    margin: '-12px 0 0 0',
+    position: 'absolute',
+    width: '100%',
+    textAlign: 'center',
+    top: '50%'
   }
 }));
 
@@ -80,7 +82,7 @@ const SelectedProductsComponent = params => {
   return (
     <Paper className={'selected-products ' + classes.root}>
       <Typography variant="subtitle1" component="h2" className={classes.title}>
-        Selected products
+        {get(params.SDK, 'field.schema.title', 'Selected products')}
       </Typography>
 
       <Loading show={!params.initialised} className={classes.loader} />

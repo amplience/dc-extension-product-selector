@@ -6,8 +6,6 @@ export const setPage = value => ({
   value
 });
 
-export const CHANGE_PAGE = 'CHANGE_PAGE';
-
 export const changePage = curPage => async (dispatch, getState) => {
   const { page } = getState();
   dispatch(setPage({...page, curPage }));

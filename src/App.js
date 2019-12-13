@@ -1,12 +1,11 @@
 import React from 'react';
-import { makeStyles, MuiThemeProvider, Container } from '@material-ui/core';
+import { makeStyles, Container } from '@material-ui/core';
 
-import { theme } from './theme';
 import ProductsGrid from './products-grid/ProductsGrid';
 import SelectedProducts from './selected-products/SelectedProducts';
 import SearchBox from './search-box/SearchBox';
 
-const styles = makeStyles(theme => ({
+const styles = makeStyles(() => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -17,13 +16,11 @@ const styles = makeStyles(theme => ({
 const App = () => {
   const classes = styles();
   return (
-    <MuiThemeProvider theme={theme}>
-      <Container className={classes.root}>
-        <SelectedProducts />
-        <SearchBox />
-        <ProductsGrid />
-      </Container>
-    </MuiThemeProvider>
+    <Container className={classes.root}>
+      <SelectedProducts />
+      <SearchBox />
+      <ProductsGrid />
+    </Container>
   );
 };
 

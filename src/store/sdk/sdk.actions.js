@@ -27,7 +27,6 @@ export const fetchSDK = () => async (dispatch, getState) => {
     dispatch(setParams(SDK.params));
     dispatch(initBackend());
     dispatch(getSelectedItems());
-    dispatch(setFetching(false));
 
     SDK.frame.startAutoResizer();
     SDK.form.onReadOnlyChange(readOnly => {

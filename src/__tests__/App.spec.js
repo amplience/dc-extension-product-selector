@@ -1,9 +1,14 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import { mockExtension } from '../utils/mockExtension';
+import { mount } from 'enzyme';
+import { mockExtensionWrapper } from '../utils/mockExtension';
+import App from '../App';
 
 it('renders without crashing', async () => {
-  const { App } = await mockExtension();
+  const { Render } = await mockExtensionWrapper();
 
-  shallow(<App/>);
+  mount((
+    <Render>
+      <App/>
+    </Render>
+  ));
 });

@@ -1,4 +1,4 @@
-import trimEnd from 'lodash/trimEnd';
+import { trimEnd } from 'lodash';
 import qs from 'qs';
 import { ProductSelectorError } from '../ProductSelectorError';
 export class SFCC {
@@ -53,6 +53,8 @@ export class SFCC {
       selectedCatalog,
       params: { siteId, proxyUrl }
     } = state;
+    const emptyResult = { items: [], page: { numPages: 0, curPage: 0, total: 0 } };
+
     try {
       const body = {
         site_id: siteId,
@@ -69,7 +71,7 @@ export class SFCC {
         ...this.getHeaders(state)
       };
       const response = await fetch(trimEnd(proxyUrl, '/') + '/product-search', params);
-      return response.json();
+      return response.json() || emptyResult;
     } catch (e) {
       console.error(e);
       throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);

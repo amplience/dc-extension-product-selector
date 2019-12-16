@@ -46,7 +46,7 @@ const ProductsGridComponent = params => {
           </FadeIn>
         </Grid>
         <Grid item container xs={6}>
-          {params.catalogs.length > 0 ? <CatalogSelector /> : ''}
+          {params.catalogs.length && !params.loading ? <CatalogSelector /> : ''}
         </Grid>
       </Grid>
 

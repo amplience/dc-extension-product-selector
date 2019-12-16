@@ -46,7 +46,7 @@ const ProductsGridComponent = params => {
           </FadeIn>
         </Grid>
         <Grid item container xs={6}>
-          {params.catalogs.length && !params.loading ? <CatalogSelector /> : ''}
+          {params.catalogs.length && params.initialised ? <CatalogSelector /> : ''}
         </Grid>
       </Grid>
 
@@ -74,6 +74,7 @@ const ProductsGrid = connect(
   state => ({
     items: state.items,
     loading: state.isFetching,
+    initialised: state.initialised,
     catalogs: state.params.catalogs,
     backend: state.backend
   }),

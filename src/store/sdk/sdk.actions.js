@@ -4,6 +4,7 @@ import { initBackend } from '../backend/backend.actions';
 import { getSelectedItems } from '../selectedItems/selectedItems.actions';
 import { setFetching } from '../fetching/fetching.actions';
 import { setGlobalError } from '../global-error/global-error.actions';
+import { setInitialised } from "../initialised/initialised.actions";
 
 export const SET_SDK = 'SET_SDK';
 
@@ -38,6 +39,7 @@ export const fetchSDK = () => async (dispatch, getState) => {
   catch (e) {
     console.error('Failed to load', e);    
     dispatch(setFetching(false));
+    dispatch(setInitialised(true));
     dispatch(setGlobalError('Could not get SDK'));
   }
 

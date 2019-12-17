@@ -1,4 +1,4 @@
-import { map, isEmpty } from 'lodash';
+import { map, isEmpty, trim } from 'lodash';
 import { setPage } from '../pages/pages.actions';
 import { setFetching } from '../fetching/fetching.actions';
 import { setGlobalError } from '../global-error/global-error.actions';
@@ -19,7 +19,7 @@ export const GET_ITEMS = 'GET_ITEMS';
 export const getItems = () => async (dispatch, getState) => {
   const state = getState();
 
-  if (isEmpty(state.searchText)) {
+  if (isEmpty(trim(state.searchText))) {
     const page = {
       numPages: 0,
       curPage: 0,

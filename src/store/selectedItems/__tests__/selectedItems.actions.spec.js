@@ -3,9 +3,10 @@ import { mockExtensionWrapper } from '../../../utils/mockExtension.js';
 import { SET_TOUCHED } from '../../touched/touched.actions.js';
 import { SET_FETCHING } from '../../fetching/fetching.actions.js';
 import { SET_INITIALISED } from '../../initialised/initialised.actions.js';
-import { ProductSelectorError } from '../../ProductSelectorError.js';
+import { ProductSelectorError } from '../../../ProductSelectorError.js';
 
 import * as actions from '../selectedItems.actions';
+import { SET_GLOBAL_ERROR } from '../../global-error/global-error.actions.js';
 
 describe('selectedItems.actions', () => {
   it('toggleProduct add', async () => {
@@ -53,7 +54,7 @@ describe('selectedItems.actions', () => {
   });
 
   it('getSelectedItems invalid schema', async () => {
-    const spy = jest.spyOn(global.console, 'log').mockImplementation();
+    const spy = jest.spyOn(global.console, 'error').mockImplementation();
 
     const mocked = mockStore({ SDK: { field: {} }, selectedItems: [] });
 
@@ -61,7 +62,7 @@ describe('selectedItems.actions', () => {
 
     const dispatched = mocked.getActions();
 
-    expect(global.console.log).toBeCalledWith(
+    expect(global.console.error).toBeCalledWith(
       'could not load',
       new ProductSelectorError(
         `This UI extension only works with "list of text" properties`,
@@ -71,16 +72,16 @@ describe('selectedItems.actions', () => {
 
     expect(dispatched).toEqual([
       { type: SET_FETCHING, value: true },
-      { type: actions.SET_SELECTED_ITEMS, value: [] },
       { type: SET_FETCHING, value: false },
-      { type: SET_INITIALISED, value: true }
+      { type: SET_INITIALISED, value: true },
+      { type: SET_GLOBAL_ERROR, value: 'Could not get selected items' }
     ]);
 
     spy.mockRestore();
   });
 
   it('getSelectedItems value not an array', async () => {
-    const spy = jest.spyOn(global.console, 'log').mockImplementation();
+    const spy = jest.spyOn(global.console, 'error').mockImplementation();
 
     const backend = { getItems: jest.fn(() => Promise.resolve()) };
     const getValue = jest.fn(() => Promise.resolve([123, 234]));
@@ -105,23 +106,23 @@ describe('selectedItems.actions', () => {
     const dispatched = mocked.getActions();
 
     expect(getValue).toBeCalled();
-    expect(global.console.log).toBeCalledWith(
+    expect(global.console.error).toBeCalledWith(
       'could not load',
       new ProductSelectorError('Field value is not an array', ProductSelectorError.codes.INVALID_VALUE)
     );
 
     expect(dispatched).toEqual([
       { type: SET_FETCHING, value: true },
-      { type: actions.SET_SELECTED_ITEMS, value: [] },
       { type: SET_FETCHING, value: false },
-      { type: SET_INITIALISED, value: true }
+      { type: SET_INITIALISED, value: true },
+      { type: SET_GLOBAL_ERROR, value: 'Could not get selected items' }
     ]);
 
     spy.mockRestore();
   });
 
   it('getSelectedItems success', async () => {
-    const spy = jest.spyOn(global.console, 'log').mockImplementation();
+    const spy = jest.spyOn(global.console, 'error').mockImplementation();
 
     const backend = { getItems: jest.fn(() => Promise.resolve([{ id: '123' }])) };
     const getValue = jest.fn(() => Promise.resolve(['123', '234']));
@@ -151,9 +152,11 @@ describe('selectedItems.actions', () => {
     expect(backend.getItems).toBeCalled();
     expect(dispatched).toEqual([
       { type: SET_FETCHING, value: true },
-      { type: actions.SET_SELECTED_ITEMS, value: [{ id: '123' }] },
+      { type: actions.SET_SELECTED_ITEMS, value: [{
+        id: '123'
+      }] },
       { type: SET_FETCHING, value: false },
-      { type: SET_INITIALISED, value: true }
+      { type: SET_INITIALISED, value: true },
     ]);
 
     spy.mockRestore();

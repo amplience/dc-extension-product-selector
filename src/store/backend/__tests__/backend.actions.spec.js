@@ -2,7 +2,6 @@ import { SET_BACKEND, setBackend, initBackend } from '../backend.actions';
 import { mockStore } from '../../../utils/mockStore';
 import { Hybris } from '../../../backends/Hybris.js';
 import { SFCC } from '../../../backends/SFCC.js';
-import { SET_CATALOG } from '../../catalog/catalog.actions';
 
 describe('backend actions', () => {
   it('SET_BACKEND', async () => {
@@ -14,19 +13,18 @@ describe('backend actions', () => {
   });
 
   it('initBackend SFCC', async () => {
-    const store = mockStore({ params: { backend: 'SFCC' } });
+    const store = mockStore({ params: { backend: 'sfcc' } });
 
     await store.dispatch(initBackend());
 
     expect(store.getActions()).toEqual([
-      { type: SET_BACKEND, value: new SFCC({ backend: 'SFCC' }) },
-      { type: SET_CATALOG, value: 'all' }
+      { type: SET_BACKEND, value: new SFCC({ backend: 'sfcc' }) }
     ]);
   });
 
   it('initBackend Hybris', async () => {
     const params = {
-      backend: 'Hybris',
+      backend: 'hybris',
       basePath: '/something',
       hybrisUrl: '/hybris',
       catalogs: [
@@ -38,8 +36,7 @@ describe('backend actions', () => {
     await store.dispatch(initBackend());
 
     expect(store.getActions()).toEqual([
-      { type: SET_BACKEND, value: new Hybris(params) },
-      { type: SET_CATALOG, value: '123' }
+      { type: SET_BACKEND, value: new Hybris(params) }
     ]);
   });
 });

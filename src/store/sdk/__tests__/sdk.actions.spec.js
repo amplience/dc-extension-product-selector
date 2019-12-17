@@ -7,7 +7,7 @@ describe('sdk actions', () => {
   let extension;
 
   beforeEach(done => {
-    const mocked = mockExtension();
+    const mocked = mockExtension({});
     extension = mocked.extension;
     mocked.mock();
     actions = require('../sdk.actions.js');
@@ -27,27 +27,50 @@ describe('sdk actions', () => {
     expect(dispatched).toEqual([{ type: 'SET_SDK', value: {} }]);
   });
 
-  it('fetchSDK success', async () => {
-    const spy = jest.spyOn(global.console, 'log').mockImplementation();
+  it('fetchSDK failed to get items', async () => {
+    const spy = jest.spyOn(global.console, 'error').mockImplementation();
 
-    const mocked = mockStore({ params: extension.params });
+    const mocked = mockStore({
+      params: { ...extension.params, catalogs: [{ id: '123' }] }
+    }, (state, action) => {
+      if (action.type === 'SET_SDK') {
+        return Object.assign({}, state, { SDK: extension });
+      }
+      return state;
+    });
+   
+    jest.spyOn(mocked, 'getState')
+      .mockImplementationOnce(() => ({
+        params: {
+          ...extension.params,
+          catalogs: [{ id: '123' }]
+        }
+      }))
+      .mockImplementation(() => ({
+        SDK: extension,
+        backend: {
+          getItems: jest.fn()
+        }
+      }));
 
     await mocked.dispatch(actions.fetchSDK());
 
     const dispatched = mocked.getActions();
 
-    expect(JSON.stringify(dispatched)).toEqual(JSON.stringify([
-      { type: 'SET_FETCHING', value: true },
-      { type: 'SET_SDK', value: extension },
-      { type: 'SET_PARAMS', value: extension.params },
-      { type: 'SET_BACKEND', value: new SFCC(extension.params) },
-      { type: 'SET_CATALOG', value: 'all' },
-      { type: 'SET_FETCHING', value: true },
-      { type: 'SET_SELECTED_ITEMS', value: [] },
-      { type: 'SET_FETCHING', value: false },
-      { type: 'SET_INITIALISED', value: true },
-      { type: 'SET_FETCHING', value: false }
-    ]));
+    expect(JSON.stringify(dispatched)).toEqual(JSON.stringify(
+      [
+        { type: 'SET_FETCHING', value: true },
+        { type: 'SET_SDK', value: extension },
+        { type: 'SET_PARAMS', value: { ...extension.params } },
+        { type: 'SET_BACKEND', value: new SFCC({ ...extension.params, catalogs: [{ id: '123' }]}) },
+        { type: 'SET_FETCHING', value: true },
+        { type: 'SET_FETCHING', value: false },
+        { type: 'SET_INITIALISED', value: true },
+        { type: 'SET_GLOBAL_ERROR', value: 'Could not get selected items' },
+        { type: 'SET_CATALOG', value: '123' },
+        { type: 'SET_FETCHING', value: false }
+      ]
+    ));
 
     spy.mockClear();
   });
@@ -57,7 +80,7 @@ describe('sdk actions', () => {
 
     await mocked.dispatch(actions.fetchSDK());
 
-    const dispatched = mocked.getActions(); 
+    const dispatched = mocked.getActions();
 
     expect(dispatched).toEqual([]);
   });

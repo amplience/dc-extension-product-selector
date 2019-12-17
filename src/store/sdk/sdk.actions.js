@@ -4,6 +4,7 @@ import { initBackend } from '../backend/backend.actions';
 import { getSelectedItems } from '../selectedItems/selectedItems.actions';
 import { setFetching } from '../fetching/fetching.actions';
 import { setGlobalError } from '../global-error/global-error.actions';
+import { setCatalog } from '../catalog/catalog.actions';
 import { setInitialised } from "../initialised/initialised.actions";
 
 export const SET_SDK = 'SET_SDK';
@@ -29,7 +30,12 @@ export const fetchSDK = () => async (dispatch, getState) => {
     dispatch(setParams(SDK.params));
     dispatch(initBackend());
     dispatch(getSelectedItems());
-
+    const {params} = getState();
+    
+    if (params.catalogs.length) {
+      dispatch(setCatalog(params.catalogs[0].id));
+    }
+    dispatch(setFetching(false));
     SDK.frame.startAutoResizer();
     SDK.form.onReadOnlyChange(readOnly => {
       dispatch(setSDK({ ...SDK, form: { ...SDK.form, readOnly } }))

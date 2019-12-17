@@ -7,8 +7,9 @@ import isArray from 'lodash/isArray';
 import { setValue } from '../items/items.actions';
 import { setFetching } from '../fetching/fetching.actions';
 import { setInitialised } from '../initialised/initialised.actions';
-import { ProductSelectorError } from './ProductSelectorError';
+import { ProductSelectorError } from '../../ProductSelectorError';
 import { setTouched } from '../touched/touched.actions';
+import { setGlobalError } from '../global-error/global-error.actions';
 
 export const GET_SELECTED_ITEMS = 'GET_SELECTED_ITEMS';
 export const SET_SELECTED_ITEMS = 'SET_SELECTED_ITEMS';
@@ -84,10 +85,14 @@ export const getSelectedItems = () => async (dispatch, getState) => {
     if (selectedItems.length !== ids.length) {
       dispatch(setValue(selectedItems));
     }
+
+    dispatch(setSelectedItems(selectedItems));
+    dispatch(setFetching(false));
+    dispatch(setInitialised(true));
   } catch (e) {
-    console.log('could not load', e);
+    console.error('could not load', e);
+    dispatch(setFetching(false));
+    dispatch(setInitialised(true));
+    dispatch(setGlobalError('Could not get selected items'));
   }
-  dispatch(setSelectedItems(selectedItems));
-  dispatch(setFetching(false));
-  dispatch(setInitialised(true));
 };

@@ -1,7 +1,7 @@
 import { SET_BACKEND, setBackend, initBackend } from '../backend.actions';
 import { mockStore } from '../../../utils/mockStore';
-import { Hybris } from '../../../backends/Hybris';
-import { SFCC } from '../../../backends/SFCC';
+import { Hybris } from '../../../backends/Hybris.js';
+import { SFCC } from '../../../backends/SFCC.js';
 import { SET_CATALOG } from '../../catalog/catalog.actions';
 
 describe('backend actions', () => {

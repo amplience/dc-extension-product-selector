@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import debounce from 'lodash/debounce';
-import isUndefined from 'lodash/isUndefined';
+import React from 'react';
+import { debounce, isUndefined } from 'lodash';
 import { connect } from 'react-redux';
-import { Paper, InputBase, Divider, Snackbar, makeStyles } from '@material-ui/core';
+import { Paper, InputBase, Divider, makeStyles } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
 import { changePage } from '../store/pages/pages.actions';
 import { setSearchText } from '../store/searchText/searchText.actions';
+import { setGlobalError } from '../store/global-error/global-error.actions';
 
 const styles = makeStyles(theme => ({
   root: {
@@ -31,34 +31,25 @@ const styles = makeStyles(theme => ({
   }
 }));
 
-const debouncedSearch = debounce(async (setSnackbarVisibility, changePage) => {
+const debouncedSearch = debounce(async (setGlobalError, changePage) => {
   try {
-    setSnackbarVisibility(false);
     changePage(0);
   } catch (e) {
-    setSnackbarVisibility(true);
+    setGlobalError('Error getting products');
   }
 }, 1000);
 
 const SearchBoxComponent = params => {
   const classes = styles();
-  const [showSnackbar, setSnackbarVisibility] = useState(false);
 
   const search = event => {
     const searchText = !isUndefined(event.target.value) ? event.target.value : params.searchText;
     params.setSearchText(searchText);
-    debouncedSearch(setSnackbarVisibility, params.changePage);
+    debouncedSearch(setGlobalError, params.changePage);
   };
 
   return (
     <div className={classes.root}>
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        autoHideDuration={3000}
-        onClose={() => setSnackbarVisibility(false)}
-        open={showSnackbar}
-        message="Error fetching products"
-      />
       <Paper className={classes.search}>
         <InputBase
           value={params.searchText}
@@ -79,7 +70,7 @@ const SearchBox = connect(
     params: state.params,
     searchText: state.searchText,
   }),
-  { changePage, setSearchText }
+  { changePage, setSearchText, setGlobalError }
 )(SearchBoxComponent);
 
 export default SearchBox;

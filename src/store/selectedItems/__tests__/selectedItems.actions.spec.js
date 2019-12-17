@@ -3,7 +3,7 @@ import { mockExtensionWrapper } from '../../../utils/mockExtension.js';
 import { SET_TOUCHED } from '../../touched/touched.actions.js';
 import { SET_FETCHING } from '../../fetching/fetching.actions.js';
 import { SET_INITIALISED } from '../../initialised/initialised.actions.js';
-import { ProductSelectorError } from '../ProductSelectorError.js';
+import { ProductSelectorError } from '../../ProductSelectorError.js';
 
 import * as actions from '../selectedItems.actions';
 

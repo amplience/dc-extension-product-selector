@@ -1,13 +1,17 @@
-import map from 'lodash/map';
+import { map, trim, isEmpty } from 'lodash';
 import { setPage } from '../pages/pages.actions';
 import { setFetching } from '../fetching/fetching.actions';
+import { setGlobalError } from '../global-error/global-error.actions';
 
 export const SET_VALUE = 'SET_VALUE';
 
-export const setValue = selectedItems => async (_, getState) => {
+export const setValue = selectedItems => async (dispatch, getState) => {
   const { SDK } = getState();
-
-  await SDK.field.setValue(map(selectedItems, item => item.id));
+  try {
+    await SDK.field.setValue(map(selectedItems, item => item.id));
+  } catch (e) {
+    dispatch(setGlobalError('Could not set value'));
+  }
 };
 
 export const GET_ITEMS = 'GET_ITEMS';
@@ -15,7 +19,7 @@ export const GET_ITEMS = 'GET_ITEMS';
 export const getItems = () => async (dispatch, getState) => {
   const state = getState();
 
-  if (!state.searchText.length) {
+  if (isEmpty(trim(state.searchText))) {
     const page = {
       numPages: 0,
       curPage: 0,
@@ -36,6 +40,7 @@ export const getItems = () => async (dispatch, getState) => {
     dispatch(setPage(page));
     dispatch(setItems(items));
   } catch (e) {
+    dispatch(setGlobalError('Could not get items'));
     console.error(e)
   }
 

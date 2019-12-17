@@ -1,5 +1,6 @@
-import trimEnd from 'lodash/trimEnd';
+import { trimEnd } from 'lodash';
 import qs from 'qs';
+import { ProductSelectorError } from '../ProductSelectorError';
 export class SFCC {
   constructor(settings) {
     this.settings = settings;
@@ -7,30 +8,26 @@ export class SFCC {
 
   getHeaders(state) {
     const {
-      params: { authSecret, authClientId }
+      params: { authSecret, authClientId, sfccUrl: endpoint }
     } = state;
     return {
       headers: {
         'Content-Type': 'application/json',
         'x-auth-id': authClientId,
-        'x-auth-secret': authSecret
+        'x-auth-secret': authSecret,
+        endpoint
       }
     };
-  }
-  
-  defaultCatalog() {
-    return 'all';
   }
 
   async getItems(state, ids) {
     const {
-      params: { siteId: site_id, sfccUrl: endpoint, proxyUrl }
+      params: { siteId: site_id, proxyUrl }
     } = state;
     try {
       const queryString = qs.stringify(
         {
           site_id,
-          endpoint,
           ids
         },
         { arrayFormat: 'brackets' }
@@ -44,7 +41,8 @@ export class SFCC {
       const { items } = await response.json();
       return items;
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
     }
   }
 
@@ -53,16 +51,18 @@ export class SFCC {
       searchText,
       page,
       selectedCatalog,
-      params: { siteId, sfccUrl: endpoint, proxyUrl }
+      params: { siteId, proxyUrl }
     } = state;
+    const emptyResult = { items: [], page: { numPages: 0, curPage: 0, total: 0 } };
+
     try {
       const body = {
         site_id: siteId,
         search_text: searchText,
-        page: page.curPage,
-        endpoint
+        page: page.curPage
       };
-      if (selectedCatalog !== 'all') {
+
+      if (selectedCatalog !== null) {
         body.catalog_id = selectedCatalog;
       }
       const params = {
@@ -71,9 +71,10 @@ export class SFCC {
         ...this.getHeaders(state)
       };
       const response = await fetch(trimEnd(proxyUrl, '/') + '/product-search', params);
-      return response.json();
+      return response.json() || emptyResult;
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);
     }
   }
 }

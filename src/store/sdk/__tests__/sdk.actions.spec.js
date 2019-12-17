@@ -32,26 +32,7 @@ describe('sdk actions', () => {
 
     const mocked = mockStore({
       params: { ...extension.params, catalogs: [{ id: '123' }] }
-    }, (state, action) => {
-      if (action.type === 'SET_SDK') {
-        return Object.assign({}, state, { SDK: extension });
-      }
-      return state;
     });
-   
-    jest.spyOn(mocked, 'getState')
-      .mockImplementationOnce(() => ({
-        params: {
-          ...extension.params,
-          catalogs: [{ id: '123' }]
-        }
-      }))
-      .mockImplementation(() => ({
-        SDK: extension,
-        backend: {
-          getItems: jest.fn()
-        }
-      }));
 
     await mocked.dispatch(actions.fetchSDK());
 

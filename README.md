@@ -2,6 +2,8 @@
 
 # dc-extension-product-selector
 
+![Travis](https://img.shields.io/travis/amplience/dc-extension-product-selector)
+
 The product selector extension allows content authors to easily search and select products in Salesforce Commerce Cloud and add them to your content.
 
 The IDs of each product selected are added to the content as an array of strings.

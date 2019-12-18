@@ -1,7 +1,7 @@
 import { toLower } from 'lodash';
 import { SET_PARAMS } from "./params.actions";
 
-const params = {
+export const params = {
   proxyUrl: '',
   sfccUrl: '',
   authSecret: '',

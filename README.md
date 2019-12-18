@@ -1,6 +1,6 @@
 [![Amplience Dynamic Content](header.png)](https://amplience.com/dynamic-content)
 
-# Product Selector Extension
+# dc-extension-product-selector
 
 The product selector extension allows content authors to easily search and select products in Salesforce Commerce Cloud and add them to your content.
 

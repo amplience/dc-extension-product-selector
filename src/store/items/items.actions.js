@@ -1,4 +1,4 @@
-import { map, isEmpty, trim } from 'lodash';
+import { map, trim, isEmpty, get } from 'lodash';
 import { setPage } from '../pages/pages.actions';
 import { setFetching } from '../fetching/fetching.actions';
 import { setGlobalError } from '../global-error/global-error.actions';
@@ -10,7 +10,10 @@ export const setValue = selectedItems => async (dispatch, getState) => {
   try {
     await SDK.field.setValue(map(selectedItems, item => item.id));
   } catch (e) {
-    dispatch(setGlobalError('Could not set value'));
+    const error = get(e, '[0].data.keyword');
+    if (!error) {
+      dispatch(setGlobalError('Could not set value'));
+    }
   }
 };
 

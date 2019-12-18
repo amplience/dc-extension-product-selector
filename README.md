@@ -8,7 +8,7 @@ The IDs of each product selected are added to the content as an array of strings
 
 ![](/screenshot.png?raw=true)
 
-The extension requires the use of the [SFCC product search proxy (UPDATE WITH GITHUB URL)](https://bitbucket.org/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint.
+The extension requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint.
 
 ## Installation Parameters
 

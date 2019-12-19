@@ -29,11 +29,16 @@ export const fetchSDK = () => async (dispatch, getState) => {
     dispatch(setSDK(SDK));
     dispatch(setParams(SDK.params));
     dispatch(initBackend());
-    dispatch(getSelectedItems());
     const {params} = getState();
     
     if (params.catalogs.length) {
       dispatch(setCatalog(params.catalogs[0].id));
+    }
+    dispatch(getSelectedItems());
+    const {params: updatedParams} = getState();
+    
+    if (updatedParams.catalogs.length) {
+      dispatch(setCatalog(updatedParams.catalogs[0].id));
     }
     dispatch(setFetching(false));
     SDK.frame.startAutoResizer();

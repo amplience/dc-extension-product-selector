@@ -15,9 +15,7 @@ import { initialisedReducer } from './initialised/initialised.reducer';
 import { selectedItemsReducer } from './selectedItems/selectedItems.reducer';
 import { globalErrorReducer } from './global-error/global-error.reducer';
 
-import { fetchSDK } from './sdk/sdk.actions';
-
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   SDK: sdkReducer,
   page: pagesReducer,
   items: itemsReducer,
@@ -39,5 +37,3 @@ export const store = createStore(
   rootReducer,
   composeEnhancer(applyMiddleware(thunkMiddleware))
 );
-
-store.dispatch(fetchSDK());

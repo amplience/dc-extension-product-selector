@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
 import { connect } from 'react-redux';
-import { changeCatalog } from '../store/catalog/catalog.actions';
+import { changeCatalog, setCatalog } from '../store/catalog/catalog.actions';
 import { Select, MenuItem, InputLabel, FormControl, makeStyles } from '@material-ui/core';
 
-const styles = makeStyles(() => ({
+const styles = makeStyles(theme => ({
   root: {
-    marginLeft: 'auto'
+    marginLeft: 'auto',
+    marginBottom: theme.spacing(1)
   },
   select: {
     minWidth: 200
@@ -15,10 +16,21 @@ const styles = makeStyles(() => ({
 
 const CatalogSelectorComponent = params => {
   const [labelWidth, setLabelWidth] = useState(0);
-
+  const [selectedCatalog, setSelectedCatalog] = useState(params.selectedCatalog);
   const classes = styles();
   const inputLabel = React.useRef(null);
-  const selectCatalog = event => params.setCatalog(event.target.value);
+  const selectCatalog = event => {
+    const newCatalog = event.target.value;
+    if (newCatalog === selectedCatalog) {
+      return;
+    }
+    setSelectedCatalog(newCatalog);
+    if (params.searchText.length) {
+      params.changeCatalog(newCatalog);
+    } else {
+      params.setCatalog(newCatalog);
+    }
+  }
 
   useEffect(() => setLabelWidth(inputLabel.current.offsetWidth), []);
 
@@ -30,9 +42,9 @@ const CatalogSelectorComponent = params => {
       <Select
         className={classes.select}
         labelId="catalog"
-        value={params.selectedCatalog}
         onChange={selectCatalog}
         labelWidth={labelWidth}
+        value={selectedCatalog}
       >
         {params.catalogs.map(({ id, name }) => (
           <MenuItem key={id} value={id}>
@@ -44,16 +56,13 @@ const CatalogSelectorComponent = params => {
   );
 };
 
-const mapDispatchToProps = ({
-  setCatalog: changeCatalog
-});
-
-const mapStateToProps = state => ({
-  catalogs: state.params.catalogs,
-  selectedCatalog: state.selectedCatalog,
-  backend: state.backend
-});
-
-const CatalogSelector = connect(mapStateToProps, mapDispatchToProps)(CatalogSelectorComponent);
+const CatalogSelector = connect(
+  state => ({
+    catalogs: state.params.catalogs,
+    searchText: state.searchText,
+    selectedCatalog: state.selectedCatalog,
+    backend: state.backend
+  }),
+  { changeCatalog, setCatalog })(CatalogSelectorComponent);
 
 export default CatalogSelector;

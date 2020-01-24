@@ -6,9 +6,9 @@ import { setGlobalError } from '../global-error/global-error.actions';
 export const SET_VALUE = 'SET_VALUE';
 
 export const setValue = selectedItems => async (dispatch, getState) => {
-  const { SDK } = getState();
+  const { SDK, backend } = getState();
   try {
-    await SDK.field.setValue(map(selectedItems, item => item.id));
+    await SDK.field.setValue(map(selectedItems, item => backend.exportItem(item)));
   } catch (e) {
     const error = get(e, '[0].data.keyword');
     if (!error) {

@@ -34,7 +34,8 @@ const styles = makeStyles(theme => ({
     margin: theme.spacing(2)
   }
 }));
-const ProductsGridComponent = params => {
+
+export const ProductsGridComponent = params => {
   const classes = styles();
 
   return (

@@ -13,13 +13,13 @@ export class Hybris {
   }
 
   async getItems(state, filterIds) {
-    const { selectedCatalog, params } = state;
+    const { params } = state;
     const { currency } = params;
 
-    const getItem = async id => {
-      const item = await this.productService.getByCode(selectedCatalog, id, currency);
+    const getItem = async ({id, catalog}) => {
+      const item = await this.productService.getByCode(catalog, id, currency);
 
-      return this.itemModel(item);
+      return this.itemModel(item, catalog);
     };
 
     try {
@@ -63,7 +63,7 @@ export class Hybris {
       numPages
     };
 
-    const items = products.map(item => this.itemModel(item));
+    const items = products.map(item => this.itemModel(item, selectedCatalog));
 
     return { items, page: pages };
   }
@@ -81,11 +81,19 @@ export class Hybris {
     return tmp.textContent || tmp.innerText || '';
   }
 
-  itemModel({ code, name, images }) {
+  itemModel({ code, name, images, defaultImageUrl }, catalog) {
     return {
       id: code,
       name: this.stripHtml(name),
-      image: this.getImage({ images })
+      image: this.getImage({ images, defaultImageUrl }),
+      catalog
+    };
+  }
+
+  exportItem({ id, catalog }) {
+    return {
+      id,
+      catalog
     };
   }
 }

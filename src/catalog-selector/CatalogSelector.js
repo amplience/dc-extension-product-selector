@@ -14,11 +14,13 @@ const styles = makeStyles(theme => ({
   }
 }));
 
-const CatalogSelectorComponent = params => {
+export const CatalogSelectorComponent = params => {
   const [labelWidth, setLabelWidth] = useState(0);
   const [selectedCatalog, setSelectedCatalog] = useState(params.selectedCatalog);
+
   const classes = styles();
   const inputLabel = React.useRef(null);
+
   const selectCatalog = event => {
     const newCatalog = event.target.value;
     if (newCatalog === selectedCatalog) {
@@ -30,7 +32,7 @@ const CatalogSelectorComponent = params => {
     } else {
       params.setCatalog(newCatalog);
     }
-  }
+  };
 
   useEffect(() => setLabelWidth(inputLabel.current.offsetWidth), []);
 
@@ -63,6 +65,7 @@ const CatalogSelector = connect(
     selectedCatalog: state.selectedCatalog,
     backend: state.backend
   }),
-  { changeCatalog, setCatalog })(CatalogSelectorComponent);
+  { changeCatalog, setCatalog }
+)(CatalogSelectorComponent);
 
 export default CatalogSelector;

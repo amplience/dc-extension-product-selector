@@ -35,7 +35,7 @@ const styles = makeStyles(theme => ({
 	}
 }));
 
-const ProductComponent = params => {
+export const ProductComponent = params => {
 	const [visible, setVisible] = useState(false);
 	const isRemovable = params.variant === 'removable';
 	const isSelected = Boolean(find(params.selectedItems, { id: params.item.id }));

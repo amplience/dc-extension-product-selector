@@ -6,13 +6,23 @@
 
 The product selector extension allows content authors to easily search and select products in Salesforce Commerce Cloud and add them to your content.
 
-The IDs of each product selected are added to the content as an array of strings.
+The IDs of each product selected are added to the content as an array of strings for SFCC and an array of objects with the id and catalog for Hybris.
 
 ![](/screenshot.png?raw=true)
 
-The extension requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint.
+The extension requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris.
 
 ## Installation Parameters
+
+
+### Customise 
+
+| paramerter  |  default  | notes   | required |
+|---|---|---|---|
+| noItemsText | No items selected. | Placeholder text to display when no items are selected. | false
+| searchPlaceholderText  | Search  | Placeholder text to show in the search box.  | false 
+
+### SFCC
 
 The extension works with 'list of text' properties and supports the following parameters:
 
@@ -23,12 +33,10 @@ The extension works with 'list of text' properties and supports the following pa
   "authSecret": "{The SFCC OAuth client secret}",
   "authClientId": "{The SFCC OAuth client ID}",
   "siteId": "{The ID of the site containing products in SFCC}",
-  "noItemsText": "{Placeholder text to display when no items are selected. Optional. Defaults to 'No items selected.'}",
-  "searchPlaceholderText": "{Placeholder text to show in the search box. Optional. Defaults to 'Search'}"
 }
 ```
 
-## Example Snippet
+#### Example Snippet
 
 ```json
 {
@@ -54,7 +62,61 @@ The extension works with 'list of text' properties and supports the following pa
     }
   }
 }
+```
 
+### Hybris
+
+Hybris works with a list of objects with the properties id and catalog and requires the following parameters:
+
+```json
+{
+  "hybrisUrl": "{URL of your hybris api}",
+  "basePath": "{base path of the version of your hyrbis url i.e /rest/v2}",
+  "backend": "hybris",
+  "currency": "{Currency of your products defaults to USD}",
+  "catalogs": [
+    {
+      "id": "{ID of catalog}",
+      "name": "{Display name of catalog}"
+    }
+  ]
+}
+```
+
+
+#### Example snippet
+
+```json
+{
+  "title": "title",
+  "description": "description",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "catalog": {
+        "type": "string"
+      }
+    }
+  },
+  "ui:extension": {
+    "name": "{{name of extension}}",
+    "params": {
+      "hybrisUrl": "https://api-hybris.amplience.com",
+      "basePath": "/rest/v2",
+      "backend": "hybris",
+      "catalogs": [
+        {
+          "id": "test-catalog",
+          "name": "test"
+        }
+      ]
+    }
+  }
+}
 ```
 
 ## Available Scripts

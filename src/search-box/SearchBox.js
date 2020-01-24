@@ -39,13 +39,13 @@ const debouncedSearch = debounce(async (setGlobalError, changePage) => {
   }
 }, 1000);
 
-const SearchBoxComponent = params => {
+export const SearchBoxComponent = params => {
   const classes = styles();
 
   const search = event => {
     const searchText = !isUndefined(event.target.value) ? event.target.value : params.searchText;
     params.setSearchText(trim(searchText));
-    debouncedSearch(setGlobalError, params.changePage);
+    debouncedSearch(params.setGlobalError, params.changePage);
   };
 
   return (

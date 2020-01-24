@@ -15,7 +15,7 @@ const styles = makeStyles(theme => ({
   }
 }));
 
-const PagerComponent = ({ changePage, page: { numPages, curPage } }) => {
+export const PagerComponent = ({ changePage, page: { numPages, curPage } }) => {
   const classes = styles();
   const NUM_START_PAGES = 3;
   const NUM_END_PAGES = 3;

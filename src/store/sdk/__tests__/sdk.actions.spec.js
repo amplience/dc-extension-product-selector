@@ -44,11 +44,11 @@ describe('sdk actions', () => {
         { type: 'SET_SDK', value: extension },
         { type: 'SET_PARAMS', value: { ...extension.params } },
         { type: 'SET_BACKEND', value: new SFCC({ ...extension.params, catalogs: [{ id: '123' }]}) },
+        { type: 'SET_CATALOG', value: '123' },
         { type: 'SET_FETCHING', value: true },
         { type: 'SET_FETCHING', value: false },
         { type: 'SET_INITIALISED', value: true },
         { type: 'SET_GLOBAL_ERROR', value: 'Could not get selected items' },
-        { type: 'SET_CATALOG', value: '123' },
         { type: 'SET_FETCHING', value: false }
       ]
     ));

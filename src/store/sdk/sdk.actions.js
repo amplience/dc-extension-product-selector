@@ -37,7 +37,7 @@ export const fetchSDK = () => async (dispatch, getState) => {
     dispatch(getSelectedItems());
     const {params: updatedParams} = getState();
     
-    if (updatedParams.catalogs.length) {
+    if (updatedParams.catalogs.length !== params.catalogs.length) {
       dispatch(setCatalog(updatedParams.catalogs[0].id));
     }
     dispatch(setFetching(false));

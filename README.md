@@ -71,7 +71,6 @@ Hybris works with a list of objects with the properties id and catalog and requi
 ```json
 {
   "hybrisUrl": "{URL of your hybris api}",
-  "basePath": "{base path of the version of your hyrbis url i.e /rest/v2}",
   "backend": "hybris",
   "currency": "{Currency of your products defaults to USD}",
   "catalogs": [
@@ -106,7 +105,6 @@ Hybris works with a list of objects with the properties id and catalog and requi
     "name": "{{name of extension}}",
     "params": {
       "hybrisUrl": "https://api-hybris.amplience.com",
-      "basePath": "/rest/v2",
       "backend": "hybris",
       "catalogs": [
         {

@@ -26,7 +26,6 @@ describe('backend actions', () => {
   it('initBackend Hybris', async () => {
     const params = {
       backend: 'hybris',
-      basePath: '/something',
       hybrisUrl: '/hybris',
       catalogs: [
         { id: '123', name: 'electronics' }

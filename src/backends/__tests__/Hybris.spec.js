@@ -3,14 +3,14 @@ import { ProductService } from 'sap-product-browser';
 
 describe('Hybris', () => {
   it('should create an instance of ProductService', () => {
-    const params = { basePath: '/', hybrisUrl: 'http://test.com' };
+    const params = { hybrisUrl: 'http://test.com' };
     const hybris = new Hybris(params);
 
-    expect(hybris.productService).toEqual(new ProductService(params.hybrisUrl, params.basePath, null));
+    expect(hybris.productService).toEqual(new ProductService(params.hybrisUrl, '/rest/v2', null));
   });
 
   it('getItems should request product for each id', async () => {
-    const params = { basePath: '/', hybrisUrl: 'http://test.com' };
+    const params = { hybrisUrl: 'http://test.com' };
     const hybris = new Hybris(params);
 
     let item = 0;
@@ -47,7 +47,7 @@ describe('Hybris', () => {
   });
 
   it('search should return pages and items', async () => {
-    const params = { basePath: '/', hybrisUrl: 'http://test.com' };
+    const params = { hybrisUrl: 'http://test.com' };
     const hybris = new Hybris(params);
 
     jest.spyOn(hybris.productService, 'search').mockImplementation(() => {

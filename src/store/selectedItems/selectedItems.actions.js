@@ -1,5 +1,6 @@
 import sortBy from 'lodash/sortBy';
 import filter from 'lodash/filter';
+import isEmpty from 'lodash/isEmpty';
 import indexOf from 'lodash/indexOf';
 import isArray from 'lodash/isArray';
 
@@ -61,7 +62,7 @@ export const getSelectedItems = () => async (dispatch, getState) => {
 
   try {
     const ids = await SDK.field.getValue();
-    const filteredIds = filter(ids);
+    const filteredIds = filter(ids, item => !isEmpty(item));
 
     if (filteredIds && filteredIds.length) {
       const items = await backend.getItems(state, filteredIds);
@@ -78,8 +79,8 @@ export const getSelectedItems = () => async (dispatch, getState) => {
     if (selectedItems.length !== ids.length) {
       dispatch(setValue(selectedItems));
     }
-
     dispatch(setSelectedItems(selectedItems));
+
     dispatch(setFetching(false));
     dispatch(setInitialised(true));
   } catch (e) {

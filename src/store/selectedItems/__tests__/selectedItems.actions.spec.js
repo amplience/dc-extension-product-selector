@@ -57,7 +57,7 @@ describe('selectedItems.actions', () => {
     const spy = jest.spyOn(global.console, 'error').mockImplementation();
 
     const backend = { getItems: jest.fn(() => Promise.resolve()) };
-    const getValue = jest.fn(() => Promise.resolve([123, 234]));
+    const getValue = jest.fn(() => Promise.resolve(['123', '234']));
     const mocked = mockStore({
       SDK: {
         field: {

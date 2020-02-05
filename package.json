@@ -1,6 +1,6 @@
 {
   "name": "dc-extension-product-selector",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@amplience/sap-product-browser": "^1.0.0",

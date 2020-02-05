@@ -53,38 +53,11 @@ describe('selectedItems.actions', () => {
     expect(field.setValue).toBeCalled();
   });
 
-  it('getSelectedItems invalid schema', async () => {
-    const spy = jest.spyOn(global.console, 'error').mockImplementation();
-
-    const mocked = mockStore({ SDK: { field: {} }, selectedItems: [] });
-
-    await mocked.dispatch(actions.getSelectedItems());
-
-    const dispatched = mocked.getActions();
-
-    expect(global.console.error).toBeCalledWith(
-      'could not load',
-      new ProductSelectorError(
-        `This UI extension only works with "list of text" properties`,
-        ProductSelectorError.codes.INVALID_FIELD
-      )
-    );
-
-    expect(dispatched).toEqual([
-      { type: SET_FETCHING, value: true },
-      { type: SET_FETCHING, value: false },
-      { type: SET_INITIALISED, value: true },
-      { type: SET_GLOBAL_ERROR, value: 'Could not get selected items' }
-    ]);
-
-    spy.mockRestore();
-  });
-
   it('getSelectedItems value not an array', async () => {
     const spy = jest.spyOn(global.console, 'error').mockImplementation();
 
     const backend = { getItems: jest.fn(() => Promise.resolve()) };
-    const getValue = jest.fn(() => Promise.resolve([123, 234]));
+    const getValue = jest.fn(() => Promise.resolve(['123', '234']));
     const mocked = mockStore({
       SDK: {
         field: {
@@ -124,9 +97,12 @@ describe('selectedItems.actions', () => {
   it('getSelectedItems success', async () => {
     const spy = jest.spyOn(global.console, 'error').mockImplementation();
 
-    const backend = { getItems: jest.fn(() => Promise.resolve([{ id: '123' }])) };
-    const getValue = jest.fn(() => Promise.resolve(['123', '234']));
-    const setValue = jest.fn();
+    const backend = {
+      getItems: jest.fn().mockImplementation(() => Promise.resolve([{ id: '123' }])),
+      exportItem: item => item.id
+    };
+    const getValue = jest.fn().mockImplementation(() => Promise.resolve(['123', '234']));
+    const setValue = jest.fn().mockImplementation(() => Promise.resolve());
     const mocked = mockStore({
       SDK: {
         field: {
@@ -152,11 +128,16 @@ describe('selectedItems.actions', () => {
     expect(backend.getItems).toBeCalled();
     expect(dispatched).toEqual([
       { type: SET_FETCHING, value: true },
-      { type: actions.SET_SELECTED_ITEMS, value: [{
-        id: '123'
-      }] },
+      {
+        type: actions.SET_SELECTED_ITEMS,
+        value: [
+          {
+            id: '123'
+          }
+        ]
+      },
       { type: SET_FETCHING, value: false },
-      { type: SET_INITIALISED, value: true },
+      { type: SET_INITIALISED, value: true }
     ]);
 
     spy.mockRestore();

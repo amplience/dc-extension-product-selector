@@ -1,6 +1,6 @@
-import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
 import filter from 'lodash/filter';
+import isEmpty from 'lodash/isEmpty';
 import indexOf from 'lodash/indexOf';
 import isArray from 'lodash/isArray';
 
@@ -61,14 +61,8 @@ export const getSelectedItems = () => async (dispatch, getState) => {
   let selectedItems = [];
 
   try {
-    if (get(SDK, 'field.schema.type') !== 'array' || get(SDK, 'field.schema.items.type') !== 'string') {
-      throw new ProductSelectorError(
-        'This UI extension only works with "list of text" properties',
-        ProductSelectorError.codes.INVALID_FIELD
-      );
-    }
     const ids = await SDK.field.getValue();
-    const filteredIds = filter(ids);
+    const filteredIds = filter(ids, item => !isEmpty(item));
 
     if (filteredIds && filteredIds.length) {
       const items = await backend.getItems(state, filteredIds);
@@ -85,8 +79,8 @@ export const getSelectedItems = () => async (dispatch, getState) => {
     if (selectedItems.length !== ids.length) {
       dispatch(setValue(selectedItems));
     }
-
     dispatch(setSelectedItems(selectedItems));
+
     dispatch(setFetching(false));
     dispatch(setInitialised(true));
   } catch (e) {

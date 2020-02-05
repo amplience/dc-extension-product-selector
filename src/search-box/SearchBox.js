@@ -1,5 +1,5 @@
 import React from 'react';
-import { debounce, isUndefined } from 'lodash';
+import { debounce, isUndefined, trim } from 'lodash';
 import { connect } from 'react-redux';
 import { Paper, InputBase, Divider, makeStyles } from '@material-ui/core';
 import { Search } from '@material-ui/icons';
@@ -39,13 +39,13 @@ const debouncedSearch = debounce(async (setGlobalError, changePage) => {
   }
 }, 1000);
 
-const SearchBoxComponent = params => {
+export const SearchBoxComponent = params => {
   const classes = styles();
 
   const search = event => {
     const searchText = !isUndefined(event.target.value) ? event.target.value : params.searchText;
-    params.setSearchText(searchText);
-    debouncedSearch(setGlobalError, params.changePage);
+    params.setSearchText(trim(searchText));
+    debouncedSearch(params.setGlobalError, params.changePage);
   };
 
   return (

@@ -65,7 +65,7 @@ const styles = makeStyles(theme => ({
   }
 }));
 
-const SelectedProductsComponent = params => {
+export const SelectedProductsComponent = params => {
   const [isDragging, setDragging] = useState(false);
   const { minItems, maxItems } = get(params.SDK, 'field.schema', {});
   const { readOnly } = get(params.SDK, 'form', {});
@@ -107,8 +107,8 @@ const SelectedProductsComponent = params => {
       </FadeIn>
 
       <div className={classes.errorWrapper}>
-        <FormError show={showMinItemError}>You must select a minimum of {minItems} items</FormError>
-        <FormError show={showMaxItemError}>You must select a maximum of {maxItems} items</FormError>
+        <FormError show={Boolean(showMinItemError)}>You must select a minimum of {minItems} items</FormError>
+        <FormError show={Boolean(showMaxItemError)}>You must select a maximum of {maxItems} items</FormError>
       </div>
     </Paper>
   );

@@ -12,7 +12,7 @@ describe('catalog reducer', () => {
         },
         expected: '123'
       },
-      { action: { type: '', value: null }, expected: null}
+      { action: { type: '', value: '' }, expected: null }
     ]);
   });
 });

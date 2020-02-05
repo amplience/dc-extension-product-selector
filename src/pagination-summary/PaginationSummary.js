@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Typography } from '@material-ui/core';
 
-const PaginationSummaryComponent = params => {
+export const PaginationSummaryComponent = params => {
   const start = params.PAGE_SIZE * params.curPage;
   const first = start + 1;
   const last = Math.min(start + params.PAGE_SIZE, params.total);

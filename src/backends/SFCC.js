@@ -1,5 +1,5 @@
-import { trimEnd } from 'lodash';
 import qs from 'qs';
+import { trimEnd } from 'lodash';
 import { ProductSelectorError } from '../ProductSelectorError';
 export class SFCC {
   constructor(settings) {
@@ -76,5 +76,9 @@ export class SFCC {
       console.error(e);
       throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);
     }
+  }
+
+  exportItem(item) {
+    return item.id;
   }
 }

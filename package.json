@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@amplience/sap-product-browser": "^1.0.0",
     "@material-ui/core": "^4.6.0",
     "@material-ui/icons": "^4.5.1",
-    "dc-extensions-sdk": "^1.0.1",
+    "dc-extensions-sdk": "^1.0.2",
     "dc-management-sdk-js": "^1.4.1",
     "framer-motion": "^1.6.17",
     "lodash": "^4.17.15",
@@ -18,7 +19,6 @@
     "react-sortablejs": "^1.5.1",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
-    "sap-product-browser": "git+ssh://git@bitbucket.org/amplience/sap-product-browser.git",
     "sortablejs": "^1.10.1"
   },
   "scripts": {

@@ -1,4 +1,4 @@
-import { ProductService } from 'sap-product-browser';
+import { ProductService } from '@amplience/sap-product-browser';
 import { ProductSelectorError } from '../ProductSelectorError';
 
 export class Hybris {

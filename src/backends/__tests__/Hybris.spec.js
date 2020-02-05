@@ -1,5 +1,5 @@
 import { Hybris } from '../Hybris';
-import { ProductService } from 'sap-product-browser';
+import { ProductService } from '@amplience/sap-product-browser';
 
 describe('Hybris', () => {
   it('should create an instance of ProductService', () => {

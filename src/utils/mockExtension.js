@@ -24,7 +24,7 @@ export const extension = ({ params = initalParams, initalValue = [] } = {}) => {
 
   const extension = {
     params: {
-      instance: params
+      instance: {...initalParams, ...params}
     },
     form: {
       onReadOnlyChange
@@ -67,7 +67,9 @@ export const mockExtension = ({ params = initalParams, initalValue = [] } = {}) 
   const setValue = jest.fn();
 
   const extension = {
-    params,
+    params: {
+      instance: {...initalParams, ...params}
+    },
     form: {
       onReadOnlyChange
     },
@@ -83,7 +85,9 @@ export const mockExtension = ({ params = initalParams, initalValue = [] } = {}) 
           type: 'string'
         }
       }
-    }
+    },
+    items: [{id: '2'}, {id: '1'}],
+    selectedItems: [{id: '1'}]
   };
 
   jest.doMock('dc-extensions-sdk', () => ({
@@ -96,7 +100,7 @@ export const mockExtension = ({ params = initalParams, initalValue = [] } = {}) 
 }
 
 export async function mockExtensionWrapper({ params = initalParams, initalValue = [] } = {}) {
-  const { extension, store, rootReducer } = mockExtension({ params, initalValue });
+  const { extension, store, rootReducer } = mockExtension({ params: {...initalParams, ...params}, initalValue });
   const { fetchSDK } = require('../store/sdk/sdk.actions');
 
   store.dispatch(fetchSDK());

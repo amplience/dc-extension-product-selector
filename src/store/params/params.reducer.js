@@ -7,6 +7,7 @@ export const params = {
   authSecret: '',
   authClientId: '',
   siteId: '',
+  currency: 'USD',
   catalogs: [],
   backend: 'SFCC',
   noItemsText: 'No items selected.',

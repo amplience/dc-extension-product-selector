@@ -34,7 +34,8 @@ const styles = makeStyles(theme => ({
     margin: theme.spacing(2)
   }
 }));
-const ProductsGridComponent = params => {
+
+export const ProductsGridComponent = params => {
   const classes = styles();
 
   return (
@@ -46,7 +47,7 @@ const ProductsGridComponent = params => {
           </FadeIn>
         </Grid>
         <Grid item container xs={6}>
-          {params.catalogs.length > 0 ? <CatalogSelector /> : ''}
+          {params.catalogs.length && params.initialised ? <CatalogSelector /> : ''}
         </Grid>
       </Grid>
 
@@ -74,6 +75,7 @@ const ProductsGrid = connect(
   state => ({
     items: state.items,
     loading: state.isFetching,
+    initialised: state.initialised,
     catalogs: state.params.catalogs,
     backend: state.backend
   }),

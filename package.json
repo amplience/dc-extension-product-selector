@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@amplience/sap-product-browser": "^1.0.0",
+    "@babel/runtime": "^7.8.7",
+    "@commercetools/sdk-auth": "^3.0.5",
     "@material-ui/core": "^4.6.0",
     "@material-ui/icons": "^4.5.1",
     "dc-extensions-sdk": "^1.0.2",

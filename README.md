@@ -4,9 +4,9 @@
 
 ![Travis](https://img.shields.io/travis/amplience/dc-extension-product-selector)
 
-The product selector extension allows content authors to easily search and select products in Salesforce Commerce Cloud and add them to your content.
+The product selector extension allows content authors to easily search and select products in Salesforce Commerce Cloud, Hybris, Commercetools and add them to your content.
 
-The IDs of each product selected are added to the content as an array of strings for SFCC and an array of objects with the id and catalog for Hybris.
+The IDs of each product selected are added to the content as an array of strings for SFCC, Commercetools and an array of objects with the id and catalog for Hybris.
 
 ![](/screenshot.png?raw=true)
 
@@ -32,7 +32,7 @@ The extension works with 'list of text' properties and supports the following pa
   "sfccUrl": "{The URL of the SFCC instance}",
   "authSecret": "{The SFCC OAuth client secret}",
   "authClientId": "{The SFCC OAuth client ID}",
-  "siteId": "{The ID of the site containing products in SFCC}",
+  "siteId": "{The ID of the site containing products in SFCC}"
 }
 ```
 
@@ -116,6 +116,53 @@ Hybris works with a list of objects with the properties id and catalog and requi
   }
 }
 ```
+
+### Commercetools
+
+The extension works with 'list of text' properties and supports the following parameters:
+
+```json
+{
+  "backend": "commercetools",
+  "apiUrl": "{API URL}",
+  "host": "{Auth URL}",
+  "projectKey": "{Project key}",
+  "clientId": "{Client id}",
+  "clientSecret": "{Client secret}"
+}
+```
+Values could be get from creating API Client on Commercetools platform (Settings/Developer settings/Create new API client). 
+Required scope of permissions is `view_products`, choose View/Products (all).
+
+#### Example Snippet
+
+```json
+{
+  "product selector": {
+    "title": "Product Selector",
+    "description": "description",
+    "type": "array",
+    "minItems": 3,
+    "maxItems": 10,
+    "items": {
+      "type": "string"
+    },
+    "ui:extension": {
+      "url": "https://product-selector.amplience.com",
+      "height": 208,
+      "params": {
+        "backend": "commercetools",
+        "apiUrl": "https://api.europe-west1.gcp.commercetools.com",
+        "host": "https://auth.europe-west1.gcp.commercetools.com",
+        "projectKey": "project-amp",
+        "clientId": "clientId",
+        "clientSecret": "clientSecret"
+      }
+    }
+  }
+}
+```
+
 
 ## Available Scripts
 

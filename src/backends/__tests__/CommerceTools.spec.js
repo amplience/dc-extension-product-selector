@@ -5,8 +5,8 @@ import {ProductSelectorError} from "../../ProductSelectorError";
 const params = {
   "host": "https://auth.europe-west1.gcp.commercetools.com",
   "projectKey": "ulta-amp",
-  "clientId": "ojhXoPHeXGIxgZvFgXBUZJeL",
-  "clientSecret": "dNhcbN6qqeIu-LbAg5e7w_xk9SZREVux",
+  "clientId": "4h4q7if8FAsycH1Qtba6WhPQ",
+  "clientSecret": "DFwdLEY3b0Y2YGRMZwBOvmIrwcIVoL6f",
   "apiUrl": "https://api.europe-west1.gcp.commercetools.com"
 };
 
@@ -23,7 +23,7 @@ describe('CommerceTools', () => {
         clientId: params.clientId,
         clientSecret: params.clientSecret,
       },
-      scopes: ['manage_project:' + params.projectKey],
+      scopes: ['view_products:' + params.projectKey],
     }));
   });
 

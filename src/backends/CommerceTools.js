@@ -12,7 +12,7 @@ export class CommerceTools {
         clientId,
         clientSecret,
       },
-      scopes: ['manage_project:' + projectKey],
+      scopes: ['view_products:' + projectKey],
     });
 
     this.apiUrl = apiUrl;

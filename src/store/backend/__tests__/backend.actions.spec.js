@@ -29,8 +29,8 @@ describe('backend actions', () => {
       backend: 'commercetools',
       "host": "https://auth.europe-west1.gcp.commercetools.com",
       "projectKey": "ulta-amp",
-      "clientId": "ojhXoPHeXGIxgZvFgXBUZJeL",
-      "clientSecret": "dNhcbN6qqeIu-LbAg5e7w_xk9SZREVux",
+      "clientId": "4h4q7if8FAsycH1Qtba6WhPQ",
+      "clientSecret": "DFwdLEY3b0Y2YGRMZwBOvmIrwcIVoL6f",
       "apiUrl": "https://api.europe-west1.gcp.commercetools.com"
     };
     const store = mockStore({

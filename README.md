@@ -128,11 +128,14 @@ The extension works with 'list of text' properties and supports the following pa
   "host": "{Auth URL}",
   "projectKey": "{Project key}",
   "clientId": "{Client id}",
-  "clientSecret": "{Client secret}"
+  "clientSecret": "{Client secret}",
+  "scope": "{Scope of permissions}",
+  "locale": "{Locale for text search}"
 }
 ```
 Values could be get from creating API Client on Commercetools platform (Settings/Developer settings/Create new API client). 
-Required scope of permissions is `view_products`, choose View/Products (all).
+Required minimal scope of permissions is `view_published_products`, choose View/Products (published).
+Image to display is selected from attributes of master variant by name `largeImageUrl` or first image in `images` array.
 
 #### Example Snippet
 
@@ -156,7 +159,9 @@ Required scope of permissions is `view_products`, choose View/Products (all).
         "host": "https://auth.europe-west1.gcp.commercetools.com",
         "projectKey": "project-amp",
         "clientId": "clientId",
-        "clientSecret": "clientSecret"
+        "clientSecret": "clientSecret",
+        "scope": "view_published_products",
+        "locale": "en-CA"
       }
     }
   }

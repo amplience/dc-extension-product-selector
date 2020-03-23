@@ -7,7 +7,9 @@ const params = {
   "projectKey": "ulta-amp",
   "clientId": "4h4q7if8FAsycH1Qtba6WhPQ",
   "clientSecret": "DFwdLEY3b0Y2YGRMZwBOvmIrwcIVoL6f",
-  "apiUrl": "https://api.europe-west1.gcp.commercetools.com"
+  "apiUrl": "https://api.europe-west1.gcp.commercetools.com",
+  "scope": "view_published_products",
+  "locale": "en"
 };
 
 const commerceTools = new CommerceTools(params);
@@ -23,7 +25,7 @@ describe('CommerceTools', () => {
         clientId: params.clientId,
         clientSecret: params.clientSecret,
       },
-      scopes: ['view_products:' + params.projectKey],
+      scopes: [params.scope + ':' + params.projectKey],
     }));
   });
 

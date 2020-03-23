@@ -238,6 +238,17 @@ describe('CommerceTools', () => {
     expect(result).toEqual('https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg');
   });
 
+  it('get image from attributes', async () => {
+    const result = commerceTools.getImage({
+      attributes: [{
+        name: "largeImageUrl",
+        value: 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg',
+      }]
+    });
+
+    expect(result).toEqual('https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg');
+  });
+
   it('get image empty', async () => {
     const result = commerceTools.getImage({
       images: []

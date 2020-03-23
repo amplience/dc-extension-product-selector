@@ -8,7 +8,7 @@ const params = {
   "clientId": "4h4q7if8FAsycH1Qtba6WhPQ",
   "clientSecret": "DFwdLEY3b0Y2YGRMZwBOvmIrwcIVoL6f",
   "apiUrl": "https://api.europe-west1.gcp.commercetools.com",
-  "scope": "view_published_products",
+  "scope": "view_products",
   "locale": "en"
 };
 
@@ -155,7 +155,7 @@ describe('CommerceTools', () => {
 
     const result = await commerceTools.search(state);
 
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?text.en=white&staged=true&offset=0&limit=20", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?text.en=white&staged=false&offset=0&limit=20", {
       method: 'GET',
       ...headers
     });
@@ -190,7 +190,7 @@ describe('CommerceTools', () => {
 
     const result = await commerceTools.search(state);
 
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?text.en=white&staged=true&offset=0&limit=20", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?text.en=white&staged=false&offset=0&limit=20", {
       method: 'GET',
       ...headers
     });

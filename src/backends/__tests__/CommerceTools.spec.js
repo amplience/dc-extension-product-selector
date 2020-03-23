@@ -229,15 +229,19 @@ describe('CommerceTools', () => {
   });
 
   it('get image', async () => {
-    const result = commerceTools.getImage([{
-      url: 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg',
-    }]);
+    const result = commerceTools.getImage({
+        images: [{
+          url: 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg',
+        }]
+    });
 
     expect(result).toEqual('https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg');
   });
 
   it('get image empty', async () => {
-    const result = commerceTools.getImage([]);
+    const result = commerceTools.getImage({
+      images: []
+    });
 
     expect(result).toEqual('');
   });

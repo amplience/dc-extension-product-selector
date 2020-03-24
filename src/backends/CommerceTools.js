@@ -53,7 +53,7 @@ export class CommerceTools {
       const response = await fetch(`${this.apiUrl}/${projectKey}/product-projections?staged=false&limit=${PAGE_SIZE}&where=id in (${idsStrings})`, params);
       const {results} = await response.json();
 
-      return this.parseProductResults(results);
+      return this.parseResults(results);
 
     } catch (e) {
       console.error(e);
@@ -72,16 +72,6 @@ export class CommerceTools {
         id: item.id,
         name: item.name[this.locale],
         image: this.getImage(item.masterVariant)
-      }
-    })
-  }
-
-  parseProductResults(data) {
-    return data.map((item) => {
-      return {
-        id: item.id,
-        name: item.masterData.current.name[this.locale],
-        image: this.getImage(item.masterData.current.masterVariant)
       }
     })
   }

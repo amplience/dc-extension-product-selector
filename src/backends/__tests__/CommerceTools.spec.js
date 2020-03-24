@@ -37,19 +37,14 @@ describe('CommerceTools', () => {
         json: () => ({
           results: [{
             id: '480c5acd-a812-41b0-9a6e-b91f23851f36',
-            masterData: {
-              current: {
-                name: {
-                  en: 'test'
-                },
-                masterVariant: {
-                  images: [{
-                    url: "https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg"
-                  }]
-                }
-              }
+            name: {
+              en: 'test'
+            },
+            masterVariant: {
+              images: [{
+                url: "https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg"
+              }]
             }
-
           }]
         })
       })

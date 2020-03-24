@@ -64,7 +64,7 @@ describe('CommerceTools', () => {
 
     const result = await commerceTools.getItems(state, ids);
 
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/products?limit=20&where=id in (\"480c5acd-a812-41b0-9a6e-b91f23851f36\")", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections?staged=false&limit=20&where=id in (\"480c5acd-a812-41b0-9a6e-b91f23851f36\")", {
       method: 'GET',
       ...headers
     });
@@ -97,7 +97,7 @@ describe('CommerceTools', () => {
 
     const result = await commerceTools.getItems(state, ids);
 
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/products?limit=20&where=id in (\"480c5acd-a812-41b0-9a6e-b91f23851f36\")", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections?staged=false&limit=20&where=id in (\"480c5acd-a812-41b0-9a6e-b91f23851f36\")", {
       method: 'GET',
       ...headers
     });

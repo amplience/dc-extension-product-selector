@@ -50,7 +50,7 @@ export class CommerceTools {
         method: 'GET',
         ...headers
       };
-      const response = await fetch(`${this.apiUrl}/${projectKey}/products?limit=${PAGE_SIZE}&where=id in (${idsStrings})`, params);
+      const response = await fetch(`${this.apiUrl}/${projectKey}/product-projections?staged=false&limit=${PAGE_SIZE}&where=id in (${idsStrings})`, params);
       const {results} = await response.json();
 
       return this.parseProductResults(results);

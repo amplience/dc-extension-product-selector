@@ -1,4 +1,3 @@
-import { init } from "dc-extensions-sdk";
 import { setParams } from "../params/params.actions";
 import { initBackend } from '../backend/backend.actions';
 import { getSelectedItems } from '../selectedItems/selectedItems.actions';
@@ -24,7 +23,7 @@ export const fetchSDK = () => async (dispatch, getState) => {
   dispatch(setFetching(true));
 
   try {
-    SDK = await init();
+    SDK = await window.extensionsSdkInstance;
 
     dispatch(setSDK(SDK));
     dispatch(setParams(SDK.params));

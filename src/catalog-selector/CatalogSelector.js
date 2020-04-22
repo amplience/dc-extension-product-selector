@@ -46,7 +46,7 @@ export const CatalogSelectorComponent = params => {
         labelId="catalog"
         onChange={selectCatalog}
         labelWidth={labelWidth}
-        value={selectedCatalog}
+        value={selectedCatalog || ''}
       >
         {params.catalogs.map(({ id, name }) => (
           <MenuItem key={id} value={id}>

@@ -2,6 +2,7 @@
   "name": "dc-extension-product-selector",
   "version": "0.2.1",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@amplience/sap-product-browser": "^1.0.0",
     "@commercetools/sdk-auth": "^3.0.5",

@@ -191,7 +191,6 @@ Builds the app for production to the `build` folder.<br />
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.<br />
-
 By default, Create React App produces a build assuming your app is hosted at the server root.  
 To override this, specify the homepage in your `package.json`, for example:
  

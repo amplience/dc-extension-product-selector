@@ -29,7 +29,34 @@ describe('CommerceTools', () => {
     }));
   });
 
+  it('should get headers', async () => {
+    jest.spyOn(commerceTools.sdkAuth, 'clientCredentialsFlow').mockImplementation(() =>
+      Promise.resolve({
+        access_token: "zQqDgSCnedWitSP9z5uP_jYD2skFiM-6",
+        expires_in: 172525,
+        scope: "view_published_products:ulta-amp",
+        token_type: "Bearer"
+      })
+    );
+
+    const headers = await commerceTools.getHeaders();
+
+    expect(headers).toEqual({
+      headers: {
+        'Authorization': 'Bearer zQqDgSCnedWitSP9z5uP_jYD2skFiM-6'
+      }
+    });
+  });
+
   it('getItems should construct url and fetch', async () => {
+    jest.spyOn(commerceTools, 'getHeaders').mockImplementation(() =>
+      Promise.resolve(
+        {
+          headers: {
+            'Authorization': 'Bearer zQqDgSCnedWitSP9z5uP_jYD2skFiM-6'
+          }
+        })
+    );
     const headers = await commerceTools.getHeaders();
 
     jest.spyOn(global, 'fetch').mockImplementation(() =>
@@ -59,7 +86,7 @@ describe('CommerceTools', () => {
 
     const result = await commerceTools.getItems(state, ids);
 
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections?staged=false&limit=20&where=id in (\"480c5acd-a812-41b0-9a6e-b91f23851f36\")", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections?staged=false&limit=20&where=id%20in%20%28%22480c5acd-a812-41b0-9a6e-b91f23851f36%22%29", {
       method: 'GET',
       ...headers
     });
@@ -88,11 +115,9 @@ describe('CommerceTools', () => {
       params
     };
 
-    const ids = [];
+    const result = await commerceTools.getItems(state);
 
-    const result = await commerceTools.getItems(state, ids);
-
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections?staged=false&limit=20&where=id in (\"480c5acd-a812-41b0-9a6e-b91f23851f36\")", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections?staged=false&limit=20&where=id%20in%20%28%22480c5acd-a812-41b0-9a6e-b91f23851f36%22%29", {
       method: 'GET',
       ...headers
     });
@@ -150,7 +175,7 @@ describe('CommerceTools', () => {
 
     const result = await commerceTools.search(state);
 
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?text.en=white&staged=false&offset=0&limit=20", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?staged=false&offset=0&limit=20&text.en=white", {
       method: 'GET',
       ...headers
     });
@@ -185,7 +210,7 @@ describe('CommerceTools', () => {
 
     const result = await commerceTools.search(state);
 
-    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?text.en=white&staged=false&offset=0&limit=20", {
+    expect(global.fetch).toBeCalledWith("https://api.europe-west1.gcp.commercetools.com/ulta-amp/product-projections/search?staged=false&offset=0&limit=20&text.en=white", {
       method: 'GET',
       ...headers
     });
@@ -225,9 +250,9 @@ describe('CommerceTools', () => {
 
   it('get image', async () => {
     const result = commerceTools.getImage({
-        images: [{
-          url: 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg',
-        }]
+      images: [{
+        url: 'https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg',
+      }]
     });
 
     expect(result).toEqual('https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg');
@@ -243,6 +268,13 @@ describe('CommerceTools', () => {
 
     expect(result).toEqual('https://s3-eu-west-1.amazonaws.com/commercetools-maximilian/products/081090_1_large.jpg');
   });
+
+  it('not found image from attributes', async () => {
+    const result = commerceTools.getImage({});
+
+    expect(result).toEqual('');
+  });
+
 
   it('get image empty', async () => {
     const result = commerceTools.getImage({

@@ -1,5 +1,6 @@
 import SdkAuth from '@commercetools/sdk-auth'
 import {ProductSelectorError} from '../ProductSelectorError';
+import qs from 'qs';
 
 export class CommerceTools {
   constructor({host, projectKey, clientId, clientSecret, apiUrl, scope = 'view_published_products', locale}) {
@@ -50,7 +51,16 @@ export class CommerceTools {
         method: 'GET',
         ...headers
       };
-      const response = await fetch(`${this.apiUrl}/${projectKey}/product-projections?staged=false&limit=${PAGE_SIZE}&where=id in (${idsStrings})`, params);
+
+      const queryString = qs.stringify(
+        {
+          staged: false,
+          limit: PAGE_SIZE,
+          where: `id in (${idsStrings})`
+        }
+      );
+
+      const response = await fetch(`${this.apiUrl}/${projectKey}/product-projections?${queryString}`, params);
       const {results} = await response.json();
 
       return this.parseResults(results);
@@ -61,9 +71,15 @@ export class CommerceTools {
     }
   }
 
-  getImage(masterVariant) {
-    const largeImage = masterVariant.attributes && masterVariant.attributes.find(x => x.name === 'largeImageUrl');
-    return (largeImage && largeImage.value) || (masterVariant.images && masterVariant.images.length ? masterVariant.images[0].url : '')
+  getImage({ attributes = [], images = [] }) {
+    const LARGE_IMAGE_KEY = 'largeImageUrl';
+    const largeImage = attributes.find(({ name = '' }) => name === LARGE_IMAGE_KEY);
+
+    if (largeImage && largeImage.value) {
+      return largeImage.value;
+    }
+
+    return images.length ? images[0].url : '';
   }
 
   parseResults(data) {
@@ -92,7 +108,16 @@ export class CommerceTools {
         ...headers
       };
 
-      const response = await fetch(`${this.apiUrl}/${projectKey}/product-projections/search?text.${this.locale}=${searchText}&staged=false&offset=${page.curPage * PAGE_SIZE}&limit=${PAGE_SIZE}`, params);
+      const queryString = qs.stringify(
+        {
+          staged: false,
+          offset: page.curPage * PAGE_SIZE,
+          limit: PAGE_SIZE,
+          [`text.${this.locale}`]: searchText
+        }
+      );
+
+      const response = await fetch(`${this.apiUrl}/${projectKey}/product-projections/search?${queryString}`, params);
       const {results, total} = await response.json();
 
       return {

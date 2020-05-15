@@ -8,11 +8,11 @@
     "@commercetools/sdk-auth": "^3.0.5",
     "@material-ui/core": "^4.6.0",
     "@material-ui/icons": "^4.5.1",
-    "dc-extensions-sdk": "^1.0.2",
+    "dc-extensions-sdk": "^1.1.0",
     "dc-management-sdk-js": "^1.4.1",
     "framer-motion": "^1.6.17",
     "lodash": "^4.17.15",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.14.1",
     "qs": "^6.9.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
@@ -24,7 +24,7 @@
     "sortablejs": "^1.10.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "HTTPS=true react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --coverage --watchAll=false",
     "test:auto": "react-scripts test",

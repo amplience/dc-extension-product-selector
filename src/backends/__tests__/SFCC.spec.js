@@ -70,6 +70,52 @@ describe('SFCC', () => {
     expect(result).toEqual(returnValue);
   });
 
+  it('search should send post request without selectedCatalog', async () => {
+    const sfcc = new SFCC();
+
+    const returnValue = {
+      items: [{ id: '123' }],
+      page: { numPages: 1, curPage: 0, total: 25 }
+    };
+
+    jest.spyOn(global, 'fetch').mockImplementation(() =>
+      Promise.resolve({
+        json: () => returnValue
+      })
+    );
+
+    const state = {
+      searchText: 'hello',
+      page: { curPage: 2 },
+      params: {
+        siteId: 'siteId',
+        proxyUrl: '127.1.168.1:8080',
+        authSecret: 'secret',
+        authClientId: 'client',
+        sfccUrl: 'http://sfcc'
+      }
+    };
+
+    const result = await sfcc.search(state);
+
+    expect(global.fetch).toBeCalledWith('127.1.168.1:8080/product-search', {
+      method: 'POST',
+      body: JSON.stringify({
+        site_id: state.params.siteId,
+        search_text: state.searchText,
+        page: 2,
+        catalog_id: state.selectedCatalog
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-id': 'client',
+        'x-auth-secret': 'secret',
+        endpoint: 'http://sfcc'
+      }
+    });
+    expect(result).toEqual(returnValue);
+  });
+
   it('search should return empty search if no items returned', async () => {
     const sfcc = new SFCC();
 
@@ -208,5 +254,15 @@ describe('SFCC', () => {
       expect(console.error).toHaveBeenCalledWith('Unable to connect');
       expect(e).toEqual(new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS));
     }
+  });
+
+  it('should export item', async () => {
+    const sfcc = new SFCC();
+
+    const result = sfcc.exportItem({
+      id: '480c5acd-a812-41b0-9a6e-b91f23851f36',
+    });
+
+    expect(result).toEqual('480c5acd-a812-41b0-9a6e-b91f23851f36');
   });
 });

@@ -10,7 +10,7 @@ The IDs of each product selected are added to the content as an array of strings
 
 ![](/screenshot.png?raw=true)
 
-The extension requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris or Commercetools.
+The default SFCC backend requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris or Commercetools, or using the `sfcc-cors` backend with the proper configuration.
 
 ## Installation Parameters
 
@@ -22,7 +22,50 @@ The extension requires the use of the [sfcc-product-search-proxy)](https://githu
 | noItemsText | No items selected. | Placeholder text to display when no items are selected. | false
 | searchPlaceholderText  | Search  | Placeholder text to show in the search box.  | false 
 
-### SFCC
+
+### SFCC (cors)
+
+To use this mode, your SFCC instance must be configured to allow the origin of the hosted extension for the provided client, and you must use at least version 21.10 of the api. The extension works with 'list of text' properties and supports the following parameters:
+
+```json
+{
+  "backend": "sfcc-cors",
+  "sfccUrl": "{The URL of the SFCC instance}",
+  "authSecret": "{The SFCC OAuth client secret}",
+  "authClientId": "{The SFCC OAuth client ID}",
+  "siteId": "{The ID of the site containing products in SFCC}"
+}
+```
+
+#### Example Snippet
+
+```json
+{
+  "product selector": {
+    "title": "Product Selector",
+    "description": "description",
+    "type": "array",
+    "minItems": 3,
+    "maxItems": 10,
+    "items": {
+      "type": "string"
+    },
+    "ui:extension": {
+      "url": "https://product-selector.amplience.com",
+      "height": 208,
+      "params": {
+        "backend": "sfcc-cors",
+        "sfccUrl": "https://sandbox.demandware.net",
+        "authSecret": "aa1111AAAAAA1",
+        "authClientId": "11111111-1111-1111-1111-111111111111",
+        "siteId": "TestSite"
+      }
+    }
+  }
+}
+```
+
+### SFCC (proxy)
 
 The extension works with 'list of text' properties and supports the following parameters:
 

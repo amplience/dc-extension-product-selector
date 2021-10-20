@@ -1,7 +1,7 @@
-import qs from 'qs';
-import { trimEnd } from 'lodash';
 import { ProductSelectorError } from '../ProductSelectorError';
-export class SFCCReal {
+import { get } from 'lodash';
+
+export class SFCCCors {
   constructor(settings) {
     this.settings = settings;
     this.tokens = {};
@@ -15,7 +15,7 @@ export class SFCCReal {
 
   async getAuth(state) {
     const {
-      params: { authSecret, authClientId, sfccUrl: endpoint }
+      params: { authSecret, authClientId }
     } = state;
     const authUrl = "https://account.demandware.com/dw/oauth2/access_token";
     const authToken = btoa(authClientId + ':' + authSecret);
@@ -37,6 +37,7 @@ export class SFCCReal {
       },
       body: 'grant_type=client_credentials'
     };
+
     const response = await fetch(authUrl, params);
     if (!response.ok) {
       throw new Error('Error fetching token', await response.text(), response.statusText || 'unknown')
@@ -66,45 +67,83 @@ export class SFCCReal {
     };
   }
 
-  async getItems(state, ids) {
+  async commonSearch(state, query) {
     const {
-      params: { siteId: site_id, proxyUrl }
+      page,
+      params: { siteId, sfccUrl: endpoint }
     } = state;
+
     const token = await this.getAuth(state);
-    console.log(token);
+
+    const PAGE_SIZE = 20;
+    const emptyResult = { items: [], page: { numPages: 0, curPage: 0, total: 0 } };
+
+    const apiPath = '/s/-/dw/data/v21_10';
+
+    const uri = endpoint + apiPath + '/product_search?site_id=' + siteId;
+
+    const params = {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query,
+        start: page.curPage * PAGE_SIZE,
+        count: PAGE_SIZE,
+        expand: ['images'],
+        select : '(**)'
+      })
+    };
+
+    const response = await fetch(uri, params);
+    const responseJson = await response.json();
+
+    if (!responseJson) {
+      return emptyResult;
+    }
+
+    const {hits, total} = responseJson;
+    let items = [];
+    const numPages = Math.ceil(total / PAGE_SIZE);
+    const pageSettings = {numPages, curPage: page.curPage, total};
+
+    if (hits) {
+      items = hits.map(hit => ({
+        id: hit.id,
+        name: (hit.name && hit.name.default) ? hit.name.default : null,
+        image: get(hit, 'image.abs_url', null)
+      }));
+    }
+
+    return {items, page: pageSettings};
+  }
+
+  async getItems(state, ids) {
+    const query = {
+      term_query: {
+        fields: ['id'],
+        operator: 'one_of',
+        values: ids
+      }
+    };
 
     try {
-      const queryString = qs.stringify(
-        {
-          site_id,
-          ids
-        },
-        { arrayFormat: 'brackets' }
-      );
-      const params = {
-        method: 'GET',
-        ...this.getHeaders(state)
-      };
-      params.method = 'GET';
-      const response = await fetch(trimEnd(proxyUrl, '/') + '/products?' + queryString, params);
-      const { items } = await response.json();
+      const { items } = await this.commonSearch(state, query);
+
       return items;
     } catch (e) {
       console.error(e);
-      throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
+      throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_SELECTED_ITEMS);
     }
   }
 
   async search(state) {
     const {
       searchText,
-      page,
-      selectedCatalog,
-      params: { siteId, proxyUrl, sfccUrl: endpoint }
+      selectedCatalog
     } = state;
-    const emptyResult = { items: [], page: { numPages: 0, curPage: 0, total: 0 } };
-    const token = await this.getAuth(state);
-    console.log(token);
 
     const query = {
       bool_query: {
@@ -115,45 +154,8 @@ export class SFCCReal {
       }
     };
 
-    const apiPath = '/s/-/dw/data/v19_10';
-
-    const uri = endpoint + apiPath + '/product_search?site_id='+siteId;
-
-    const params = {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        query,
-        start: 0,
-        count: 20,
-        expand: ['images'],
-        select : '(**)'
-      })
-    };
-
-    const response = await fetch(uri, params);
-    console.log(await response.json());
-
     try {
-      const body = {
-        site_id: siteId,
-        search_text: searchText,
-        page: page.curPage
-      };
-
-      if (selectedCatalog !== null) {
-        body.catalog_id = selectedCatalog;
-      }
-      const params = {
-        method: 'POST',
-        body: JSON.stringify(body),
-        ...this.getHeaders(state)
-      };
-      const response = await fetch(trimEnd(proxyUrl, '/') + '/product-search', params);
-      return response.json() || emptyResult;
+      return this.commonSearch(state, query);
     } catch (e) {
       console.error(e);
       throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);

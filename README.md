@@ -12,6 +12,35 @@ The IDs of each product selected are added to the content as an array of strings
 
 The extension requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris or Commercetools.
 
+## How to install
+
+### Register Extension
+
+This extension needs to be [registered](https://amplience.com/docs/development/registeringextensions.html) against a Hub with in the Dynamic Content application (Developer -> Extensions), for it to load within that Hub.
+
+![Setup](media/setup.png)
+
+* Category: Content Field
+* Label: Product Selector
+* Name: dc-extension-product-selector _(needs to be unique with the Hub)_
+* URL: [https://product-selector.extensions.content.amplience.net](https://product-selector.extensions.content.amplience.net)
+* Description: Product Selector _(can be left blank, if you wish)_
+* Initial height: 500
+
+Note:
+You can use our deployed version of this extension (builds from the "production" branch) -
+
+[https://product-selector.extensions.content.amplience.net](https://product-selector.extensions.content.amplience.net)
+
+_As this is an open source project you're welcome to host your own "fork" of this project. You can use any standard static hosting service (Netlify, Amplify, Vercel, etc.) if you wish._
+
+#### Permissions
+
+![Permissions](media/permissions.png)
+
+Sandbox permissions:
+- Allow same origin
+
 ## Installation Parameters
 
 

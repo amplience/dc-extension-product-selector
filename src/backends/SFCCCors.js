@@ -11,13 +11,12 @@ export class SFCCCors {
     const FIVE_MINS = 300000;
     const expired = new Date().getTime() + FIVE_MINS;
     return expired > expires;
-  }  
+  }
 
   async getAuth(state) {
     const {
-      params: { authSecret, authClientId }
+      params: { authSecret, authClientId, authUrl = 'https://account.demandware.com/dw/oauth2/access_token' },
     } = state;
-    const authUrl = "https://account.demandware.com/dw/oauth2/access_token";
     const authToken = btoa(authClientId + ':' + authSecret);
 
     const existingToken = this.tokens[authToken];
@@ -33,52 +32,38 @@ export class SFCCCors {
       method: 'POST',
       headers: {
         Authorization: 'Basic ' + authToken,
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: 'grant_type=client_credentials'
+      body: 'grant_type=client_credentials',
     };
 
     const response = await fetch(authUrl, params);
     if (!response.ok) {
-      throw new Error('Error fetching token', await response.text(), response.statusText || 'unknown')
+      throw new Error('Error fetching token', await response.text(), response.statusText);
     }
     const token = await response.json();
 
     const ONE_SECOND_IN_MILLISECONDS = 1000;
     this.tokens[authToken] = {
       token: token.access_token,
-      expires: new Date().getTime() + (token.expires_in * ONE_SECOND_IN_MILLISECONDS)
+      expires: new Date().getTime() + token.expires_in * ONE_SECOND_IN_MILLISECONDS,
     };
 
     return token.access_token;
   }
 
-  getHeaders(state) {
-    const {
-      params: { authSecret, authClientId, sfccUrl: endpoint }
-    } = state;
-    return {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-auth-id': authClientId,
-        'x-auth-secret': authSecret,
-        endpoint
-      }
-    };
-  }
-
   async commonSearch(state, query) {
     const {
+      PAGE_SIZE,
       page,
-      params: { siteId, sfccUrl: endpoint }
+      params: { siteId, sfccUrl: endpoint, sfccVersion = 'v21_10' },
     } = state;
 
     const token = await this.getAuth(state);
 
-    const PAGE_SIZE = 20;
     const emptyResult = { items: [], page: { numPages: 0, curPage: 0, total: 0 } };
 
-    const apiPath = '/s/-/dw/data/v21_10';
+    const apiPath = '/s/-/dw/data/' + sfccVersion;
 
     const uri = endpoint + apiPath + '/product_search?site_id=' + siteId;
 
@@ -86,15 +71,15 @@ export class SFCCCors {
       method: 'POST',
       headers: {
         Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         query,
         start: page.curPage * PAGE_SIZE,
         count: PAGE_SIZE,
         expand: ['images'],
-        select : '(**)'
-      })
+        select: '(**)',
+      }),
     };
 
     const response = await fetch(uri, params);
@@ -104,20 +89,20 @@ export class SFCCCors {
       return emptyResult;
     }
 
-    const {hits, total} = responseJson;
+    const { hits, total } = responseJson;
     let items = [];
     const numPages = Math.ceil(total / PAGE_SIZE);
-    const pageSettings = {numPages, curPage: page.curPage, total};
+    const pageSettings = { numPages, curPage: page.curPage, total };
 
     if (hits) {
-      items = hits.map(hit => ({
+      items = hits.map((hit) => ({
         id: hit.id,
-        name: (hit.name && hit.name.default) ? hit.name.default : null,
-        image: get(hit, 'image.abs_url', null)
+        name: get(hit, 'name.default', null),
+        image: get(hit, 'image.abs_url', null),
       }));
     }
 
-    return {items, page: pageSettings};
+    return { items, page: pageSettings };
   }
 
   async getItems(state, ids) {
@@ -125,8 +110,8 @@ export class SFCCCors {
       term_query: {
         fields: ['id'],
         operator: 'one_of',
-        values: ids
-      }
+        values: ids,
+      },
     };
 
     try {
@@ -140,22 +125,19 @@ export class SFCCCors {
   }
 
   async search(state) {
-    const {
-      searchText,
-      selectedCatalog
-    } = state;
+    const { searchText, selectedCatalog } = state;
 
     const query = {
       bool_query: {
         must: [
-          {text_query: {fields: ['id', 'name'], search_phrase: searchText}},
-          {term_query: {fields: ['catalog_id'], operator: 'is', values: selectedCatalog ? [selectedCatalog] : []}}
-        ]
-      }
+          { text_query: { fields: ['id', 'name'], search_phrase: searchText } },
+          { term_query: { fields: ['catalog_id'], operator: 'is', values: selectedCatalog ? [selectedCatalog] : [] } },
+        ],
+      },
     };
 
     try {
-      return this.commonSearch(state, query);
+      return await this.commonSearch(state, query);
     } catch (e) {
       console.error(e);
       throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);

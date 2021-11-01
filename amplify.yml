@@ -6,6 +6,7 @@ frontend:
         - nvm install 14
         - nvm use 14
         - npm ci
+        - npm test
     build:
       commands:
         - CI=false npm run build

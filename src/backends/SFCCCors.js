@@ -8,8 +8,9 @@ export class SFCCCors {
   }
 
   tokenExpired(expires) {
-    const FIVE_MINS = 300000;
-    const expired = new Date().getTime() + FIVE_MINS;
+    // Count a token as expired some time before its true expiry time, so that it doesn't expire during use.
+    const EXPIRY_BIAS = 300000; // 5 minutes in milliseconds.
+    const expired = new Date().getTime() + EXPIRY_BIAS;
     return expired > expires;
   }
 

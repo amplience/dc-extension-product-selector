@@ -25,12 +25,12 @@ The default SFCC backend requires the use of the [sfcc-product-search-proxy)](ht
 
 ### SFCC (cors)
 
-To use this mode, your SFCC instance must be configured to allow the origin of the hosted extension for the provided client, and you must use at least version 21.10 of the api. The extension works with 'list of text' properties and supports the following parameters:
-
+To use this mode, your SFCC instance must be configured to allow the origin of the hosted extension for the provided client. By default the extension will use version 21.10 of the Open Commerce API, however this can be overridden with the `sfccVersion` parameter. The extension works with 'list of text' properties and supports the following parameters:
 ```json
 {
   "backend": "sfcc-cors",
   "sfccUrl": "{The URL of the SFCC instance}",
+  "sfccVersion": "{The version of OCAPI}",
   "authSecret": "{The SFCC OAuth client secret}",
   "authClientId": "{The SFCC OAuth client ID}",
   "siteId": "{The ID of the site containing products in SFCC}"
@@ -56,6 +56,7 @@ To use this mode, your SFCC instance must be configured to allow the origin of t
       "params": {
         "backend": "sfcc-cors",
         "sfccUrl": "https://sandbox.demandware.net",
+        "sfccVersion": "v21_10",
         "authSecret": "aa1111AAAAAA1",
         "authClientId": "11111111-1111-1111-1111-111111111111",
         "siteId": "TestSite"

@@ -101,9 +101,9 @@ To allow the extension to access product data in your SFCC environment, you will
 
 ```json
 {
-	"allowed_origins": [
-		"https://product-selector.extensions.content.amplience.net"
-	]
+  "allowed_origins": [
+    "https://product-selector.extensions.content.amplience.net"
+  ]
 }
 ```
 
@@ -155,9 +155,9 @@ To allow the proxy to access product data in your SFCC environment, you will als
 
 ```json
 {
-	"allowed_origins": [
-		"https://sfcc-proxy.your-proxy-domain.com"
-	]
+  "allowed_origins": [
+    "https://sfcc-proxy.your-proxy-domain.com"
+  ]
 }
 ```
 

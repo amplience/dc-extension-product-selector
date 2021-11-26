@@ -56,7 +56,7 @@ Sandbox permissions:
 
 To use this mode, you will also need to ensure that "Allow same origin" is enabled within the [extension's settings](#Permissions), and that the any snippets within content type schemas using this extension reference the extension by its registered name, rather than its URL. Your SFCC instance must also be configured to allow the origin of the hosted extension for the provided client.
 
- By default the extension will use version 21.10 of the Open Commerce API, however this can be overridden with the `sfccVersion` parameter. The extension works with 'list of text' properties and supports the following parameters:
+By default the extension will use version 21.10 of the Open Commerce API, however this can be overridden with the `sfccVersion` parameter. The extension works with 'list of text' properties and supports the following parameters:
 
 ```json
 {

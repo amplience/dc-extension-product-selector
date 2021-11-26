@@ -54,7 +54,10 @@ Sandbox permissions:
 
 ### SFCC (cors)
 
-To use this mode, your SFCC instance must be configured to allow the origin of the hosted extension for the provided client. By default the extension will use version 21.10 of the Open Commerce API, however this can be overridden with the `sfccVersion` parameter. The extension works with 'list of text' properties and supports the following parameters:
+To use this mode, you will also need to ensure that "Allow same origin" is enabled within the [extension's settings](#Permissions), and that the any snippets within content type schemas using this extension reference the extension by its registered name, rather than its URL. Your SFCC instance must also be configured to allow the origin of the hosted extension for the provided client.
+
+ By default the extension will use version 21.10 of the Open Commerce API, however this can be overridden with the `sfccVersion` parameter. The extension works with 'list of text' properties and supports the following parameters:
+
 ```json
 {
   "backend": "sfcc-cors",
@@ -80,7 +83,7 @@ To use this mode, your SFCC instance must be configured to allow the origin of t
       "type": "string"
     },
     "ui:extension": {
-      "url": "https://product-selector.extensions.content.amplience.net",
+      "name": "dc-extension-product-selector",
       "height": 208,
       "params": {
         "backend": "sfcc-cors",
@@ -109,7 +112,7 @@ To allow the extension to access product data in your SFCC environment, you will
 
 ### SFCC (proxy)
 
-To use this mode, you will need to build and host your own version of [sfcc-product-search-proxy](https://github.com/amplience/sfcc-product-search-proxy). The extension works with 'list of text' properties and supports the following parameters:
+To use this mode, you will also need to ensure that "Allow same origin" is disabled within the [extension's settings](#Permissions). You will also need to build and host your own version of [sfcc-product-search-proxy](https://github.com/amplience/sfcc-product-search-proxy). The extension works with 'list of text' properties and supports the following parameters:
 
 ```json
 {
@@ -146,18 +149,6 @@ To use this mode, you will need to build and host your own version of [sfcc-prod
       }
     }
   }
-}
-```
-
-#### Allowing the proxy in OCAPI settings
-
-To allow the proxy to access product data in your SFCC environment, you will also need to add this to your SFCC OAuth client's `allowed_origins`:
-
-```json
-{
-  "allowed_origins": [
-    "https://sfcc-proxy.your-proxy-domain.com"
-  ]
 }
 ```
 

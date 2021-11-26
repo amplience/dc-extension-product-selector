@@ -54,7 +54,10 @@ Sandbox permissions:
 
 ### SFCC (cors)
 
-To use this mode, your SFCC instance must be configured to allow the origin of the hosted extension for the provided client. By default the extension will use version 21.10 of the Open Commerce API, however this can be overridden with the `sfccVersion` parameter. The extension works with 'list of text' properties and supports the following parameters:
+To use this mode, you will also need to ensure that "Allow same origin" is enabled within the [extension's settings](#Permissions), and that the any snippets within content type schemas using this extension reference the extension by its registered name, rather than its URL. Your SFCC instance must also be configured to allow the origin of the hosted extension for the provided client.
+
+By default the extension will use version 21.10 of the Open Commerce API, however this can be overridden with the `sfccVersion` parameter. The extension works with 'list of text' properties and supports the following parameters:
+
 ```json
 {
   "backend": "sfcc-cors",
@@ -80,7 +83,7 @@ To use this mode, your SFCC instance must be configured to allow the origin of t
       "type": "string"
     },
     "ui:extension": {
-      "url": "https://product-selector.amplience.com",
+      "name": "dc-extension-product-selector",
       "height": 208,
       "params": {
         "backend": "sfcc-cors",
@@ -95,7 +98,21 @@ To use this mode, your SFCC instance must be configured to allow the origin of t
 }
 ```
 
+#### Allowing the extension in OCAPI settings
+
+To allow the extension to access product data in your SFCC environment, you will also need to add this to your SFCC OAuth client's `allowed_origins`:
+
+```json
+{
+  "allowed_origins": [
+    "https://product-selector.extensions.content.amplience.net"
+  ]
+}
+```
+
 ### SFCC (proxy)
+
+To use this mode, you will need to build and host your own version of [sfcc-product-search-proxy](https://github.com/amplience/sfcc-product-search-proxy). To use this mode as a registered extension, you will also need to ensure that "Allow same origin" is disabled within the [extension's settings](#Permissions). If you reference the extension using `url` this will happen automatically.
 
 The extension works with 'list of text' properties and supports the following parameters:
 
@@ -123,10 +140,10 @@ The extension works with 'list of text' properties and supports the following pa
       "type": "string"
     },
     "ui:extension": {
-      "url": "https://product-selector.amplience.com",
+      "url": "https://product-selector.extensions.content.amplience.net",
       "height": 208,
       "params": {
-        "proxyUrl": "https://sfcc-proxy.amplience.com",
+        "proxyUrl": "https://sfcc-proxy.your-proxy-domain.com",
         "sfccUrl": "https://sandbox.demandware.net",
         "authSecret": "aa1111AAAAAA1",
         "authClientId": "11111111-1111-1111-1111-111111111111",
@@ -175,7 +192,7 @@ Hybris works with a list of objects with the properties id and catalog and requi
     }
   },
   "ui:extension": {
-    "name": "{{name of extension}}",
+    "url": "https://product-selector.extensions.content.amplience.net",
     "params": {
       "hybrisUrl": "https://api-hybris.amplience.com",
       "backend": "hybris",
@@ -224,7 +241,7 @@ Image to display is selected from attributes of master variant by name `largeIma
       "type": "string"
     },
     "ui:extension": {
-      "url": "https://product-selector.amplience.com",
+      "url": "https://product-selector.extensions.content.amplience.net",
       "height": 208,
       "params": {
         "backend": "commercetools",
@@ -266,6 +283,6 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br />
 By default, Create React App produces a build assuming your app is hosted at the server root.  
 To override this, specify the homepage in your `package.json`, for example:
- 
+
  `"homepage": "."` <br />
 Your app is ready to be deployed!

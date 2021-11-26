@@ -112,7 +112,9 @@ To allow the extension to access product data in your SFCC environment, you will
 
 ### SFCC (proxy)
 
-To use this mode, you will also need to ensure that "Allow same origin" is disabled within the [extension's settings](#Permissions). You will also need to build and host your own version of [sfcc-product-search-proxy](https://github.com/amplience/sfcc-product-search-proxy). The extension works with 'list of text' properties and supports the following parameters:
+To use this mode, you will need to build and host your own version of [sfcc-product-search-proxy](https://github.com/amplience/sfcc-product-search-proxy). To use this mode as a registered extension, you will also need to ensure that "Allow same origin" is disabled within the [extension's settings](#Permissions). If you reference the extension using `url` this will happen automatically.
+
+The extension works with 'list of text' properties and supports the following parameters:
 
 ```json
 {

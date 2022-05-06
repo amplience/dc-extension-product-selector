@@ -19,42 +19,45 @@ export const productSearchQuery = /* GraphQL */ `
   }
 `;
 
-class APIAuthenticationHelper {
-  constructor(clientId = '', sharedSecret = '', authHost = '') {
+export class APIAuthenticationHelper {
+  constructor(clientId, sharedSecret, authHost) {
     this._clientId = clientId;
     this._sharedSecret = sharedSecret;
     this._authHost = authHost;
-    this.authData = {};
+    let authTicket = undefined;
+    try {
+      let serializedAuth = window.localStorage.get('kibo-at');
+      if (serializedAuth) {
+        authTicket = JSON.parse(serializedAuth);
+      }
+    } catch (error) {}
+    this.authData = authTicket;
   }
 
-  _buildFetchOptions(data = {}) {
+  _buildFetchOptions(data) {
     return {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      data: JSON.stringify(data),
+      body: JSON.stringify(data),
     };
   }
   _calculateTicketExpiration(kiboAuthTicket) {
     //calculate how many milliseconds until auth expires
-    const millisecsUntilExpiration = kiboAuthTicket.data.expires_in * 1000;
+    const millisecsUntilExpiration = kiboAuthTicket.expires_in * 1000;
     kiboAuthTicket.expires_at = Date.now() + millisecsUntilExpiration;
     return kiboAuthTicket;
   }
 
   async _getAuthTicket() {
-    // Get saved data from localStorage
-    //const authTicket = localStorage.get('kibo-at)
-    let authTicket;
-    if (authTicket) {
-      return JSON.parse(authTicket);
-    }
     return this.authData;
   }
 
   async _setAuthTicket(kiboAuthTicket) {
-    //localstorage.set('kibo-at', JSON.stringify(kiboAuthTicket)) ?
+    try {
+      window.localstorage.set('kibo-at', JSON.stringify(kiboAuthTicket));
+    } catch (error) {}
     this.authData = { ...kiboAuthTicket };
   }
   async authenticate() {
@@ -78,10 +81,13 @@ class APIAuthenticationHelper {
   async refreshTicket(kiboAuthTicket) {
     // create oauth refresh fetch options
     const options = this._buildFetchOptions({
-      refreshToken: kiboAuthTicket === null || kiboAuthTicket === void 0 ? void 0 : kiboAuthTicket.refresh_token,
+      client_id: this._clientId,
+      client_secret: this._sharedSecret,
+      grant_type: 'client_credentials',
+      refresh_token: kiboAuthTicket && kiboAuthTicket.refresh_token,
     });
     const refreshedTicket = await (
-      await fetch(`https://${this._authHost}/api/platform/applications/authtickets/refresh-ticket`, options)
+      await fetch(`https://${this._authHost}/api/platform/applications/authtickets/oauth`, options)
     ).json();
 
     this._calculateTicketExpiration(refreshedTicket);
@@ -109,7 +115,6 @@ class APIAuthenticationHelper {
 export class KiboCommerce {
   constructor({ apiHost, authHost, clientId, sharedSecret }) {
     this.graphQLUrl = `https://${apiHost}/graphql`;
-    this.authUrl = `https://${authHost}`;
     this.authHelper = new APIAuthenticationHelper(clientId, sharedSecret, authHost);
   }
   async getAccessToken() {
@@ -125,10 +130,6 @@ export class KiboCommerce {
     };
   }
   async performSearch({ query, filter, pageSize, startIndex }) {
-    // get headers
-    // build GQL body { query, variables }
-    // fetch data
-    // return data.productSearch
     const headers = await this.getHeaders();
     const body = {
       query: productSearchQuery,
@@ -152,17 +153,21 @@ export class KiboCommerce {
   }
   async search(state) {
     const { searchText, page, PAGE_SIZE } = state;
-    // const emptyResult = { items: [], page: { numPages: 0, curPage: 0, total: 0 } };
-    // return emptyResult;
-    // run product search, gql productSearch
     try {
-      const result = await this.performSearch({ query: searchText });
+      const startIndex = (page.curPage || 0) * PAGE_SIZE;
+      const result = await this.performSearch({ query: searchText, pageSize: PAGE_SIZE, startIndex });
+      if (!result.totalCount) {
+        return {
+          items: [],
+          page: { numPages: 0, curPage: 0, total: 0 },
+        };
+      }
       return {
         items: this.normalizeItems(result.items),
         page: {
-          numPages: 10, //Math.ceil(total / PAGE_SIZE),
-          curPage: 10, //page.curPage,
-          total: 100,
+          numPages: Math.ceil(result.totalCount / PAGE_SIZE),
+          curPage: page.curPage,
+          total: result.totalCount,
         },
       };
     } catch (error) {

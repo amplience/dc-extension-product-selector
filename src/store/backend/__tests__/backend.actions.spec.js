@@ -1,9 +1,9 @@
-import {SFCC} from '../../../backends/SFCC.js';
-import {Hybris} from '../../../backends/Hybris';
-import {CommerceTools} from "../../../backends/CommerceTools";
-
-import {mockStore} from '../../../utils/mockStore';
-import {SET_BACKEND, setBackend, initBackend} from '../backend.actions';
+import { SFCC } from '../../../backends/SFCC.js';
+import { Hybris } from '../../../backends/Hybris';
+import { CommerceTools } from '../../../backends/CommerceTools';
+import { KiboCommerce } from '../../../backends/KiboCommerce.js';
+import { mockStore } from '../../../utils/mockStore';
+import { SET_BACKEND, setBackend, initBackend } from '../backend.actions';
 
 describe('backend actions', () => {
   it('SET_BACKEND', async () => {
@@ -11,17 +11,15 @@ describe('backend actions', () => {
 
     await store.dispatch(setBackend({}));
 
-    expect(store.getActions()).toEqual([{type: SET_BACKEND, value: {}}]);
+    expect(store.getActions()).toEqual([{ type: SET_BACKEND, value: {} }]);
   });
 
   it('initBackend SFCC', async () => {
-    const store = mockStore({params: {backend: 'sfcc'}});
+    const store = mockStore({ params: { backend: 'sfcc' } });
 
     await store.dispatch(initBackend());
 
-    expect(store.getActions()).toEqual([
-      {type: SET_BACKEND, value: new SFCC({backend: 'sfcc'})}
-    ]);
+    expect(store.getActions()).toEqual([{ type: SET_BACKEND, value: new SFCC({ backend: 'sfcc' }) }]);
   });
 
   it('initBackend commerceTools', async () => {
@@ -31,33 +29,44 @@ describe('backend actions', () => {
       projectKey: 'ulta-amp',
       clientId: '4h4q7if8FAsycH1Qtba6WhPQ',
       clientSecret: 'DFwdLEY3b0Y2YGRMZwBOvmIrwcIVoL6f',
-      apiUrl: 'https://api.europe-west1.gcp.commercetools.com'
+      apiUrl: 'https://api.europe-west1.gcp.commercetools.com',
     };
     const store = mockStore({
-      params
+      params,
     });
 
     await store.dispatch(initBackend());
 
-    expect(store.getActions()).toEqual([
-      {type: SET_BACKEND, value: new CommerceTools(params)}
-    ]);
+    expect(store.getActions()).toEqual([{ type: SET_BACKEND, value: new CommerceTools(params) }]);
   });
 
   it('initBackend Hybris', async () => {
     const params = {
       backend: 'hybris',
       hybrisUrl: '/hybris',
-      catalogs: [
-        {id: '123', name: 'electronics'}
-      ]
+      catalogs: [{ id: '123', name: 'electronics' }],
     };
-    const store = mockStore({params});
+    const store = mockStore({ params });
 
     await store.dispatch(initBackend());
 
-    expect(store.getActions()).toEqual([
-      {type: SET_BACKEND, value: new Hybris(params)}
-    ]);
+    expect(store.getActions()).toEqual([{ type: SET_BACKEND, value: new Hybris(params) }]);
+  });
+
+  it('initBackend KiboCommerce', async () => {
+    const params = {
+      backend: 'kibocommerce',
+      apiHost: 't1234-s1234.sandbox.mozu.com',
+      authHost: 'home.mozu.com',
+      clientId: 'kibo.example-app-name.1.0.0.Release',
+      sharedSecret: '12345_Secret',
+    };
+    const store = mockStore({
+      params,
+    });
+
+    await store.dispatch(initBackend());
+
+    expect(store.getActions()).toEqual([{ type: SET_BACKEND, value: new KiboCommerce(params) }]);
   });
 });

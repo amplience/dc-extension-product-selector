@@ -1,4 +1,4 @@
-import { productSearchQuery, KiboCommerce } from '../KiboCommerce';
+import { productSearchQuery, KiboCommerce, APIAuthenticationHelper } from '../KiboCommerce';
 import { ProductSelectorError } from '../../ProductSelectorError';
 
 const params = {
@@ -14,13 +14,107 @@ const mockProduct = {
     productImages: [{ imageUrl: 'imageUrl' }],
   },
 };
+const mockAuthTicket = {
+  access_token: 'string',
+  token_type: 'string',
+  expires_in: 3600,
+  expires_at: 568997884405762,
+};
 function initBackend() {
   const kiboCommerce = new KiboCommerce(params);
   return { kiboCommerce };
 }
 
 describe('KiboCommerce', () => {
-  describe('Kibo Commerce Auth Helper', () => {});
+  describe('Kibo Commerce API Auth Helper', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should create auth helper for provided clientId, sharedSecret, authHost', () => {
+      const { kiboCommerce } = initBackend();
+
+      expect(kiboCommerce.authHelper._authHost).toEqual(params.authHost);
+      expect(kiboCommerce.authHelper._clientId).toEqual(params.clientId);
+      expect(kiboCommerce.authHelper._sharedSecret).toEqual(params.sharedSecret);
+    });
+
+    it('should perform api authentication', async () => {
+      const { kiboCommerce } = initBackend();
+      const { authHelper } = kiboCommerce;
+      const expectedBody = JSON.stringify({
+        client_id: params.clientId,
+        client_secret: params.sharedSecret,
+        grant_type: 'client_credentials',
+      });
+      jest.spyOn(global, 'fetch').mockImplementation(() =>
+        Promise.resolve({
+          json: () => ({ ...mockAuthTicket }),
+        })
+      );
+      await authHelper.authenticate();
+      expect(global.fetch).toBeCalledWith(`https://${params.authHost}/api/platform/applications/authtickets/oauth`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: expectedBody,
+      });
+    });
+
+    it('should perform api authentication refresh', async () => {
+      const { kiboCommerce } = initBackend();
+      const { authHelper } = kiboCommerce;
+      const expectedBody = JSON.stringify({
+        client_id: params.clientId,
+        client_secret: params.sharedSecret,
+        grant_type: 'client_credentials',
+        refresh_token: 'refresh',
+      });
+      jest.spyOn(global, 'fetch').mockImplementation(() =>
+        Promise.resolve({
+          json: () => ({ ...mockAuthTicket }),
+        })
+      );
+      await authHelper.refreshTicket({ refresh_token: 'refresh' });
+      expect(global.fetch).toBeCalledWith(`https://${params.authHost}/api/platform/applications/authtickets/oauth`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: expectedBody,
+      });
+    });
+
+    it('should get access token when auth ticket is null', async () => {
+      const { kiboCommerce } = initBackend();
+      const { authHelper } = kiboCommerce;
+      jest.spyOn(authHelper, 'authenticate').mockImplementation(() => Promise.resolve({ access_token: 'token' }));
+      const accessToken = await authHelper.getAccessToken();
+      expect(authHelper.authenticate).toHaveBeenCalled();
+      expect(accessToken).toEqual('token');
+    });
+
+    it('should get access token from valid auth ticket', async () => {
+      const { kiboCommerce } = initBackend();
+      const { authHelper } = kiboCommerce;
+      authHelper.authData = { expires_at: 10, access_token: 'token' };
+      jest.spyOn(Date, 'now').mockImplementationOnce(() => 1);
+      const accessToken = await authHelper.getAccessToken();
+      expect(accessToken).toEqual('token');
+    });
+
+    it('should get access token when auth ticket is expired', async () => {
+      const { kiboCommerce } = initBackend();
+      const { authHelper } = kiboCommerce;
+      authHelper.authData = { expires_at: 1 };
+      jest.spyOn(authHelper, 'refreshTicket').mockImplementation(() => Promise.resolve({ access_token: 'token' }));
+      const accessToken = await authHelper.getAccessToken();
+      expect(authHelper.refreshTicket).toHaveBeenCalled();
+      expect(accessToken).toEqual('token');
+    });
+  });
+
   describe('Kibo Commerce Backend', () => {
     beforeEach(() => {
       jest.clearAllMocks();
@@ -40,11 +134,10 @@ describe('KiboCommerce', () => {
           'Content-Type': 'application/json',
         },
       };
-      jest.spyOn(kiboCommerce, 'getAccessToken').mockImplementation(() => 'token');
+      jest.spyOn(kiboCommerce.authHelper, 'getAccessToken').mockImplementation(() => 'token');
       const headers = await kiboCommerce.getHeaders();
       expect(headers).toEqual(expected);
     });
-
     it('should get items from list of ids', async () => {
       const { kiboCommerce } = initBackend();
       jest.spyOn(kiboCommerce, 'performSearch').mockImplementation(() => Promise.resolve({ items: [mockProduct] }));
@@ -125,6 +218,25 @@ describe('KiboCommerce', () => {
       const response = await kiboCommerce.search(state);
       expect(response).toEqual(expected);
     });
+    it('should search and return no results', async () => {
+      const { kiboCommerce } = initBackend();
+
+      jest.spyOn(kiboCommerce, 'performSearch').mockImplementation(() =>
+        Promise.resolve({
+          items: [],
+          totalCount: 0,
+        })
+      );
+      const expected = {
+        items: [],
+        page: { numPages: 0, curPage: 0, total: 0 },
+      };
+
+      const searchState = { searchText: 'jacket', page: { curPage: 1 }, PAGE_SIZE: 20 };
+      const response = await kiboCommerce.search(searchState);
+
+      expect(response).toEqual(expected);
+    });
 
     it('should throw search fail error', async () => {
       const { kiboCommerce } = initBackend();
@@ -169,6 +281,12 @@ describe('KiboCommerce', () => {
       const expected = [{ id: 'productCode', name: 'productName', image: 'imageUrl' }];
       const items = kiboCommerce.normalizeItems(kiboProducts);
       expect(items).toEqual(expected);
+    });
+
+    it('should get empty image url', () => {
+      const { kiboCommerce } = initBackend();
+      const imageUrl = kiboCommerce.getImageUrl({});
+      expect(imageUrl).toEqual('');
     });
   });
 });

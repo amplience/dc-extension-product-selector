@@ -276,7 +276,7 @@ The extension works with 'list of text' properties and supports the following pa
 - `clientId` - Application ID from your Kibo Commerce [Dev Console](https://developer.mozu.com/)
 - `sharedSecret` - Application Secret from your Kibo Commerce [Dev Console](https://developer.mozu.com/)
 
-The Kibo Commerce application used for this extension will require "Product Read" beviors.
+The Kibo Commerce application used for this extension will require "Product Read" behaviors.
 Additional guides on setting up a Kibo Commerce application can be found in the [Kibo Commerce docs](https://docs.kibocommerce.com/221803-headless-integrations/1108695-getting-started-headless)
 
 #### Example Snippet

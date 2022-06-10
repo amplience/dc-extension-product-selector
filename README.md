@@ -161,7 +161,7 @@ Hybris works with a list of objects with the properties id and catalog and requi
 ```json
 {
   "hybrisUrl": "{URL of your hybris api}",
-  "hybrisUrl": "{Endpoint for you hybris api (defaults to /rest/v2)}",
+  "hybrisEndpoint": "{Endpoint for your hybris api (defaults to /rest/v2)}",
   "backend": "hybris",
   "currency": "{Currency of your products defaults to USD}",
   "catalogs": [

@@ -43,6 +43,7 @@ export class APIAuthenticationHelper {
       body: JSON.stringify(data),
     };
   }
+
   _calculateTicketExpiration(kiboAuthTicket) {
     //calculate how many milliseconds until auth expires
     const millisecsUntilExpiration = kiboAuthTicket.expires_in * 1000;
@@ -60,6 +61,7 @@ export class APIAuthenticationHelper {
     } catch (error) {}
     this.authData = { ...kiboAuthTicket };
   }
+
   async authenticate() {
     // create oauth fetch options
     const options = this._buildFetchOptions({
@@ -78,6 +80,7 @@ export class APIAuthenticationHelper {
 
     return authTicket;
   }
+
   async refreshTicket(kiboAuthTicket) {
     // create oauth refresh fetch options
     const options = this._buildFetchOptions({
@@ -96,6 +99,7 @@ export class APIAuthenticationHelper {
 
     return refreshedTicket;
   }
+
   async getAccessToken() {
     // get current Kibo API auth ticket
 
@@ -117,9 +121,11 @@ export class KiboCommerce {
     this.graphQLUrl = `https://${apiHost}/graphql`;
     this.authHelper = new APIAuthenticationHelper(clientId, sharedSecret, authHost);
   }
+
   async getAccessToken() {
     return await this.authHelper.getAccessToken();
   }
+
   async getHeaders() {
     const authToken = await this.getAccessToken();
     return {
@@ -129,6 +135,7 @@ export class KiboCommerce {
       },
     };
   }
+
   async performSearch({ query, filter, pageSize, startIndex }) {
     const headers = await this.getHeaders();
     const body = {
@@ -140,6 +147,7 @@ export class KiboCommerce {
     const response = await request.json();
     return response.data.productSearch;
   }
+
   async getItems(state, ids = []) {
     const { PAGE_SIZE } = state;
     const filter = ids.map((id) => `productCode eq ${id}`).join(' or ');
@@ -151,6 +159,7 @@ export class KiboCommerce {
       throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
     }
   }
+
   async search(state) {
     const { searchText, page, PAGE_SIZE } = state;
     try {
@@ -175,15 +184,18 @@ export class KiboCommerce {
       throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);
     }
   }
+
   exportItem(item) {
     return item.id;
   }
+
   getImageUrl(product) {
     const { content = {} } = product;
     const { productImages = [] } = content;
-    const [mainImage, ...rest] = productImages;
+    const mainImage = productImages[0];
     return mainImage ? mainImage.imageUrl : '';
   }
+
   normalizeItems(items = []) {
     return items.map((product) => ({
       id: product.productCode,

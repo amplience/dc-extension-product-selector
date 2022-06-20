@@ -156,7 +156,7 @@ export class KiboCommerce {
       return this.normalizeItems(result.items);
     } catch (error) {
       console.error(error);
-      // throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
+      throw new ProductSelectorError('Could not get items', ProductSelectorError.codes.GET_SELECTED_ITEMS);
     }
   }
 
@@ -181,7 +181,7 @@ export class KiboCommerce {
       };
     } catch (error) {
       console.error(error);
-      // throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);
+      throw new ProductSelectorError('Could not search', ProductSelectorError.codes.GET_ITEMS);
     }
   }
 

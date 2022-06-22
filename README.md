@@ -4,13 +4,13 @@
 
 ![Travis](https://img.shields.io/travis/amplience/dc-extension-product-selector)
 
-The product selector extension allows content authors to easily search and select products in Salesforce B2C Commerce Cloud (SFCC), SAP Commerce Cloud (Hybris) or Commercetools and add them to your content.
+The product selector extension allows content authors to easily search and select products in Salesforce B2C Commerce Cloud (SFCC), SAP Commerce Cloud (Hybris), Commercetools or Kibo Commerce and add them to your content.
 
-The IDs of each product selected are added to the content as an array of strings for SFCC or Commercetools and an array of objects with the id and catalog for Hybris.
+The IDs of each product selected are added to the content as an array of strings for SFCC, Commercetools or Kibo Commerce and an array of objects with the id and catalog for Hybris.
 
 ![](/screenshot.png?raw=true)
 
-The default SFCC backend requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris or Commercetools, or using the `sfcc-cors` backend with the proper configuration.
+The default SFCC backend requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris, Commercetools or Kibo Commerce, or using the `sfcc-cors` backend with the proper configuration.
 
 ## How to install
 
@@ -44,7 +44,7 @@ Sandbox permissions:
 ## Installation Parameters
 
 
-### Customise 
+### Customise
 
 | paramerter  |  default  | notes   | required |
 |---|---|---|---|
@@ -223,7 +223,7 @@ The extension works with 'list of text' properties and supports the following pa
   "locale": "{Locale for text search}"
 }
 ```
-Values could be get from creating API Client on Commercetools platform (Settings/Developer settings/Create new API client). 
+Values could be get from creating API Client on Commercetools platform (Settings/Developer settings/Create new API client).
 Required minimal scope of permissions is `view_published_products`, choose View/Products (published).
 Image to display is selected from attributes of master variant by name `largeImageUrl` or first image in `images` array.
 
@@ -257,7 +257,55 @@ Image to display is selected from attributes of master variant by name `largeIma
   }
 }
 ```
+### Kibo Commerce
 
+The extension works with 'list of text' properties and supports the following parameters:
+
+```json
+{
+  "backend": "kibocommerce",
+  "apiHost": "{API Host}",
+  "authHost": "{API Auth Host}",
+  "clientId": "{Application ID}",
+  "sharedSecret": "{Application Secret}"
+}
+```
+
+- `apiHost` - host of your Kibo API environment
+- `authHost` - host for Kibo API authentication, home.mozu.com for Production and Sandbox environments
+- `clientId` - Application ID from your Kibo Commerce [Dev Console](https://developer.mozu.com/)
+- `sharedSecret` - Application Secret from your Kibo Commerce [Dev Console](https://developer.mozu.com/)
+
+The Kibo Commerce application used for this extension will require "Product Read" behaviors.
+Additional guides on setting up a Kibo Commerce application can be found in the [Kibo Commerce docs](https://docs.kibocommerce.com/221803-headless-integrations/1108695-getting-started-headless)
+
+#### Example Snippet
+
+```json
+{
+  "product selector": {
+    "title": "Product Selector",
+    "description": "description",
+    "type": "array",
+    "minItems": 3,
+    "maxItems": 10,
+    "items": {
+      "type": "string"
+    },
+    "ui:extension": {
+      "url": "https://product-selector.extensions.content.amplience.net",
+      "height": 208,
+      "params": {
+        "backend": "kibocommerce",
+        "apiHost": "t12345-s12345.sandbox.mozu.com",
+        "authHost": "home.mozu.com",
+        "clientId": "i7d6294.ProductSelector.1.0.0.Release",
+        "sharedSecret": "sharedSecret"
+      }
+    }
+  }
+}
+```
 
 ## Available Scripts
 
@@ -284,5 +332,5 @@ The build is minified and the filenames include the hashes.<br />
 By default, Create React App produces a build assuming your app is hosted at the server root.  
 To override this, specify the homepage in your `package.json`, for example:
 
- `"homepage": "."` <br />
+`"homepage": "."` <br />
 Your app is ready to be deployed!

@@ -3,10 +3,16 @@ import { ProductSelectorError } from '../ProductSelectorError';
 
 export class Hybris {
 
-  constructor({ hybrisUrl } = {}) {
+  constructor({ hybrisUrl, hybrisEndpoint } = {}) {
     this.hybrisUrl = hybrisUrl;
 
-    this.productService = new ProductService(hybrisUrl, '/rest/v2', null);
+    if (!hybrisEndpoint) {
+      hybrisEndpoint = '/rest/v2';
+    }
+
+    this.hybrisEndpoint = hybrisEndpoint;
+
+    this.productService = new ProductService(hybrisUrl, hybrisEndpoint, null);
   }
 
   async getItems(state, filterIds) {

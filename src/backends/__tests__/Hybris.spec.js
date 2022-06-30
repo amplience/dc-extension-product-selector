@@ -4,6 +4,13 @@ import {ProductSelectorError} from "../../ProductSelectorError";
 
 describe('Hybris', () => {
   it('should create an instance of ProductService', () => {
+    const params = {hybrisUrl: 'http://test.com', hybrisEndpoint: '/endpoint/v2'};
+    const hybris = new Hybris(params);
+
+    expect(hybris.productService).toEqual(new ProductService(params.hybrisUrl, '/endpoint/v2', null));
+  });
+
+  it('should create an instance of ProductService, where a missing endpoint is replaced by /rest/v2', () => {
     const params = {hybrisUrl: 'http://test.com'};
     const hybris = new Hybris(params);
 

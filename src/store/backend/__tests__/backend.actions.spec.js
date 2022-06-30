@@ -44,7 +44,10 @@ describe('backend actions', () => {
     const params = {
       backend: 'hybris',
       hybrisUrl: '/hybris',
-      catalogs: [{ id: '123', name: 'electronics' }],
+      hybrisEndpoint: '/occ/v2',
+      catalogs: [
+        {id: '123', name: 'electronics'}
+      ]
     };
     const store = mockStore({ params });
 

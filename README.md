@@ -2,6 +2,7 @@
 
 # dc-extension-product-selector
 
+
 ![Travis](https://img.shields.io/travis/amplience/dc-extension-product-selector)
 
 The product selector extension allows content authors to easily search and select products in Salesforce B2C Commerce Cloud (SFCC), SAP Commerce Cloud (Hybris), Commercetools, BigCommerce or Kibo Commerce and add them to your content.

@@ -12,7 +12,6 @@
     "dc-management-sdk-js": "^1.4.1",
     "framer-motion": "^1.6.17",
     "lodash": "^4.17.15",
-    "node-sass": "^4.14.1",
     "qs": "^6.9.1",
     "react": "^16.11.0",
     "react-dom": "^16.11.0",
@@ -21,6 +20,7 @@
     "react-sortablejs": "^1.5.1",
     "redux": "^4.0.4",
     "redux-thunk": "^2.3.0",
+    "sass": "^1.62.1",
     "sortablejs": "^1.10.1"
   },
   "scripts": {

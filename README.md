@@ -12,6 +12,8 @@ The IDs of each product selected are added to the content as an array of strings
 
 The default SFCC backend requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris, Commercetools or Kibo Commerce, or using the `sfcc-cors` backend with the proper configuration.
 
+This project requires Node 16.x to build.
+
 ## How to install
 
 ### Register Extension

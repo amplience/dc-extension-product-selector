@@ -1,5 +1,3 @@
-[![Amplience Dynamic Content](header.png)](https://amplience.com/dynamic-content)
-
 # dc-extension-product-selector
 
 ![Travis](https://img.shields.io/travis/amplience/dc-extension-product-selector)

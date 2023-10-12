@@ -2,13 +2,18 @@
 
 ![Travis](https://img.shields.io/travis/amplience/dc-extension-product-selector)
 
-The product selector extension allows content authors to easily search and select products in Salesforce B2C Commerce Cloud (SFCC), SAP Commerce Cloud (Hybris), Commercetools or Kibo Commerce and add them to your content.
+The product selector extension allows content authors to easily search and select products in Salesforce B2C Commerce Cloud (SFCC), SAP Commerce Cloud (Hybris), Commercetools, BigCommerce or Kibo Commerce and add them to your content.
 
-The IDs of each product selected are added to the content as an array of strings for SFCC, Commercetools or Kibo Commerce and an array of objects with the id and catalog for Hybris.
+The IDs of each product selected are added to the content as an array of strings for SFCC, Commercetools, BigCommerce or Kibo Commerce and an array of objects with the id and catalog for Hybris.
 
 ![](/screenshot.png?raw=true)
 
-The default SFCC backend requires the use of the [sfcc-product-search-proxy)](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint. It is not needed when using with Hybris, Commercetools or Kibo Commerce, or using the `sfcc-cors` backend with the proper configuration.
+The default SFCC backend requires the use of the [sfcc-product-search-proxy](https://github.com/amplience/sfcc-product-search-proxy) to work around CORS issues when calling the SFCC data endpoint.
+
+The BigCommerce backend requires the use of the [bc-product-search-proxy](https://github.com/Razz21/bc-product-search-proxy) to work around CORS issues when calling the BigCommerce data endpoint.
+
+It is not needed when using with Hybris, Commercetools or Kibo Commerce, or using the `sfcc-cors` backend with the proper configuration.
+
 
 This project requires Node 16.x to build.
 
@@ -308,6 +313,47 @@ Additional guides on setting up a Kibo Commerce application can be found in the 
 }
 ```
 
+### BigCommerce (proxy)
+
+To use this mode, you will need to build and host your own version of [bc-product-search-proxy](https://github.com/Razz21/bc-product-search-proxy). To use this mode as a registered extension, you will also need to ensure that "Allow same origin" is disabled within the [extension's settings](#Permissions). If you reference the extension using `url` this will happen automatically.
+
+The extension works with 'list of text' properties and supports the following parameters:
+
+```json
+{
+  "proxyUrl": "{The URL of the proxy service}",
+  "apiVersion": "{bigcommerce api version (optional = 'v3')}",
+  "storeHash": "{bigcommerce store hash id}",
+  "accessToken": "{API Access Token}",
+}
+```
+
+#### Example Snippet
+
+```json
+{
+  "product selector": {
+    "title": "Product Selector",
+    "description": "description",
+    "type": "array",
+    "minItems": 3,
+    "maxItems": 10,
+    "items": {
+      "type": "string"
+    },
+    "ui:extension": {
+      "url": "https://product-selector.extensions.content.amplience.net",
+      "height": 208,
+      "params": {
+        "proxyUrl": "https://bc-proxy.your-proxy-domain.com",
+        "apiVersion": "v3",
+        "accessToken": "aa1111AAAAAA1",
+        "storeHash": "mystorehashid"
+      }
+    }
+  }
+}
+```
 ## Available Scripts
 
 In the project directory, you can run:

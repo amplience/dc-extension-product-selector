@@ -49,7 +49,7 @@ describe('SFCCCors', () => {
 
     const result = await sfcc.getAuth(state);
 
-    expect(global.fetch).toBeCalledWith('https://account.demandware.com/dw/oauth2/access_token', {
+    expect(global.fetch).toBeCalledWith('https://account.demandware.com/dwsso/oauth2/access_token', {
       method: 'POST',
       headers: {
         Authorization: 'Basic ' + btoa('client:secret'),
@@ -93,7 +93,7 @@ describe('SFCCCors', () => {
 
     const result = await sfcc.getAuth(state);
 
-    expect(global.fetch).toBeCalledWith('https://account.demandware.com/dw/oauth2/access_token', {
+    expect(global.fetch).toBeCalledWith('https://account.demandware.com/dwsso/oauth2/access_token', {
       method: 'POST',
       headers: {
         Authorization: 'Basic ' + btoa('client:secret'),
@@ -130,7 +130,7 @@ describe('SFCCCors', () => {
       new Error('Error fetching token', 'example failure', 'Unauthorized')
     );
 
-    expect(global.fetch).toBeCalledWith('https://account.demandware.com/dw/oauth2/access_token', {
+    expect(global.fetch).toBeCalledWith('https://account.demandware.com/dwsso/oauth2/access_token', {
       method: 'POST',
       headers: {
         Authorization: 'Basic ' + btoa('client:secret'),

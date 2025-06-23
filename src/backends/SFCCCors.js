@@ -16,7 +16,7 @@ export class SFCCCors {
 
   async getAuth(state) {
     const {
-      params: { authSecret, authClientId, authUrl = 'https://account.demandware.com/dw/oauth2/access_token' },
+      params: { authSecret, authClientId, authUrl = 'https://account.demandware.com/dwsso/oauth2/access_token' },
     } = state;
     const authToken = btoa(authClientId + ':' + authSecret);
 

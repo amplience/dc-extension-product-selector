@@ -2,6 +2,7 @@ import { SFCC } from '../../../backends/SFCC.js';
 import { Hybris } from '../../../backends/Hybris';
 import { CommerceTools } from '../../../backends/CommerceTools';
 import { KiboCommerce } from '../../../backends/KiboCommerce.js';
+import { BigCommerce } from '../../../backends/BigCommerce.js';
 import { mockStore } from '../../../utils/mockStore';
 import { SET_BACKEND, setBackend, initBackend } from '../backend.actions';
 
@@ -71,5 +72,22 @@ describe('backend actions', () => {
     await store.dispatch(initBackend());
 
     expect(store.getActions()).toEqual([{ type: SET_BACKEND, value: new KiboCommerce(params) }]);
+  });
+
+  it('initBackend BigCommerce', async () => {
+    const params = {
+      backend: 'bigcommerce',
+      storeHash: "storehash",
+      accessToken: "xyz",
+      apiVersion: 'v3',
+      proxyUrl: "https://proxy-bigcommerce-api.com"
+    };
+    const store = mockStore({
+      params,
+    });
+
+    await store.dispatch(initBackend());
+
+    expect(store.getActions()).toEqual([{ type: SET_BACKEND, value: new BigCommerce(params) }]);
   });
 });

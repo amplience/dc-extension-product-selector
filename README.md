@@ -1,5 +1,3 @@
-[![Amplience Dynamic Content](header.png)](https://amplience.com/dynamic-content)
-
 # dc-extension-product-selector
 
 ![Travis](https://img.shields.io/travis/amplience/dc-extension-product-selector)
@@ -226,7 +224,7 @@ The extension works with 'list of text' properties and supports the following pa
   "locale": "{Locale for text search}"
 }
 ```
-Values could be get from creating API Client on Commercetools platform (Settings/Developer settings/Create new API client).
+Values could be got from creating API Client on Commercetools platform (Settings/Developer settings/Create new API client).
 Required minimal scope of permissions is `view_published_products`, choose View/Products (published).
 Image to display is selected from attributes of master variant by name `largeImageUrl` or first image in `images` array.
 
